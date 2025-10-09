@@ -19,4 +19,5 @@ cp env.example .env
 php artisan migrate
 npm i
 npm run dev
+php artisan serve
 ```
