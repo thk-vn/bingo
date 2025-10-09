@@ -2,39 +2,26 @@
 
 @section('main')
     <div class="app" role="application" aria-label="Bingo game">
-        <div>
-            <img class="logo" src="{{ Vite::asset('resources/images/logo.png') }}" alt="logo">
-            <p class="lead">Nhấn "reset" để đổi bàn chơi khi Người dẫn trò thông báo có màn chơi mới.</p>
+{{--            <img class="logo" src="{{ Vite::asset('resources/images/logo.png') }}" alt="logo">--}}
+        <div class="logo-fixed">BINGO ✨</div>
+        <div id="win" class="win-banner" role="status">BINGO! 🎉</div>
+{{--            <p class="lead">Nhấn "reset" để đổi bàn chơi khi Người dẫn trò thông báo có màn chơi mới.</p>--}}
             <div class="card-wrap" aria-live="polite">
-                <div class="bingo-header" aria-hidden="true">
-                    <div class="col B">B</div>
-                    <div class="col I">I</div>
-                    <div class="col N">N</div>
-                    <div class="col G">G</div>
-                    <div class="col O">O</div>
-                </div>
-
                 <div class="card-bingo">
                     <div id="bingo" class="bingo" role="grid" aria-label="Bingo card">
                         <!-- cells injected by JS -->
                     </div>
                 </div>
 
-                <div class="controls">
-                    <button id="reset" class="small reset">Reset</button>
-                </div>
-
-                <div id="win" class="win-banner" role="status">BINGO! 🎉</div>
             </div>
-
-            <footer class="small">
-                © 2025 - THK Holdings Vietnam
-            </footer>
-        </div>
+            <div class="controls">
+                <button id="reset" class="small reset">Reset</button>
+            </div>
     </div>
+    <footer class="small">
+        © 2025 - THK Holdings Vietnam
+    </footer>
 @endsection
-
-
 @section('script')
     <script>
         // Bingo logic
@@ -258,9 +245,56 @@
             }
 
             function showWin() {
-                winEl.style.display = 'block';
-                // small confetti-ish effect: add numbers highlight quickly
-                // (we won't add heavy animation to keep it simple)
+                const cells = document.querySelectorAll(".cell");
+                const size = 5;
+                let bingo = false;
+                const lines = [];
+
+                // Kiểm tra hàng ngang
+                for (let i = 0; i < size; i++) {
+                    const row = Array.from(cells).slice(i * size, i * size + size);
+                    if (row.every(c => c.classList.contains("marked"))) {
+                        lines.push(row);
+                        bingo = true;
+                    }
+                }
+
+                // Kiểm tra hàng dọc
+                for (let i = 0; i < size; i++) {
+                    const col = Array.from(cells).filter((_, idx) => idx % size === i);
+                    if (col.every(c => c.classList.contains("marked"))) {
+                        lines.push(col);
+                        bingo = true;
+                    }
+                }
+
+                // Kiểm tra chéo
+                const diag1 = [0,6,12,18,24].map(i => cells[i]);
+                const diag2 = [4,8,12,16,20].map(i => cells[i]);
+                if (diag1.every(c => c.classList.contains("marked"))) { lines.push(diag1); bingo = true; }
+                if (diag2.every(c => c.classList.contains("marked"))) { lines.push(diag2); bingo = true; }
+
+                if (bingo) {
+                    // Thêm hiệu ứng sóng sáng
+                    document.querySelector(".card-wrap").classList.add("bingo-flash");
+                    const winBanner = document.querySelector(".win-banner");
+                    winBanner.classList.add("show-bingo");
+                    winBanner.style.display = "block";
+
+                    lines.forEach((line, index) => {
+                        setTimeout(() => {
+                            line.forEach(c => {
+                                c.classList.add("bingo-wave");
+                                setTimeout(() => c.classList.remove("bingo-wave"), 1600);
+                            });
+                        }, index * 300); // delay giữa các đường thắng
+                    });
+
+                    // Xóa hiệu ứng flash sau 1.5s
+                    setTimeout(() => {
+                        document.querySelector(".card-wrap").classList.remove("bingo-flash");
+                    }, 1500);
+                }
             }
 
             document.getElementById('reset').addEventListener('click', () => {
@@ -284,7 +318,37 @@
                     availableLength: available.length
                 })
             };
-
         })();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const bingoCells = document.querySelectorAll(".cell");
+            const winBanner = document.getElementById("win");
+            const resetBtn = document.getElementById("reset");
+
+            function triggerBingo(cells) {
+                // Hiển thị banner
+                winBanner.style.display = "block";
+                winBanner.classList.add("show-bingo");
+
+                // Hiệu ứng sáng lan từng ô
+                cells.forEach((cell, i) => {
+                    setTimeout(() => {
+                        cell.classList.add("bingo-wave");
+                    }, i * 150); // lan dần
+                });
+
+                // Tạo hiệu ứng nổ sáng xung quanh bảng
+                document.querySelector(".card-wrap").classList.add("bingo-flash");
+                setTimeout(() => {
+                    document.querySelector(".card-wrap").classList.remove("bingo-flash");
+                }, 1500);
+            }
+
+            // Nút reset
+            resetBtn.addEventListener("click", () => {
+                bingoCells.forEach(c => c.classList.remove("bingo-wave"));
+                winBanner.style.display = "none";
+            });
+        });
     </script>
 @endsection
