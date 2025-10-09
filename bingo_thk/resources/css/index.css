@@ -68,7 +68,6 @@ p.lead {
   color: var(--muted);
 }
 
-/* Bingo card */
 .card-wrap {
     position: relative;
     display: inline-block;
@@ -82,7 +81,6 @@ p.lead {
     overflow: hidden;
 }
 
-/* Viền neon chạy quanh viền */
 .card-wrap::before {
     content: "";
     position: absolute;
@@ -266,7 +264,6 @@ p.lead {
     }
 }
 
-/* Khi thắng Bingo */
 .cell.bingo-wave {
     animation: neonSweep 1.4s ease-in-out forwards;
 }
@@ -447,7 +444,6 @@ button.reset {
     animation: pulseGlow 2s infinite alternate;
 }
 
-/* Icon Reset (vòng tròn xoay) */
 button.reset::before {
     content: "↻";
     font-size: 18px;
@@ -458,7 +454,6 @@ button.reset::before {
     transition: transform 0.3s ease;
 }
 
-/* Hiệu ứng hover */
 button.reset:hover {
     color: var(--neon-accent);
     transform: scale(1.08);
@@ -468,12 +463,10 @@ button.reset:hover {
         inset 0 0 10px rgba(255,255,255,0.2);
 }
 
-/* Khi hover, icon xoay nhẹ */
 button.reset:hover::before {
     transform: rotate(360deg);
 }
 
-/* Khi nhấn */
 button.reset:active {
     transform: scale(0.95);
     box-shadow:
@@ -481,7 +474,6 @@ button.reset:active {
         0 0 20px var(--neon-color);
 }
 
-/* Hiệu ứng phát sáng nhịp */
 @keyframes pulseGlow {
     0% {
         text-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-accent);
@@ -498,7 +490,7 @@ button.reset:active {
             inset 0 0 10px rgba(255,255,255,0.2);
     }
 }
-/* Sóng sáng quét qua ô Bingo */
+
 @keyframes neonSweep {
     0% {
         background: linear-gradient(
@@ -536,7 +528,6 @@ button.reset:active {
     animation: flashBang 1.5s ease;
 }
 
-/* Hiệu ứng chữ BINGO neon nổ sáng lung linh */
 .win-banner.show-bingo {
     display: block;
     font-size: 2.6rem;
@@ -554,7 +545,6 @@ button.reset:active {
         0 0 50px var(--neon-accent);
 }
 
-/* Nhịp sáng nhẹ */
 @keyframes bingoGlow {
     0% {
         text-shadow:
