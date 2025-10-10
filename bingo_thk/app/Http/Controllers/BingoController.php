@@ -15,4 +15,10 @@ class BingoController extends Controller
     {
         return view('index');
     }
+
+
+    public function dial()
+    {
+        return view('dial');
+    }
 }
