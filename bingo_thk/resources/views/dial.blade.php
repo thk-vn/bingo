@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bingo</title>
+    <title>Quay Số</title>
     <style>
         body {
             margin: 0;
@@ -86,6 +86,7 @@
     <button onclick="startSpin()">🎲 QUAY SỐ</button>
     <button onclick="resetSphere()">🔄 RESET</button>
 </div>
+{{--<div id="info"></div>--}}
 <div id="result"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -231,10 +232,10 @@
 
         // Làm đường viền rõ hơn (màu sáng và đậm)
         const circleMaterial = new THREE.LineBasicMaterial({
-            color      : 0xffffff, // màu xanh ngọc nổi bật
-            linewidth  : 3,
+            color: 0xffffff, // màu xanh ngọc nổi bật
+            linewidth: 3,
             transparent: true,
-            opacity    : 0.8
+            opacity: 0.8
         });
 
         // Latitude circles (vòng ngang)
@@ -317,10 +318,10 @@
             );
 
             ballGroup.userData = {
-                number    : i,
+                number: i,
                 initialPos: ballGroup.position.clone(),
-                velocity  : new THREE.Vector3((Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.03),
-                isFalling : false,
+                velocity: new THREE.Vector3((Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.03),
+                isFalling: false,
             };
 
             ballsGroup.add(ballGroup);
@@ -334,7 +335,7 @@
 
         isSpinning = true;
         document.getElementById('result').style.display = 'none';
-        document.getElementById('info').style.display = 'none';
+        // document.getElementById('info').style.display = 'none';
 
         // Reset any previous winner
         if (winnerBall) {
@@ -407,7 +408,7 @@
 
 
             const result = document.getElementById('result');
-            result.textContent = `🎉 SỐ TRÚNG THƯỞNG: ${winner.userData.number}`;
+            result.textContent = `🎉 SỐ TRÚNG THƯỞNG: ${ winner.userData.number }`;
             result.style.display = 'block';
         }
     }
@@ -419,7 +420,7 @@
         ballsGroup.rotation.set(0, 0, 0);
         isSpinning = false;
         document.getElementById('result').style.display = 'none';
-        document.getElementById('info').style.display = 'block';
+        // document.getElementById('info').style.display = 'block';
 
         // Reset winner if exists
         if (winnerBall) {
