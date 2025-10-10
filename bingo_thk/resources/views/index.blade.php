@@ -1,27 +1,32 @@
 @extends('master')
 
+@section('css')
+    @vite(['resources/css/index.css'])
+@endsection
+
 @section('main')
     <div class="app" role="application" aria-label="Bingo game">
-{{--            <img class="logo" src="{{ Vite::asset('resources/images/logo.png') }}" alt="logo">--}}
+        {{--            <img class="logo" src="{{ Vite::asset('resources/images/logo.png') }}" alt="logo"> --}}
         <div class="logo-fixed">BINGO ✨</div>
         <div id="win" class="win-banner" role="status">BINGO! 🎉</div>
-{{--            <p class="lead">Nhấn "reset" để đổi bàn chơi khi Người dẫn trò thông báo có màn chơi mới.</p>--}}
-            <div class="card-wrap" aria-live="polite">
-                <div class="card-bingo">
-                    <div id="bingo" class="bingo" role="grid" aria-label="Bingo card">
-                        <!-- cells injected by JS -->
-                    </div>
+        {{--            <p class="lead">Nhấn "reset" để đổi bàn chơi khi Người dẫn trò thông báo có màn chơi mới.</p> --}}
+        <div class="card-wrap" aria-live="polite">
+            <div class="card-bingo">
+                <div id="bingo" class="bingo" role="grid" aria-label="Bingo card">
+                    <!-- cells injected by JS -->
                 </div>
+            </div>
 
-            </div>
-            <div class="controls">
-                <button id="reset" class="small reset">Reset</button>
-            </div>
+        </div>
+        <div class="controls">
+            <button id="reset" class="small reset">Reset</button>
+        </div>
     </div>
     <footer class="small">
         © 2025 - THK Holdings Vietnam
     </footer>
 @endsection
+
 @section('script')
     <script>
         // Bingo logic
@@ -269,10 +274,16 @@
                 }
 
                 // Kiểm tra chéo
-                const diag1 = [0,6,12,18,24].map(i => cells[i]);
-                const diag2 = [4,8,12,16,20].map(i => cells[i]);
-                if (diag1.every(c => c.classList.contains("marked"))) { lines.push(diag1); bingo = true; }
-                if (diag2.every(c => c.classList.contains("marked"))) { lines.push(diag2); bingo = true; }
+                const diag1 = [0, 6, 12, 18, 24].map(i => cells[i]);
+                const diag2 = [4, 8, 12, 16, 20].map(i => cells[i]);
+                if (diag1.every(c => c.classList.contains("marked"))) {
+                    lines.push(diag1);
+                    bingo = true;
+                }
+                if (diag2.every(c => c.classList.contains("marked"))) {
+                    lines.push(diag2);
+                    bingo = true;
+                }
 
                 if (bingo) {
                     // Thêm hiệu ứng sóng sáng
