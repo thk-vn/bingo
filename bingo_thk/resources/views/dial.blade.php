@@ -5,35 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quay Số</title>
     <style>
+        :root {
+            --bg: #0f1724;
+            --card: #071126;
+            --accent: #ffb020;
+            --accent-2: #22c1c3;
+            --muted: #94a3b8;
+            --win: #10b981;
+            --font-color: #222222;
+            --neon-color: #00f7ff;
+            --neon-accent: #32ffe0;
+        }
+
         body {
             margin: 0;
             overflow: hidden;
-            background: #000000;
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(180deg, #071330 0%, #0b1a2d 100%);
+            font-family: 'Inter', 'Segoe UI', 'Roboto', system-ui, Arial;
+            color: #e6eef8;
+        }
+
+        /* GPU acceleration for better performance */
+        #container, #drawnNumbers, .number-cell, button {
+            will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         #container {
-            width: 100vw;
+            width: 66.67vw;
             height: 100vh;
+            position: absolute;
+            left: 0;
+            top: 0;
         }
 
         #controls {
             position: absolute;
-            top: 20px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
+            background: linear-gradient(180deg, #16324a, #0f3a68);
             padding: 15px 30px;
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 6px 14px rgba(2, 6, 23, 0.6);
             text-align: center;
             z-index: 10;
+            border: 2px solid var(--neon-color);
         }
 
         button {
-            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-            color: #333;
-            border: 2px solid #333;
+            background: linear-gradient(180deg, #16324a, #0f3a68);
+            color: var(--neon-color);
+            border: 2px solid var(--neon-color);
             padding: 12px 30px;
             margin: 5px;
             border-radius: 25px;
@@ -41,21 +65,27 @@
             font-size: 16px;
             font-weight: bold;
             transition: all 0.3s;
+            text-shadow: 0 0 6px var(--neon-color), 0 0 20px var(--neon-accent);
+            box-shadow: 0 0 6px var(--neon-color), 0 0 18px var(--neon-accent), inset 0 0 6px rgba(255,255,255,0.1);
+            /* Removed continuous animation for performance */
         }
 
         button:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5);
+            color: var(--neon-accent);
+            box-shadow: 0 0 12px var(--neon-color), 0 0 30px var(--neon-accent), inset 0 0 10px rgba(255,255,255,0.2);
+            text-shadow: 0 0 10px var(--neon-accent), 0 0 30px var(--neon-accent);
         }
 
         button:active {
             transform: scale(0.95);
+            box-shadow: 0 0 8px var(--neon-accent), 0 0 20px var(--neon-color);
         }
 
         #result {
             position: absolute;
             bottom: 30px;
-            left: 50%;
+            left: 30%;
             transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.95);
             padding: 20px 40px;
@@ -78,16 +108,241 @@
             text-align: center;
             opacity: 0.7;
         }
+
+        #drawnNumbers {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 33.33vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1b1b2f, #0f0f1a);
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
+            overflow-y: auto;
+            z-index: 10;
+            border: 2px solid var(--neon-color);
+            box-sizing: border-box;
+            border-radius: 15px;
+        }
+
+        #drawnNumbers h2 {
+            margin: 0 0 15px 0;
+            color: var(--neon-color);
+            font-size: 18px;
+            text-align: center;
+            text-shadow: 0 0 4px var(--neon-color);
+            font-weight: 700;
+        }
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .number-cell {
+            width: 100%;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, rgba(0, 255, 255, 0.08) 0%, rgba(0, 200, 255, 0.04) 50%, rgba(255, 255, 255, 0.02) 100%);
+            border: 2px solid var(--neon-accent);
+            border-radius: 10px;
+            color: var(--neon-color);
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-shadow: 0 0 4px var(--neon-color);
+            /* Reduced blur and shadow for performance */
+            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.02);
+            /* Removed continuous animation for performance */
+        }
+
+        .number-cell:hover {
+            transform: scale(1.08);
+            background: linear-gradient(145deg, rgba(0, 255, 255, 0.25) 0%, rgba(0, 200, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 100%);
+            box-shadow: 0 0 8px var(--neon-color), 0 0 15px var(--neon-accent);
+        }
+
+        @keyframes textPulse {
+            0% {
+                text-shadow: 0 0 4px var(--neon-color), 0 0 10px var(--neon-accent);
+            }
+            100% {
+                text-shadow: 0 0 8px var(--neon-accent), 0 0 20px var(--neon-color);
+            }
+        }
+
+        .number-cell.drawn {
+            background: linear-gradient(180deg, var(--accent), #ffa44a);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 8px rgba(255, 176, 32, 0.6), 0 0 20px rgba(255, 176, 32, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.2);
+            color: #071126;
+            transform: scale(1.05);
+            /* Removed continuous animation for performance */
+        }
+
+        .number-cell.drawn.active {
+            background: var(--neon-accent);
+            border: 2px solid var(--neon-accent);
+            box-shadow: 0 0 25px var(--neon-accent), 0 0 50px var(--neon-color);
+            color: #fff;
+            transform: scale(1.08);
+            /* Animation only when active, not continuous */
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                text-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-accent);
+                box-shadow: 0 0 5px var(--neon-color), 0 0 15px var(--neon-accent), inset 0 0 5px rgba(255,255,255,0.1);
+            }
+            100% {
+                text-shadow: 0 0 10px var(--neon-accent), 0 0 25px var(--neon-accent);
+                box-shadow: 0 0 10px var(--neon-color), 0 0 30px var(--neon-accent), inset 0 0 10px rgba(255,255,255,0.2);
+            }
+        }
+
+        @keyframes neonSweep {
+            0% {
+                box-shadow: 0 0 6px var(--neon-accent), inset 0 0 8px rgba(255,255,255,0.1);
+                background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, var(--neon-color) 50%, rgba(255,255,255,0.1) 100%);
+                background-size: 200% 100%;
+                background-position: -100% 0;
+            }
+            100% {
+                background-position: 100% 0;
+                box-shadow: 0 0 15px var(--neon-color), 0 0 40px var(--neon-accent), inset 0 0 10px rgba(255,255,255,0.2);
+            }
+        }
+
+        #winnerDisplay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle at center, #1b1b2f, #0f0f1a);
+            padding: 30px 50px;
+            border-radius: 20px;
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--neon-color);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.25), 0 0 60px rgba(255, 0, 255, 0.15);
+            display: none;
+            z-index: 20;
+            text-align: center;
+            border: 3px solid var(--neon-color);
+            text-shadow: 0 0 6px var(--neon-color), 0 0 16px var(--neon-accent);
+        }
+
+        #winnerDisplay .winner-number {
+            font-size: 48px;
+            color: var(--neon-accent);
+            margin: 10px 0;
+            text-shadow: 0 0 10px var(--neon-color), 0 0 25px var(--neon-accent), 0 0 50px var(--neon-accent);
+            /* Removed continuous animation for performance */
+        }
+
+        @keyframes bingoGlow {
+            0% {
+                text-shadow: 0 0 6px var(--neon-color), 0 0 20px var(--neon-accent), 0 0 40px var(--neon-color);
+                transform: scale(1);
+            }
+            100% {
+                text-shadow: 0 0 12px var(--neon-accent), 0 0 40px var(--neon-color), 0 0 80px var(--neon-accent);
+                transform: scale(1.1);
+            }
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            #container {
+                width: 70vw;
+            }
+            
+            #drawnNumbers {
+                width: 30vw;
+            }
+            
+            .numbers-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            #container {
+                width: 100vw;
+                height: 60vh;
+            }
+            
+            #drawnNumbers {
+                width: 100vw;
+                height: 40vh;
+                top: 60vh;
+                right: 0;
+            }
+            
+            .numbers-grid {
+                grid-template-columns: repeat(8, 1fr);
+                gap: 4px;
+            }
+            
+            .number-cell {
+                height: 35px;
+                font-size: 12px;
+            }
+            
+            #controls {
+                bottom: 10px;
+                padding: 10px 20px;
+            }
+            
+            button {
+                padding: 8px 20px;
+                font-size: 14px;
+                margin: 3px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .numbers-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .number-cell {
+                height: 30px;
+                font-size: 10px;
+            }
+            
+            #drawnNumbers h2 {
+                font-size: 16px;
+            }
+            
+        }
     </style>
 </head>
 <body>
 <div id="container"></div>
+
+{{--<div id="info"></div>--}}
+<div id="result"></div>
+{{--<div id="winnerDisplay">--}}
+{{--    <div>🎉 SỐ TRÚNG THƯỞNG 🎉</div>--}}
+{{--    <div class="winner-number" id="winnerNumber"></div>--}}
+{{--</div>--}}
+
+<div id="drawnNumbers">
+    <h2>Dãy số đã quay</h2>
+    <div class="numbers-grid" id="numbersGrid"></div>
+</div>
 <div id="controls">
     <button onclick="startSpin()">🎲 QUAY SỐ</button>
     <button onclick="resetSphere()">🔄 RESET</button>
 </div>
-{{--<div id="info"></div>--}}
-<div id="result"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -98,6 +353,11 @@
     let winnerBall = null;
     let mouse = { x: 0, y: 0 };
     let mouseDown = false;
+    let drawnNumbers = [];
+    let numbersGrid = [];
+    let winnerFloatingElement = null;
+    let winnerBallMoving = false;
+    let winnerBallTarget = null;
 
     function init() {
         // Scene
@@ -110,7 +370,7 @@
 
         // Renderer
         renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        updateRendererSize();
         document.getElementById('container').appendChild(renderer.domElement);
 
         // Lighting
@@ -138,6 +398,9 @@
 
         // Create balls with numbers inside sphere
         createBalls();
+
+        // Create numbers grid
+        createNumbersGrid();
 
         // Mouse controls
         document.addEventListener('mousedown', onMouseDown);
@@ -278,6 +541,19 @@
         }
     }
 
+    function createNumbersGrid() {
+        const grid = document.getElementById('numbersGrid');
+        grid.innerHTML = '';
+
+        for (let i = 1; i <= 99; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'number-cell';
+            cell.textContent = i;
+            cell.id = `number-${i}`;
+            numbersGrid[i] = cell;
+            grid.appendChild(cell);
+        }
+    }
 
     function createBalls() {
         for (let i = 1; i <= 99; i++) {
@@ -331,7 +607,18 @@
 
 
     function startSpin() {
+        // Prevent multiple spins
         if (isSpinning) return;
+        
+        // Prevent spin if winner ball is moving to grid
+        if (winnerBallMoving) return;
+
+        // If there's a winner ball in center, move it to grid first, then start spinning
+        if (winnerBall && winnerBall.userData.isFalling && !winnerBallMoving) {
+            // Move winner to grid first
+            moveWinnerBallToGrid(winnerBall.userData.number);
+            return;
+        }
 
         isSpinning = true;
         document.getElementById('result').style.display = 'none';
@@ -352,8 +639,12 @@
             winnerBall = null;
         }
 
-        rotationSpeed.x = (Math.random() - 0.5) * 0.5;
-        rotationSpeed.y = (Math.random() - 0.5) * 0.5;
+        startNewSpin();
+    }
+
+    function startNewSpin() {
+        rotationSpeed.x = (Math.random() - 0.5) * 0.8;
+        rotationSpeed.y = (Math.random() - 0.5) * 0.8;
 
         // Stop after 4 seconds and pick winner
         setTimeout(() => {
@@ -362,6 +653,9 @@
     }
 
     function pickWinner() {
+        // Prevent multiple winners
+        if (winnerBall) return;
+        
         isSpinning = false;
 
         // Find ball closest to front (highest z in world space)
@@ -378,6 +672,7 @@
                 }
             }
         });
+
         if (winner) {
             winnerBall = winner;
             winner.userData.isFalling = true;
@@ -396,20 +691,24 @@
             winner.quaternion.copy(worldQuaternion);
             scene.add(winner);
 
-            // Set fall velocity toward camera
-            const direction = worldPos.clone().normalize();
-            winner.userData.fallVelocity = direction.multiplyScalar(0.15);
-            winner.userData.fallVelocity.y -= 0.05;
+            // Set fall velocity toward center of screen - faster
+            const targetPos = new THREE.Vector3(0, 0, 5);
+            const direction = targetPos.clone().sub(worldPos).normalize();
+            winner.userData.fallVelocity = direction.multiplyScalar(0.25);
             winner.userData.rotationSpeed = {
                 x: Math.random() * 0.2 - 0.1,
                 y: Math.random() * 0.2 - 0.1,
                 z: Math.random() * 0.2 - 0.1
             };
 
+            // Add to drawn numbers
+            drawnNumbers.push(winner.userData.number);
+            
+            // Winner ball stays in center, waiting for next spin
 
-            const result = document.getElementById('result');
-            result.textContent = `🎉 SỐ TRÚNG THƯỞNG: ${ winner.userData.number }`;
-            result.style.display = 'block';
+            // const result = document.getElementById('result');
+            // result.textContent = `🎉 SỐ TRÚNG THƯỞNG: ${ winner.userData.number }`;
+            // result.style.display = 'block';
         }
     }
 
@@ -421,6 +720,19 @@
         isSpinning = false;
         document.getElementById('result').style.display = 'none';
         // document.getElementById('info').style.display = 'block';
+
+        // Clean up floating winner element
+        if (winnerFloatingElement) {
+            document.body.removeChild(winnerFloatingElement);
+            winnerFloatingElement = null;
+        }
+
+        // Reset winner ball movement
+        winnerBallMoving = false;
+        winnerBallTarget = null;
+
+        // Clean up any winner balls
+        cleanupWinnerBalls();
 
         // Reset winner if exists
         if (winnerBall) {
@@ -442,6 +754,25 @@
         }
     }
 
+    function cleanupWinnerBalls() {
+        // Remove any balls that are falling (potential multiple winners)
+        balls.forEach(ball => {
+            if (ball.userData.isFalling) {
+                scene.remove(ball);
+                ballsGroup.add(ball);
+                ball.position.copy(ball.userData.initialPos);
+                ball.scale.set(1, 1, 1);
+                ball.rotation.set(0, 0, 0);
+                ball.userData.isFalling = false;
+                ball.userData.velocity.set(
+                    (Math.random() - 0.5) * 0.03,
+                    (Math.random() - 0.5) * 0.03,
+                    (Math.random() - 0.5) * 0.03
+                );
+            }
+        });
+    }
+
     function animate() {
         requestAnimationFrame(animate);
 
@@ -452,11 +783,11 @@
             ballsGroup.rotation.x += rotationSpeed.x;
             ballsGroup.rotation.y += rotationSpeed.y;
 
-            // Slow down
-            rotationSpeed.x *= 0.985;
-            rotationSpeed.y *= 0.985;
+            // Slow down faster
+            rotationSpeed.x *= 0.98;
+            rotationSpeed.y *= 0.98;
 
-            // Make balls bounce more during spin
+            // Make balls bounce more during spin - optimized
             balls.forEach(ball => {
                 if (!ball.userData.isFalling) {
                     ball.position.add(ball.userData.velocity);
@@ -465,28 +796,30 @@
                     if (distance > 5.2) {
                         const normal = ball.position.clone().normalize();
                         ball.userData.velocity.reflect(normal);
-                        ball.userData.velocity.multiplyScalar(0.9);
+                        ball.userData.velocity.multiplyScalar(0.95);
                         ball.position.setLength(5.2);
                     }
 
-                    // Add chaos during spin
-                    ball.userData.velocity.x += (Math.random() - 0.5) * 0.02;
-                    ball.userData.velocity.y += (Math.random() - 0.5) * 0.02;
-                    ball.userData.velocity.z += (Math.random() - 0.5) * 0.02;
+                    // Add chaos during spin - reduced frequency
+                    if (Math.random() < 0.3) {
+                        ball.userData.velocity.x += (Math.random() - 0.5) * 0.03;
+                        ball.userData.velocity.y += (Math.random() - 0.5) * 0.03;
+                        ball.userData.velocity.z += (Math.random() - 0.5) * 0.03;
+                    }
 
                     // Limit velocity
                     const speed = ball.userData.velocity.length();
-                    if (speed > 0.15) {
-                        ball.userData.velocity.setLength(0.15);
+                    if (speed > 0.2) {
+                        ball.userData.velocity.setLength(0.2);
                     }
                 }
             });
         } else if (!winnerBall) {
-            // Gentle idle rotation
-            sphereGroup.rotation.y += 0.003;
-            ballsGroup.rotation.y += 0.003;
+            // Gentle idle rotation - faster
+            sphereGroup.rotation.y += 0.008;
+            ballsGroup.rotation.y += 0.008;
 
-            // Gentle ball movement
+            // Gentle ball movement - optimized
             balls.forEach(ball => {
                 if (!ball.userData.isFalling) {
                     ball.position.add(ball.userData.velocity);
@@ -495,30 +828,81 @@
                     if (distance > 5.2) {
                         const normal = ball.position.clone().normalize();
                         ball.userData.velocity.reflect(normal);
-                        ball.userData.velocity.multiplyScalar(0.8);
+                        ball.userData.velocity.multiplyScalar(0.85);
                         ball.position.setLength(5.2);
                     }
                 }
             });
         }
+        // When winner is selected, no rotation or movement at all
 
-        // Animate falling winner
+        // Animate falling winner - only if there's exactly one winner
         if (winnerBall && winnerBall.userData.isFalling) {
-            winnerBall.position.add(winnerBall.userData.fallVelocity);
-            winnerBall.userData.fallVelocity.y -= 0.003; // gravity
+            if (!winnerBallMoving) {
+                // Initial fall to center
+                winnerBall.position.add(winnerBall.userData.fallVelocity);
 
-            // Scale up the ball
-            const scale = Math.min(winnerBall.scale.x + 0.015, 3);
-            winnerBall.scale.set(scale, scale, scale);
+                // Move toward center of screen - faster
+                const targetPos = new THREE.Vector3(0, 0, 5);
+                const direction = targetPos.clone().sub(winnerBall.position).normalize();
+                winnerBall.userData.fallVelocity = direction.multiplyScalar(0.15);
 
-            // Rotate the ball
-            winnerBall.rotation.x += winnerBall.userData.rotationSpeed.x;
-            winnerBall.rotation.y += winnerBall.userData.rotationSpeed.y;
-            winnerBall.rotation.z += winnerBall.userData.rotationSpeed.z;
-            if (winnerBall.position.z > 15 || winnerBall.position.y < -10) {
-                scene.remove(winnerBall);
-                balls = balls.filter(b => b !== winnerBall);
-                winnerBall = null;
+                // Scale up the ball - faster
+                const scale = Math.min(winnerBall.scale.x + 0.025, 3);
+                winnerBall.scale.set(scale, scale, scale);
+
+                // Keep winner ball facing camera - no rotation
+                winnerBall.rotation.set(0, 0, 0);
+
+                // Check if reached center - then stop and wait
+                if (winnerBall.position.distanceTo(targetPos) < 1) {
+                    winnerBall.userData.fallVelocity.set(0, 0, 0);
+                    // Ball stays in center, waiting for next spin
+                }
+            } else {
+                // Move to grid position
+                if (winnerBallTarget) {
+                    winnerBall.userData.moveProgress += winnerBall.userData.moveSpeed;
+                    
+                    if (winnerBall.userData.moveProgress < 1) {
+                        // Smooth movement using easing
+                        const t = winnerBall.userData.moveProgress;
+                        const easedT = t * t * (3 - 2 * t); // Smooth step
+                        
+                        winnerBall.position.lerpVectors(
+                            new THREE.Vector3(0, 0, 5), // Start position (center)
+                            winnerBallTarget, // Target position
+                            easedT
+                        );
+                        
+                        // Scale down as it moves
+                        const scale = 3 - (t * 2.5); // From 3 to 0.5
+                        winnerBall.scale.set(scale, scale, scale);
+                    } else {
+                        // Movement complete
+                        winnerBallMoving = false;
+                        winnerBallTarget = null;
+                        
+                        // Update grid and remove ball
+                        const number = winnerBall.userData.number;
+                        updateNumbersGrid(number);
+                        
+                        // Remove ball from scene
+                        scene.remove(winnerBall);
+                        balls = balls.filter(b => b !== winnerBall);
+                        winnerBall = null;
+                        
+                        // Now start spinning for new winner
+                        isSpinning = true;
+                        rotationSpeed.x = (Math.random() - 0.5) * 0.8;
+                        rotationSpeed.y = (Math.random() - 0.5) * 0.8;
+                        
+                        // Pick new winner after spinning
+                        setTimeout(() => {
+                            pickWinner();
+                        }, 3000);
+                    }
+                }
             }
         }
 
@@ -528,6 +912,11 @@
                 ball.lookAt(camera.position);
             }
         });
+
+        // Make winner ball face camera and don't rotate with sphere
+        if (winnerBall && winnerBall.userData.isFalling) {
+            winnerBall.lookAt(camera.position);
+        }
 
         renderer.render(scene, camera);
     }
@@ -592,10 +981,65 @@
         touchStart.y = e.touches[0].clientY;
     }
 
-    function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
+    function updateRendererSize() {
+        const container = document.getElementById('container');
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        
+        renderer.setSize(containerWidth, containerHeight);
+        camera.aspect = containerWidth / containerHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function onWindowResize() {
+        updateRendererSize();
+    }
+
+    function moveWinnerBallToGrid(number) {
+        if (!winnerBall) return;
+        
+        // Prevent multiple movements
+        if (winnerBallMoving) return;
+        
+        winnerBallMoving = true;
+        
+        // Calculate target position in 3D space
+        const targetCell = numbersGrid[number];
+        if (!targetCell) return;
+        
+        const targetRect = targetCell.getBoundingClientRect();
+        const containerRect = document.getElementById('container').getBoundingClientRect();
+        
+        // Convert screen coordinates to 3D world coordinates
+        const x = ((targetRect.left + targetRect.width/2 - containerRect.left) / containerRect.width) * 2 - 1;
+        const y = -((targetRect.top + targetRect.height/2 - containerRect.top) / containerRect.height) * 2 + 1;
+        
+        // Create target position in 3D space
+        winnerBallTarget = new THREE.Vector3(x * 8, y * 6, 5);
+        
+        // Set movement parameters - faster
+        winnerBall.userData.moveSpeed = 0.04;
+        winnerBall.userData.moveProgress = 0;
+    }
+
+    function updateNumbersGrid(number) {
+        const cell = numbersGrid[number];
+        if (cell) {
+            cell.classList.add('drawn');
+
+            // Remove active class from all cells
+            document.querySelectorAll('.number-cell').forEach(cell => {
+                cell.classList.remove('active');
+            });
+
+            // Add active class to current number
+            cell.classList.add('active');
+
+            // Remove active class after 2 seconds
+            setTimeout(() => {
+                cell.classList.remove('active');
+            }, 2000);
+        }
     }
 
     init();
