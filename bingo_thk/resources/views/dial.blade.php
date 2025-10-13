@@ -26,7 +26,7 @@
         }
 
         /* GPU acceleration for better performance */
-        #container, #drawnNumbers, .number-cell, button {
+        #container, #drawnNumbers, button {
             will-change: transform;
             transform: translateZ(0);
             backface-visibility: hidden;
@@ -100,16 +100,6 @@
             z-index: 10;
         }
 
-        #info {
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 14px;
-            text-align: center;
-            opacity: 0.7;
-        }
 
         #drawnNumbers {
             position: absolute;
@@ -136,121 +126,45 @@
 
         .numbers-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(6, 64px);
+            gap: 12px 12px;
             margin-top: 10px;
+            justify-content: start;
+            align-content: start;
         }
 
-        .number-cell {
-            width: 100%;
-            height: 60px;
+        .mini-ball {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(145deg, rgba(0, 255, 255, 0.08) 0%, rgba(0, 200, 255, 0.04) 50%, rgba(255, 255, 255, 0.02) 100%);
-            border: 2px solid var(--neon-accent);
-            border-radius: 10px;
-            color: var(--neon-color);
-            font-weight: bold;
-            font-size: 20px;
-            transition: all 0.3s;
-            cursor: pointer;
-            box-sizing: border-box;
-            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.02);
+            background: radial-gradient(circle at 30% 30%, #fff3c4 0%, #f3d991 30%, #e4c47f 60%, #c9a75e 100%);
+            box-shadow: inset -6px -10px 14px rgba(0,0,0,0.2), inset 8px 10px 18px rgba(255,255,255,0.35), 0 6px 14px rgba(0,0,0,0.35);
+            border: 1px solid rgba(0,0,0,0.15);
+            position: relative;
         }
 
-        .number-cell:hover {
-            transform: scale(1.08);
-            background: linear-gradient(145deg, rgba(0, 255, 255, 0.25) 0%, rgba(0, 200, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 100%);
-            box-shadow: 0 0 8px var(--neon-color), 0 0 15px var(--neon-accent);
-        }
-
-        @keyframes textPulse {
-            0% {
-                text-shadow: 0 0 4px var(--neon-color), 0 0 10px var(--neon-accent);
-            }
-            100% {
-                text-shadow: 0 0 8px var(--neon-accent), 0 0 20px var(--neon-color);
-            }
-        }
-
-        .number-cell.drawn {
-            background: linear-gradient(180deg, var(--accent), #ffa44a);
-            border: 2px solid var(--accent);
-            box-shadow: 0 0 8px rgba(255, 176, 32, 0.6), 0 0 20px rgba(255, 176, 32, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.2);
-            color: #071126;
-            transform: scale(1.05);
-        }
-
-        .number-cell.drawn.active {
-            background: var(--neon-accent);
-            border: 2px solid var(--neon-accent);
-            box-shadow: 0 0 25px var(--neon-accent), 0 0 50px var(--neon-color);
-            color: #fff;
-            transform: scale(1.08);
-            /* Animation only when active, not continuous */
-        }
-
-        @keyframes pulseGlow {
-            0% {
-                text-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-accent);
-                box-shadow: 0 0 5px var(--neon-color), 0 0 15px var(--neon-accent), inset 0 0 5px rgba(255,255,255,0.1);
-            }
-            100% {
-                text-shadow: 0 0 10px var(--neon-accent), 0 0 25px var(--neon-accent);
-                box-shadow: 0 0 10px var(--neon-color), 0 0 30px var(--neon-accent), inset 0 0 10px rgba(255,255,255,0.2);
-            }
-        }
-
-        @keyframes neonSweep {
-            0% {
-                box-shadow: 0 0 6px var(--neon-accent), inset 0 0 8px rgba(255,255,255,0.1);
-                background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, var(--neon-color) 50%, rgba(255,255,255,0.1) 100%);
-                background-size: 200% 100%;
-                background-position: -100% 0;
-            }
-            100% {
-                background-position: 100% 0;
-                box-shadow: 0 0 15px var(--neon-color), 0 0 40px var(--neon-accent), inset 0 0 10px rgba(255,255,255,0.2);
-            }
-        }
-
-        #winnerDisplay {
+        .mini-ball::after {
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(circle at center, #1b1b2f, #0f0f1a);
-            padding: 30px 50px;
-            border-radius: 20px;
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--neon-color);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.25), 0 0 60px rgba(255, 0, 255, 0.15);
-            display: none;
-            z-index: 20;
-            text-align: center;
-            border: 3px solid var(--neon-color);
-            text-shadow: 0 0 6px var(--neon-color), 0 0 16px var(--neon-accent);
+            top: 10%;
+            left: 18%;
+            width: 40%;
+            height: 28%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%);
+            pointer-events: none;
         }
 
-        #winnerDisplay .winner-number {
-            font-size: 48px;
-            color: var(--neon-accent);
-            margin: 10px 0;
-            text-shadow: 0 0 10px var(--neon-color), 0 0 25px var(--neon-accent), 0 0 50px var(--neon-accent);
+        .mini-ball span {
+            font-weight: 900;
+            font-size: 22px;
+            color: #da3b42;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.35), 0 0 4px rgba(0,0,0,0.25);
         }
 
-        @keyframes bingoGlow {
-            0% {
-                text-shadow: 0 0 6px var(--neon-color), 0 0 20px var(--neon-accent), 0 0 40px var(--neon-color);
-                transform: scale(1);
-            }
-            100% {
-                text-shadow: 0 0 12px var(--neon-accent), 0 0 40px var(--neon-color), 0 0 80px var(--neon-accent);
-                transform: scale(1.1);
-            }
-        }
 
 
         /* Responsive Design */
@@ -283,7 +197,6 @@
     <div class="numbers-grid" id="numbersGrid"></div>
 </div>
 <div id="spinControls">
-    <button onclick="startSpin()">🎲 QUAY SỐ</button>
     <button onclick="resetSphere()">🔄 RESET</button>
 </div>
 
@@ -294,14 +207,20 @@
     let rotationSpeed = { x: 0, y: 0 }; // Tốc độ quay của sphere và balls
     let isSpinning = false; // Trạng thái đang quay hay không
     let winnerBall = null; // Quả cầu trúng thưởng hiện tại
-    let mouse = { x: 0, y: 0 }; // Vị trí chuột để điều khiển
-    let mouseDown = false; // Trạng thái nhấn chuột
     let drawnNumbers = []; // Mảng lưu các số đã quay
     let numbersGrid = []; // Mảng lưu các ô số trong grid
     let winnerFloatingElement = null; // Element hiển thị số trúng thưởng
     let winnerBallMoving = false; // Trạng thái quả cầu đang di chuyển đến grid
     let winnerBallTarget = null; // Vị trí đích của quả cầu trúng thưởng
     let numberOfBalls = 50
+    let pendingSpin = false; // Đánh dấu người dùng đã click để quay tiếp sau khi di chuyển winner
+    let fireworks = []; // Các hệ hạt pháo hoa đang hoạt động
+    const MAX_FIREWORKS = 3; // Giới hạn số lượng pháo hoa tối đa
+
+    // Logo texture (gắn lên mỗi quả bóng)
+    const logoUrl = "{{ Vite::asset('resources/images/thk_logo.png') }}";
+    const textureLoader = new THREE.TextureLoader();
+    const logoTexture = textureLoader.load(logoUrl);
 
     function init() {
         // Tạo scene 3D với nền đen
@@ -344,11 +263,6 @@
         createDotSphere(); // Tạo khung lưới sphere
         createBalls(); // Tạo các quả cầu số
         createNumbersGrid(); // Tạo lưới hiển thị số đã quay
-
-        // ===== THIẾT LẬP ĐIỀU KHIỂN CHUỘT =====
-        document.addEventListener('mousedown', onMouseDown); // Nhấn chuột
-        document.addEventListener('mousemove', onMouseMove); // Di chuyển chuột
-        document.addEventListener('mouseup', onMouseUp); // Thả chuột
 
         // ===== XỬ LÝ THAY ĐỔI KÍCH THƯỚC CỬA SỔ =====
         window.addEventListener('resize', onWindowResize);
@@ -420,15 +334,21 @@
     function createNumbersGrid() {
         const grid = document.getElementById('numbersGrid');
         grid.innerHTML = '';
+        numbersGrid = [];
+    }
 
-        for (let i = 1; i <= numberOfBalls; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'number-cell';
-            cell.textContent = i;
-            cell.id = `number-${i}`;
-            numbersGrid[i] = cell;
-            grid.appendChild(cell);
-        }
+    function appendWinnerToList(number) {
+        const grid = document.getElementById('numbersGrid');
+        const ball = document.createElement('div');
+        ball.className = 'mini-ball';
+        const label = document.createElement('span');
+        label.textContent = number;
+        ball.appendChild(label);
+
+        ball.id = `winner-${numbersGrid.length + 1}`;
+        numbersGrid.push(ball);
+        grid.appendChild(ball);
+        return ball;
     }
 
     // ===== TẠO CÁC QUẢ CẦU SỐ =====
@@ -454,11 +374,16 @@
             const ctx = canvas.getContext('2d');
 
             // Thiết lập style cho chữ số
-            ctx.fillStyle = '#da3b42'; // Màu đỏ
-            ctx.font = 'bold 120px Arial'; // Font chữ to, đậm
-            ctx.textAlign = 'center'; // Căn giữa ngang
-            ctx.textBaseline = 'middle'; // Căn giữa dọc
-            ctx.fillText(i.toString(), 128, 128); // Vẽ số ở giữa canvas
+            ctx.font = 'bold 120px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.lineWidth = 5;               // độ dày viền
+            ctx.strokeStyle = '#ffffff';     // màu viền trắng
+            ctx.fillStyle = '#da3b42';       // màu đỏ cho chữ
+            ctx.strokeText(i.toString(), 128, 128);
+            ctx.fillText(i.toString(), 128, 128);
+
+
 
             // Chuyển canvas thành texture và áp dụng lên mặt phẳng
             const texture = new THREE.CanvasTexture(canvas);
@@ -468,7 +393,21 @@
             });
             const textPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), textMaterial);
             textPlane.position.z = 0.61; // Đặt sát bề mặt quả cầu
+            textPlane.renderOrder = 1; // dưới logo
             ballGroup.add(textPlane); // Thêm mặt phẳng chữ số vào nhóm
+
+            // ===== GẮN LOGO TRÊN QUẢ CẦU =====
+            const logoMaterial = new THREE.MeshBasicMaterial({
+                map: logoTexture,
+                transparent: true, // dùng alpha
+                depthTest: true,   // vẫn bị quả bóng che khi quay ra sau
+                depthWrite: false
+            });
+            // Logo nổi phía trước con số, không dính vào bề mặt quả bóng
+            const logoPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.45, 0.5), logoMaterial);
+            logoPlane.position.set(0, 0.3, 0.7); // đẩy ra trước số rõ ràng
+            logoPlane.renderOrder = 2; // trên số
+            ballGroup.add(logoPlane);
 
             // ===== ĐẶT VỊ TRÍ NGẪU NHIÊN =====
             const phi = Math.random() * Math.PI * 2; // Góc ngẫu nhiên 0-2π
@@ -502,34 +441,36 @@
 
     // ===== HÀM BẮT ĐẦU QUAY SỐ =====
     function startSpin() {
-        // Ngăn chặn quay nhiều lần cùng lúc
-        if (isSpinning) return;
-
-        // Ngăn chặn quay khi quả cầu trúng thưởng đang di chuyển đến grid
+        // Nếu đang di chuyển sang danh sách thì không xử lý
         if (winnerBallMoving) return;
 
-        // Nếu có quả cầu trúng thưởng ở giữa, di chuyển nó đến grid trước khi quay mới
+        // Nếu có winner đang đứng giữa, click này sẽ đưa nó sang danh sách rồi mới quay
         if (winnerBall && winnerBall.userData.isFalling && !winnerBallMoving) {
-            moveWinnerBallToGrid(winnerBall.userData.number); // Di chuyển quả cầu đến grid
+            const cell = appendWinnerToList(winnerBall.userData.number);
+            pendingSpin = true;
+            moveWinnerBallToCell(cell);
             return;
         }
+
+        // Ngăn chặn quay nhiều lần cùng lúc
+        if (isSpinning) return;
 
         isSpinning = true; // Đánh dấu đang quay
         document.getElementById('result').style.display = 'none'; // Ẩn kết quả cũ
 
-        // ===== RESET QUẢ CẦU TRÚNG THƯỞNG CŨ =====
+        // ===== RESET QUẢ CẦU TRÚNG THƯỞNG CŨ (không còn đứng giữa) =====
         if (winnerBall) {
-            scene.remove(winnerBall); // Xóa khỏi scene
-            ballsGroup.add(winnerBall); // Thêm lại vào nhóm balls
-            winnerBall.position.copy(winnerBall.userData.initialPos); // Về vị trí ban đầu
-            winnerBall.scale.set(1, 1, 1); // Reset kích thước
-            winnerBall.userData.isFalling = false; // Đánh dấu không rơi
-            winnerBall.userData.velocity.set( // Reset vận tốc ngẫu nhiên
+            scene.remove(winnerBall);
+            ballsGroup.add(winnerBall);
+            winnerBall.position.copy(winnerBall.userData.initialPos);
+            winnerBall.scale.set(1, 1, 1);
+            winnerBall.userData.isFalling = false;
+            winnerBall.userData.velocity.set(
                 (Math.random() - 0.5) * 0.03,
                 (Math.random() - 0.5) * 0.03,
                 (Math.random() - 0.5) * 0.03
             );
-            winnerBall = null; // Xóa tham chiếu
+            winnerBall = null;
         }
 
         startNewSpin(); // Bắt đầu quay mới
@@ -541,10 +482,10 @@
         rotationSpeed.x = (Math.random() - 0.5) * 1.2; // Tốc độ X: -0.6 đến 0.6 (tăng từ 0.8)
         rotationSpeed.y = (Math.random() - 0.5) * 1.0; // Tốc độ Y: -0.5 đến 0.5 (tăng từ 0.8)
 
-        // Dừng quay sau 4 giây và chọn quả cầu trúng thưởng
+        // Dừng quay sau 3 giây và chọn quả cầu trúng thưởng
         setTimeout(() => {
             pickWinner(); // Gọi hàm chọn quả cầu trúng thưởng
-        }, 4000);
+        }, 3000);
     }
 
     // ===== HÀM CHỌN QUẢ CẦU TRÚNG THƯỞNG =====
@@ -554,21 +495,10 @@
 
         isSpinning = false; // Dừng quay
 
-        // ===== TÌM QUẢ CẦU GẦN CAMERA NHẤT =====
-        // Tìm quả cầu có tọa độ Z cao nhất (gần camera nhất)
-        let maxZ = -Infinity; // Giá trị Z cao nhất
-        let winner = null; // Quả cầu trúng thưởng
-
-        balls.forEach(ball => {
-            if (!ball.userData.isFalling) { // Chỉ xét quả cầu không đang rơi
-                const worldPos = new THREE.Vector3();
-                ball.getWorldPosition(worldPos); // Lấy vị trí thế giới thực
-                if (worldPos.z > maxZ) { // Nếu Z lớn hơn giá trị hiện tại
-                    maxZ = worldPos.z; // Cập nhật Z cao nhất
-                    winner = ball; // Lưu quả cầu này
-                }
-            }
-        });
+        // ===== CHỌN NGẪU NHIÊN 1 QUẢ CẦU KHÔNG ĐANG RƠI =====
+        const candidates = balls.filter(ball => !ball.userData.isFalling);
+        if (candidates.length === 0) return;
+        const winner = candidates[Math.floor(Math.random() * candidates.length)];
 
         if (winner) {
             winnerBall = winner;
@@ -598,14 +528,10 @@
                 z: Math.random() * 0.2 - 0.1
             };
 
-            // Add to drawn numbers
+            // Add to drawn numbers và hiển thị vào danh sách bên phải
             drawnNumbers.push(winner.userData.number);
-
-            // Winner ball stays in center, waiting for next spin
-
-            // const result = document.getElementById('result');
-            // result.textContent = `🎉 SỐ TRÚNG THƯỞNG: ${ winner.userData.number }`;
-            // result.style.display = 'block';
+            // Không di chuyển ngay; chờ click tiếp theo để di chuyển sang danh sách
+            // (winnerBall sẽ đứng giữa màn hình cho tới khi người dùng click quay tiếp)
         }
     }
 
@@ -649,6 +575,9 @@
 
             winnerBall = null;
         }
+
+        // Clean up all fireworks
+        cleanupAllFireworks();
     }
 
     function cleanupWinnerBalls() {
@@ -670,9 +599,26 @@
         });
     }
 
+    function cleanupAllFireworks() {
+        // Clean up all fireworks to free memory
+        fireworks.forEach(firework => {
+            if (firework && firework.parent) {
+                scene.remove(firework);
+                firework.geometry.dispose();
+                firework.material.dispose();
+            }
+        });
+        fireworks = [];
+    }
+
     // ===== HÀM ANIMATION CHÍNH - CHẠY LIÊN TỤC =====
     function animate() {
         requestAnimationFrame(animate); // Lên lịch frame tiếp theo
+
+        const now = performance.now();
+        if (!animate.lastTime) animate.lastTime = now;
+        const deltaSeconds = (now - animate.lastTime) / 1000;
+        animate.lastTime = now;
 
         // ===== XỬ LÝ KHI ĐANG QUAY =====
         if (isSpinning) {
@@ -692,9 +638,13 @@
             } else {
                 animateWinnerMoveToGrid(); // di chuyển đến grid
             }
+            // Trong khi winner đang di chuyển, sphere vẫn quay nhẹ
+            sphereGroup.rotation.y += 0.01;
+            ballsGroup.rotation.y += 0.01;
         }
 
         updateBallFacingCamera(); // Giúp các quả cầu luôn hướng về camera
+        updateFireworks(deltaSeconds); // Cập nhật pháo hoa
         renderer.render(scene, camera); // Vẽ scene lên màn hình
     }
 
@@ -702,7 +652,7 @@
     function updateSphereRotation() {
         // Sphere chỉ xoay trục Y
         sphereGroup.rotation.y += rotationSpeed.y;
-        
+
         // Balls xoay cả 2 trục để xáo trộn nhiều hơn
         ballsGroup.rotation.x += rotationSpeed.x * 1.5; // Tăng tốc độ xoay X
         ballsGroup.rotation.y += rotationSpeed.y;
@@ -729,7 +679,7 @@
                 }
 
                 // Thêm chuyển động hỗn loạn ngẫu nhiên (60% khả năng) - tăng tần suất
-                if (Math.random() < 0.6) {
+                if (Math.random() < 0.8) {
                     ball.userData.velocity.x += (Math.random() - 0.5) * 0.05; // Tăng cường độ
                     ball.userData.velocity.y += (Math.random() - 0.5) * 0.05;
                     ball.userData.velocity.z += (Math.random() - 0.5) * 0.05;
@@ -782,7 +732,7 @@
         winnerBall.userData.fallVelocity = direction.multiplyScalar(0.15); // Tốc độ rơi
 
         // Phóng to quả cầu dần (tối đa 3 lần)
-        const scale = Math.min(winnerBall.scale.x + 0.025, 4);
+        const scale = Math.min(winnerBall.scale.x + 0.04, 3);
         winnerBall.scale.set(scale, scale, scale);
 
         // Giữ quả cầu hướng về camera (không xoay)
@@ -791,6 +741,15 @@
         // Kiểm tra đã đến giữa màn hình chưa
         if (winnerBall.position.distanceTo(targetPos) < 1) {
             winnerBall.userData.fallVelocity.set(0, 0, 0); // Dừng rơi
+            if (winnerBall.userData.centerScale === undefined) {
+                winnerBall.userData.centerScale = winnerBall.scale.x;
+                winnerBall.userData.pulsePhase = 0;
+            }
+            // Pháo hoa nổ quanh winner khi vừa đến giữa
+            if (!winnerBall.userData.firedFireworks) {
+                winnerBall.userData.firedFireworks = true;
+                spawnFireworksAroundWinner();
+            }
         }
     }
 
@@ -822,22 +781,22 @@
 
             // Cập nhật grid và xóa quả cầu
             const number = winnerBall.userData.number;
-            updateNumbersGrid(number); // Cập nhật ô số trong grid
 
             // Xóa quả cầu khỏi scene
             scene.remove(winnerBall);
             balls = balls.filter(b => b !== winnerBall);
             winnerBall = null;
 
-            // Bắt đầu quay cho quả cầu mới
-            isSpinning = true;
-            rotationSpeed.x = (Math.random() - 0.5) * 0.8;
-            rotationSpeed.y = (Math.random() - 0.5) * 0.8;
-
-            // Chọn quả cầu trúng thưởng mới sau 3 giây
-            setTimeout(() => {
-                pickWinner();
-            }, 3000);
+            // Nếu người dùng vừa click yêu cầu quay tiếp, bắt đầu quay sau khi di chuyển xong
+            if (pendingSpin) {
+                pendingSpin = false;
+                isSpinning = true;
+                rotationSpeed.x = (Math.random() - 0.5) * 1.2;
+                rotationSpeed.y = (Math.random() - 0.5) * 1.0;
+                setTimeout(() => {
+                    pickWinner();
+                }, 3000);
+            }
         }
     }
 
@@ -854,39 +813,6 @@
         if (winnerBall && winnerBall.userData.isFalling) {
             winnerBall.lookAt(camera.position);
         }
-    }
-
-
-    // ===== ĐIỀU KHIỂN CHUỘT =====
-    function onMouseDown(e) {
-        if (isSpinning) return; // Không cho điều khiển khi đang quay
-        mouseDown = true; // Đánh dấu đang nhấn chuột
-        mouse.x = e.clientX; // Lưu vị trí X của chuột
-        mouse.y = e.clientY; // Lưu vị trí Y của chuột
-    }
-
-    function onMouseMove(e) {
-        if (!mouseDown || isSpinning) return; // Chỉ xử lý khi đang nhấn chuột và không quay
-
-        // Tính toán khoảng cách di chuyển chuột
-        const deltaX = e.clientX - mouse.x;
-        const deltaY = e.clientY - mouse.y;
-
-        // Quay sphere theo di chuyển chuột
-        sphereGroup.rotation.y += deltaX * 0.005; // Quay trục Y theo di chuyển ngang
-        sphereGroup.rotation.x += deltaY * 0.005; // Quay trục X theo di chuyển dọc
-
-        // Quay nhóm balls cùng với sphere
-        ballsGroup.rotation.y += deltaX * 0.005;
-        ballsGroup.rotation.x += deltaY * 0.005;
-
-        // Cập nhật vị trí chuột
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    }
-
-    function onMouseUp() {
-        mouseDown = false; // Đánh dấu thả chuột
     }
 
     // Hàm này dùng để cập nhật lại kích thước của renderer (vùng hiển thị 3D)
@@ -906,18 +832,15 @@
         updateRendererSize();
     }
 
-    //Di chuyển quả cầu đến grid
-    function moveWinnerBallToGrid(number) {
+    //Di chuyển quả cầu đến một ô trong danh sách winner (bên phải)
+    function moveWinnerBallToCell(targetCell) {
         if (!winnerBall) return; // Nếu chưa có quả bóng winner thì thoát
+        if (!targetCell) return;
 
         // Ngăn việc di chuyển nhiều lần cùng lúc
         if (winnerBallMoving) return;
 
         winnerBallMoving = true; // Đánh dấu là bóng đang di chuyển
-
-        // Lấy ô đích (nơi chứa số tương ứng trong grid)
-        const targetCell = numbersGrid[number];
-        if (!targetCell) return; // Nếu không tìm thấy ô thì thoát
 
         // Lấy vị trí của ô đích và container trên màn hình
         const targetRect = targetCell.getBoundingClientRect();
@@ -935,26 +858,112 @@
         winnerBall.userData.moveProgress = 0;
     }
 
-    // ===== CẬP NHẬT LƯỚI SỐ ĐÃ QUAY =====
-    function updateNumbersGrid(number) {
-        const cell = numbersGrid[number]; // Lấy ô số tương ứng
-        if (cell) {
-            cell.classList.add('drawn'); // Đánh dấu số đã quay
+    function spawnFireworksAroundWinner() {
+        if (!winnerBall) return;
 
-            // Xóa class active khỏi tất cả ô
-            document.querySelectorAll('.number-cell').forEach(cell => {
-                cell.classList.remove('active');
-            });
+        // Giới hạn số lượng pháo hoa - xóa cũ nếu quá nhiều
+        while (fireworks.length >= MAX_FIREWORKS) {
+            const oldFirework = fireworks.shift();
+            if (oldFirework && oldFirework.parent) {
+                scene.remove(oldFirework);
+                oldFirework.geometry.dispose();
+                oldFirework.material.dispose();
+            }
+        }
 
-            // Thêm class active cho số hiện tại
-            cell.classList.add('active');
+        const worldPos = new THREE.Vector3();
+        winnerBall.getWorldPosition(worldPos);
+        // Spawn few bursts around the winner (slightly more particles)
+        spawnFireworks(worldPos, 0xffdd66, 300);
+        spawnFireworks(worldPos.clone().add(new THREE.Vector3(0.3, 0.2, 0)), 0x66eeff, 200);
+        spawnFireworks(worldPos.clone().add(new THREE.Vector3(-0.25, -0.15, 0)), 0xff66cc, 100);
+    }
 
-            // Xóa class active sau 2 giây
-            setTimeout(() => {
-                cell.classList.remove('active');
-            }, 2000);
+    function spawnFireworks(origin, colorHex = 0xffcc33, particleCount = 60) {
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const velocities = new Float32Array(particleCount * 3);
+        const lifetimes = new Float32Array(particleCount);
+
+        for (let i = 0; i < particleCount; i++) {
+            positions[i * 3 + 0] = origin.x;
+            positions[i * 3 + 1] = origin.y;
+            positions[i * 3 + 2] = origin.z;
+
+            // random spherical direction
+            const theta = Math.acos(2 * Math.random() - 1);
+            const phi = 2 * Math.PI * Math.random();
+            const speed = 0.05 + Math.random() * 0.12;
+            velocities[i * 3 + 0] = Math.sin(theta) * Math.cos(phi) * speed;
+            velocities[i * 3 + 1] = Math.cos(theta) * speed;
+            velocities[i * 3 + 2] = Math.sin(theta) * Math.sin(phi) * speed;
+
+            lifetimes[i] = 0.9 + Math.random() * 0.5; // seconds
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+        geometry.setAttribute('lifetime', new THREE.BufferAttribute(lifetimes, 1));
+
+        const material = new THREE.PointsMaterial({
+            color: colorHex,
+            size: 0.07,
+            transparent: true,
+            opacity: 1,
+            depthWrite: false
+        });
+
+        const points = new THREE.Points(geometry, material);
+        points.userData = { age: 0 };
+        scene.add(points);
+        fireworks.push(points);
+    }
+
+    function updateFireworks(deltaSeconds) {
+        const gravity = -0.25;
+        for (let i = fireworks.length - 1; i >= 0; i--) {
+            const sys = fireworks[i];
+            const geom = sys.geometry;
+            const positions = geom.attributes.position.array;
+            const velocities = geom.attributes.velocity.array;
+            const lifetimes = geom.attributes.lifetime.array;
+
+            sys.userData.age += deltaSeconds;
+
+            const dt = deltaSeconds;
+            let maxOpacity = 0;
+            for (let p = 0; p < lifetimes.length; p++) {
+                const base = p * 3;
+                velocities[base + 1] += gravity * dt; // gravity on Y
+                positions[base + 0] += velocities[base + 0];
+                positions[base + 1] += velocities[base + 1];
+                positions[base + 2] += velocities[base + 2];
+                lifetimes[p] -= dt;
+                if (lifetimes[p] > maxOpacity) maxOpacity = lifetimes[p];
+            }
+
+            geom.attributes.position.needsUpdate = true;
+            sys.material.opacity = Math.max(0, Math.min(1, maxOpacity));
+
+            // cleanup
+            const alive = lifetimes.some(v => v > 0);
+            if (!alive || sys.userData.age > 2.2) {
+                scene.remove(sys);
+                fireworks.splice(i, 1);
+            }
         }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const containerEl = document.getElementById('container');
+        if (containerEl) {
+            containerEl.addEventListener('click', () => {
+                if (!isSpinning && !winnerBallMoving) {
+                    startSpin();
+                }
+            });
+        }
+    });
 
     init();
 </script>
