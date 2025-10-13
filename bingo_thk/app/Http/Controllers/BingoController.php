@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BingoController extends Controller
 {
-    /**
-     * View index
-     *
-     * @return void
-     */
     public function index()
     {
-        return view('index');
-    }
+        $bingoUser = Auth::guard('bingo')->user();
 
+        return view('index', compact('bingoUser'));
+    }
 
     public function dial()
     {
