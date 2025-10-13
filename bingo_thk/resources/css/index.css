@@ -316,8 +316,8 @@ button, .btn {
 }
 
 button.reset {
-    position: relative;
-    animation: pulseGlow 2s infinite alternate;
+  position: relative;
+  animation: pulseGlow 2s infinite alternate;
 }
 
 @keyframes pulseGlow {
@@ -442,6 +442,7 @@ button.reset {
     align-items: center;
     gap: 8px;
     animation: pulseGlow 2s infinite alternate;
+    margin-right: 170px;
 }
 
 button.reset::before {
@@ -468,6 +469,60 @@ button.reset:hover::before {
 }
 
 button.reset:active {
+    transform: scale(0.95);
+    box-shadow:
+        0 0 8px var(--neon-accent),
+        0 0 20px var(--neon-color);
+}
+
+.info {
+    position: fixed;
+    bottom: 40px;
+    right: 24px;
+    padding: 12px 28px 12px 42px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--neon-color);
+    background: transparent;
+    border: 2px solid var(--neon-color);
+    border-radius: 50px;
+    cursor: pointer;
+    text-shadow: 0 0 6px var(--neon-color), 0 0 20px var(--neon-accent);
+    box-shadow:
+        0 0 6px var(--neon-color),
+        0 0 18px var(--neon-accent),
+        inset 0 0 6px rgba(255,255,255,0.1);
+    transition: all 0.25s ease;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: pulseGlow 2s infinite alternate;
+    text-decoration: none;
+}
+
+.info::before {
+    content: "👨‍💼";
+    font-size: 18px;
+    color: var(--neon-accent);
+    text-shadow: 0 0 6px var(--neon-accent), 0 0 12px var(--neon-color);
+    display: inline-block;
+    transform-origin: center;
+    transition: transform 0.3s ease;
+}
+
+.info:hover {
+    color: var(--neon-accent);
+    transform: scale(1.08);
+    box-shadow:
+        0 0 12px var(--neon-color),
+        0 0 30px var(--neon-accent),
+        inset 0 0 10px rgba(255,255,255,0.2);
+}
+
+.info:active {
     transform: scale(0.95);
     box-shadow:
         0 0 8px var(--neon-accent),

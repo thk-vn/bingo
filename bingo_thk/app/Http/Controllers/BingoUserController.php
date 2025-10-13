@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ResgisterBingoUserRequest;
+use App\Http\Requests\UpdateBingoUserRequest;
 use App\Models\BingoUser;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
-class ResgisterBingoUserController extends Controller
+class BingoUserController extends Controller
 {
     private BingoUser $bingoUser;
 
@@ -25,7 +26,9 @@ class ResgisterBingoUserController extends Controller
      */
     public function index(): View
     {
-        return view('resgister-bingo');
+        $bingoUser = Auth::guard('bingo')->user();
+
+        return view('bingo-user.resgister', compact('bingoUser'));
     }
 
     /**
@@ -43,11 +46,10 @@ class ResgisterBingoUserController extends Controller
             Auth::guard('bingo')->login($bingoUser);
 
             return $this->success($bingoUser, __('view.notify.bingo_user.resgister_success'));
-
         } catch (Exception $e) {
             DB::rollBack();
 
-            return $this->error(null, null, __('view.notify.error'));
+            return $this->error($e->getMessage(), null, __('view.notify.error'));
         }
     }
 
@@ -56,12 +58,11 @@ class ResgisterBingoUserController extends Controller
      */
     public function checkUser(Request $request): JsonResponse
     {
-        $data = $request->only(['name', 'phone_number', 'session_token']);
+        $data = $request->only(['email', 'phone_number']);
 
         $user = $this->bingoUser
-            ->where('name', $data['name'])
+            ->where('email', $data['email'])
             ->where('phone_number', $data['phone_number'])
-            ->where('session_token', $data['session_token'])
             ->first();
 
         if ($user) {
@@ -71,5 +72,35 @@ class ResgisterBingoUserController extends Controller
         }
 
         return $this->error(null, null, __('view.notify.bingo_user.null_account'));
+    }
+
+    public function detail(BingoUser $bingoUser)
+    {
+        return view('bingo-user.detail', compact('bingoUser'));
+    }
+
+    public function update(UpdateBingoUserRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $data = $request->validated();
+
+            $bingoUser = Auth::guard('bingo')->user();
+
+            /** @var \App\Models\BingoUser $bingoUser */
+            $bingoUser->fill($data);
+
+            if ($bingoUser->isDirty()) {
+                $bingoUser->update($data);
+            }
+
+            DB::commit();
+
+            return $this->success($bingoUser, __('view.notify.success'));
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return $this->error($e->getMessage(), null, __('view.notify.error'));
+        }
     }
 }

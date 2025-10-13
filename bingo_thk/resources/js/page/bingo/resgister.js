@@ -1,30 +1,28 @@
 $(document).ready(function () {
-    const $form = $('#loginForm');
+    const $formLogin = $('#loginForm');
     const $btn = $('#loginBtn');
     const $toast = $('#toast');
 
     checkUser();
 
-    $form.on('submit', async function (e) {
+    $formLogin.on('submit', async function (e) {
         e.preventDefault();
 
-        const name = $('#name').val().trim();
-        const department = $('#department').val().trim();
+        const name  = $('#name').val().trim();
+        const email = $('#email').val().trim();
         const phone_number = $('#phone_number').val().trim();
 
-        if (!name || !department || !phone_number) {
+        if (!name || !email || !phone_number) {
             showToast(checkInfomation);
             return;
         }
-
-        $btn.prop('disabled', true).text(buttonPending);
 
         try {
             const res = await $.ajax({
                 url: '/bingo/resgister/user',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ name, department, phone_number }),
+                data: JSON.stringify({ name, email, phone_number }),
                 headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
             });
 
@@ -37,24 +35,30 @@ $(document).ready(function () {
             }
         } catch (err) {
             console.error(err);
-            showToast(resgisterErrorServer);
+            if (err.status === 422 && err.responseJSON?.errors) {
+                showToast(err.responseJSON.message);
+            } else {
+                showToast(resgisterErrorServer);
+            }
         }
+
     });
 
     async function checkUser() {
         const userData = JSON.parse(localStorage.getItem('bingo_user'));
-        if (!userData?.name || !userData?.phone_number) return;
+        if ( !userData?.name || !userData?.email || !userData?.phone_number) return;
 
         try {
             const res = await $.ajax({
                 url: '/bingo/check-user',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ name: userData.name, phone_number: userData.phone_number, session_token: userData.session_token }),
+                data: JSON.stringify({ name: userData.name, email: userData.email, phone_number: userData.phone_number }),
                 headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
             });
 
             if (res.status) {
+
                 showToast(resgisterGoBack + userData.name + '!');
                 setTimeout(() => window.location.href = '/bingo/number-plate', 1000);
             } else {

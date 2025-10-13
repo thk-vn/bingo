@@ -14,13 +14,14 @@
         <form id="loginForm" action="" method="POST">
             @csrf
             <input class="input" id="name"
-                name="name" type="text"
+                name="name"
+                type="text"
                 placeholder="{{ __('view.placeholder.name') }}"
             />
-            <input class="input" id="department"
-                name="department"
+            <input class="input" id="email"
+                name="email"
                 type="text"
-                placeholder="{{ __('view.placeholder.department') }}"
+                placeholder="{{ __('view.placeholder.email') }}"
             />
             <input class="input" id="phone_number"
                 name="phone_number"
@@ -64,7 +65,7 @@
             const resgisterErrorServer = "{{ __('view.resgister.error_server') }}";
             const resgisterGoBack = "{{ __('view.resgister.go_back') }}";
         </script>
-        @vite('resources/js/page/bingo-user.js')
+        @vite('resources/js/page/bingo/resgister.js')
     @endpush
 
 @endsection

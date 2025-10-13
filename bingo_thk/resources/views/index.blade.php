@@ -4,17 +4,18 @@
     <div class="app" role="application" aria-label="Bingo game">
         <div class="logo-fixed">
             BINGO ✨
-
         </div>
         <div id="win" class="win-banner" role="status">BINGO! 🎉</div>
         <div class="card-wrap" aria-live="polite">
             <div class="card-bingo">
                 <div id="bingo" class="bingo" role="grid" aria-label="Bingo card">
                 </div>
+            </div>
+            <div class="controls">
+                <button id="reset" class="small reset">Reset</button>
+                <a href="{{ route('bingo.detail', $bingoUser) }}" id="info" class="small info">Info</a>
+            </div>
 
-        </div>
-        <div class="controls">
-            <button id="reset" class="small reset">Reset</button>
         </div>
     </div>
     <footer class="small">
@@ -351,13 +352,5 @@
             });
         </script>
     @endsection
-
-    @push('section-scripts')
-        @if (session('session_token'))
-            <script>
-                localStorage.setItem('bingo_session_token', "{{ session('session_token') }}");
-            </script>
-        @endif
-    @endpush
 
 @endsection

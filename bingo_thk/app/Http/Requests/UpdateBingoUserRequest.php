@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class ResgisterBingoUserRequest extends FormRequest
+class UpdateBingoUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +23,8 @@ class ResgisterBingoUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', Rule::unique('bingo_users', 'email')],
-            'phone_number' => ['required', 'string', 'max:255', Rule::unique('bingo_users', 'phone_number')],
+            'email' => ['required', 'email'],
+            'phone_number' => ['required', 'string', 'max:255'],
         ];
     }
 
