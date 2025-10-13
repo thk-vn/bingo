@@ -31,47 +31,31 @@
     <script>
         // Bingo logic
         (function() {
-            const B_RANGE = [1, 15],
-                I_RANGE = [16, 30],
-                N_RANGE = [31, 45],
-                G_RANGE = [46, 60],
-                O_RANGE = [61, 75];
-            const ranges = [B_RANGE, I_RANGE, N_RANGE, G_RANGE, O_RANGE];
             const bingoEl = document.getElementById('bingo');
             const winEl = document.getElementById('win');
-
             let card = []; // 5x5 numbers (or null for free)
             let marks = new Set(); // "r-c" keys
-            let drawn = []; // numbers drawn
-            let available = Array.from({
-                length: 99
-            }, (_, i) => i + 1);
-            console.log(available)
-            let autoTimer = null;
 
-            function rndSample(range, count) {
-                const [a, b] = range;
-                const pool = [];
-                for (let n = a; n <= b; n++) pool.push(n);
-                // fisher-yates partial shuffle
+            function rndSample(total, min, max) {
+                const pool = Array.from({
+                    length: max - min + 1
+                }, (_, i) => i + min);
+                // Fisher-Yates shuffle
                 for (let i = pool.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [pool[i], pool[j]] = [pool[j], pool[i]];
                 }
-                return pool.slice(0, count).sort((x, y) => x - y);
+                return pool.slice(0, total);
             }
 
             function generateCard() {
+                const numbers = rndSample(25, 1, 50);
                 card = [];
-                for (let col = 0; col < 5; col++) {
-                    const rng = ranges[col];
-                    // Set colums and numbers each columns
-                    const need = 5;
-                    const numbers = rndSample(rng, need);
-                    // assign into rows
-                    for (let row = 0; row < 5; row++) {
-                        if (!card[row]) card[row] = [];
-                        card[row][col] = numbers[row];
+                for (let row = 0; row < 5; row++) {
+                    card[row] = [];
+                    for (let column = 0; column < 5; column++) {
+                        const index = row * 5 + column;
+                        card[row][column] = numbers[index];
                     }
                 }
                 marks.clear();
@@ -309,10 +293,7 @@
             }
 
             document.getElementById('reset').addEventListener('click', () => {
-                if (!confirm('Reset toàn bộ (thẻ, số đã bốc)?')) return;
-                available = Array.from({
-                    length: 75
-                }, (_, i) => i + 1);
+                if (!confirm('Reset toàn bộ?')) return;
                 generateCard();
             });
 
@@ -325,8 +306,6 @@
                 getState: () => ({
                     card,
                     marks: Array.from(marks),
-                    drawn,
-                    availableLength: available.length
                 })
             };
         })();
