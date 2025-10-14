@@ -13,7 +13,7 @@
             </div>
             <div class="controls">
                 <button id="reset" class="small reset">Reset</button>
-                <a href="{{ route('bingo.detail', $bingoUser) }}" id="info" class="small info">Info</a>
+                <a href="{{ route('bingo.detail', Auth::guard('bingo')->user()) }}" id="info" class="small info">Info</a>
             </div>
 
         </div>

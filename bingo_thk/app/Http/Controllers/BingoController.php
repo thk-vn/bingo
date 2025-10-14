@@ -8,9 +8,7 @@ class BingoController extends Controller
 {
     public function index()
     {
-        $bingoUser = Auth::guard('bingo')->user();
-
-        return view('index', compact('bingoUser'));
+        return view('index');
     }
 
     public function dial()

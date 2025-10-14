@@ -1,6 +1,5 @@
 $(document).ready(function () {
     const $formLogin = $('#loginForm');
-    const $btn = $('#loginBtn');
     const $toast = $('#toast');
 
     checkUser();
