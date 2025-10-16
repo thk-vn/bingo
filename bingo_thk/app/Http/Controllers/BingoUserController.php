@@ -26,9 +26,7 @@ class BingoUserController extends Controller
      */
     public function index(): View
     {
-        $bingoUser = Auth::guard('bingo')->user();
-
-        return view('bingo-user.resgister', compact('bingoUser'));
+        return view('bingo-user.resgister');
     }
 
     /**
@@ -79,13 +77,16 @@ class BingoUserController extends Controller
         return view('bingo-user.detail', compact('bingoUser'));
     }
 
-    public function update(UpdateBingoUserRequest $request)
+    /**
+     * Update infomation bingo user
+     */
+    public function update(UpdateBingoUserRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
             $data = $request->validated();
 
-            $bingoUser = Auth::guard('bingo')->user();
+            $bingoUser = auth('bingo')->user();
 
             /** @var \App\Models\BingoUser $bingoUser */
             $bingoUser->fill($data);
