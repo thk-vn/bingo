@@ -2,14 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+
 class BingoController extends Controller
 {
-    public function index()
+    /**
+     * Redirect view bingo
+     *
+     * @return View
+     */
+    public function index(): View
     {
         return view('index');
     }
 
-    public function dial()
+    /**
+     * Redirect view dial
+     *
+     * @return View
+     */
+    public function dial(): View
     {
         return view('dial');
     }

@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class BingoUserController extends Controller
@@ -22,7 +23,9 @@ class BingoUserController extends Controller
     }
 
     /**
-     * View login
+     * View resgister
+     *
+     * @return View
      */
     public function index(): View
     {
@@ -31,6 +34,9 @@ class BingoUserController extends Controller
 
     /**
      * Resgister bingo user
+     *
+     * @param ResgisterBingoUserRequest $request
+     * @return JsonResponse
      */
     public function resgister(ResgisterBingoUserRequest $request): JsonResponse
     {
@@ -53,6 +59,9 @@ class BingoUserController extends Controller
 
     /**
      * Check User bingo by infomation
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function checkUser(Request $request): JsonResponse
     {
@@ -72,13 +81,22 @@ class BingoUserController extends Controller
         return $this->error(null, null, __('view.notify.bingo_user.null_account'));
     }
 
-    public function detail(BingoUser $bingoUser)
+    /**
+     * Redirect view detail
+     *
+     * @param BingoUser $bingoUser
+     * @return View
+     */
+    public function detail(BingoUser $bingoUser): View
     {
         return view('bingo-user.detail', compact('bingoUser'));
     }
 
     /**
      * Update infomation bingo user
+     *
+     * @param UpdateBingoUserRequest $request
+     * @return JsonResponse
      */
     public function update(UpdateBingoUserRequest $request): JsonResponse
     {
@@ -101,6 +119,7 @@ class BingoUserController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
+            Log::error($e->getMessage());
             return $this->error($e->getMessage(), null, __('view.notify.error'));
         }
     }
