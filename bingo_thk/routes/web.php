@@ -26,6 +26,12 @@ Route::middleware(['auth:bingo'])->group(function () {
     });
 });
 
+// Admin dial via token (from .env): /admin?token=YOUR_TOKEN
+Route::get('/admin', [BingoController::class, 'admin'])->name('bingo.admin');
+
+// Reset endpoint: increment games.reset_key
+Route::post('/games/reset', [BingoController::class, 'resetGame'])->name('games.reset');
+
 Route::get('/login', function () {
     return redirect()->route('admin.login');
 })->name('login');

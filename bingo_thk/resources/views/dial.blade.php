@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quay Số</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         :root {
             --bg: #0f1724;
@@ -216,7 +217,7 @@
     let pendingSpin = false; // Đánh dấu người dùng đã click để quay tiếp sau khi di chuyển winner
     let fireworks = []; // Các hệ hạt pháo hoa đang hoạt động
     const MAX_FIREWORKS = 3; // Giới hạn số lượng pháo hoa tối đa
-
+    
     // Logo texture (gắn lên mỗi quả bóng)
     const logoUrl = "{{ Vite::asset('resources/images/thk_logo.png') }}";
     const textureLoader = new THREE.TextureLoader();
@@ -263,6 +264,9 @@
         createDotSphere(); // Tạo khung lưới sphere
         createBalls(); // Tạo các quả cầu số
         createNumbersGrid(); // Tạo lưới hiển thị số đã quay
+
+        // Khôi phục dữ liệu từ localStorage nếu có
+        loadStateFromLocalStorage();
 
         // ===== XỬ LÝ THAY ĐỔI KÍCH THƯỚC CỬA SỔ =====
         window.addEventListener('resize', onWindowResize);
@@ -530,12 +534,15 @@
 
             // Add to drawn numbers và hiển thị vào danh sách bên phải
             drawnNumbers.push(winner.userData.number);
+            saveStateToLocalStorage();
             // Không di chuyển ngay; chờ click tiếp theo để di chuyển sang danh sách
             // (winnerBall sẽ đứng giữa màn hình cho tới khi người dùng click quay tiếp)
         }
     }
 
     function resetSphere() {
+        const ok = window.confirm('Bạn có chắc chắn muốn RESET? Tất cả dữ liệu sẽ bị xóa.');
+        if (!ok) return;
         rotationSpeed.x = 0;
         rotationSpeed.y = 0;
         sphereGroup.rotation.set(0, 0, 0);
@@ -578,6 +585,20 @@
 
         // Clean up all fireworks
         cleanupAllFireworks();
+
+        // Xóa state local
+        clearStateInLocalStorage();
+
+        // Gọi API tăng reset_key
+        try {
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            fetch('{{ route('games.reset') }}', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json' }
+            }).then(() => {}).catch(() => {});
+        } catch (e) {
+            // ignore
+        }
     }
 
     function cleanupWinnerBalls() {
@@ -815,6 +836,41 @@
         }
     }
 
+    // ===== LOCAL STORAGE PERSISTENCE =====
+    function saveStateToLocalStorage() {
+        try {
+            localStorage.setItem('dial_drawn_numbers', JSON.stringify(drawnNumbers));
+        } catch (e) {}
+    }
+
+    function clearStateInLocalStorage() {
+        try {
+            localStorage.removeItem('dial_drawn_numbers');
+        } catch (e) {}
+    }
+
+    function loadStateFromLocalStorage() {
+        try {
+            const raw = localStorage.getItem('dial_drawn_numbers');
+            if (!raw) return;
+            const restored = JSON.parse(raw);
+            if (!Array.isArray(restored)) return;
+            // Lọc hợp lệ
+            drawnNumbers = restored.filter(n => Number.isInteger(n) && n >= 1 && n <= numberOfBalls);
+            // Render vào grid và loại bỏ các bóng đã quay khỏi balls
+            drawnNumbers.forEach(n => {
+                appendWinnerToList(n);
+                const idx = balls.findIndex(b => b.userData && b.userData.number === n);
+                if (idx !== -1) {
+                    const b = balls[idx];
+                    ballsGroup.remove(b);
+                    scene.remove(b);
+                    balls.splice(idx, 1);
+                }
+            });
+        } catch (e) {}
+    }
+
     // Hàm này dùng để cập nhật lại kích thước của renderer (vùng hiển thị 3D)
     function updateRendererSize() {
         const container = document.getElementById('container');
@@ -860,7 +916,7 @@
 
     function spawnFireworksAroundWinner() {
         if (!winnerBall) return;
-
+        
         // Giới hạn số lượng pháo hoa - xóa cũ nếu quá nhiều
         while (fireworks.length >= MAX_FIREWORKS) {
             const oldFirework = fireworks.shift();
@@ -870,7 +926,7 @@
                 oldFirework.material.dispose();
             }
         }
-
+        
         const worldPos = new THREE.Vector3();
         winnerBall.getWorldPosition(worldPos);
         // Spawn few bursts around the winner (slightly more particles)
