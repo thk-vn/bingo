@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+Route::get('/', function(){
+    return redirect()->route('bingo.resgister_index');
+});
+
 Route::get('/admin/login', [EmployeeController::class, 'login'])->name('admin.login');
 
 Route::prefix('bingo')->group(function () {

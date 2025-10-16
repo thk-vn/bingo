@@ -6,7 +6,9 @@ class BingoController extends Controller
 {
     public function index()
     {
-        return view('index');
+        $userBingo = (Auth('bingo')->user());
+        $userBingoName = $userBingo ? $userBingo->name : '';
+        return view('index', compact('userBingoName'));
     }
 
     public function dial()
