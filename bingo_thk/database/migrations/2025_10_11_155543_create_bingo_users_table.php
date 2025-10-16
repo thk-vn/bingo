@@ -11,12 +11,11 @@ return new class extends Migration
         Schema::create('bingo_users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('department');
+            $table->string('email');
             $table->string('phone_number', 11);
             $table->json('bingo_board')->nullable();
             $table->json('marked_cells')->nullable();
-            $table->string('session_token')->unique();
-            $table->string('reset_key')->unique();
+            $table->string('reset_key');
             $table->timestamps();
         });
     }
@@ -24,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bingo_users', function (Blueprint $table) {
-            $table->dropColumn(['department', 'bingo_board', 'marked_cells', 'session_token', 'reset_key']);
+            $table->dropColumn(['name', 'email', 'phone_number', 'bingo_board', 'marked_cells', 'reset_key']);
         });
     }
 };

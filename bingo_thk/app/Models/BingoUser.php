@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class BingoUser extends Model
+class BingoUser extends Authenticatable
 {
-    protected $fillable = ['name', 'department', 'phone_number', 'bingo_board', 'marked_cells', 'session_token', 'reset_key'];
+    use Notifiable;
+
+    protected $fillable = ['name', 'email', 'phone_number', 'bingo_board', 'marked_cells', 'reset_key'];
 
     protected $casts = [
         'bingo_board' => 'array',
