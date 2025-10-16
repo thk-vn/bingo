@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ResgisterBingoUserRequest;
+use App\Http\Requests\RegisterBingoUserRequest;
 use App\Http\Requests\UpdateBingoUserRequest;
 use App\Models\BingoUser;
 use Exception;
@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class BingoUserController extends Controller
@@ -22,17 +23,22 @@ class BingoUserController extends Controller
     }
 
     /**
-     * View login
+     * View register
+     *
+     * @return View
      */
     public function index(): View
     {
-        return view('bingo-user.resgister');
+        return view('bingo-user.register');
     }
 
     /**
-     * Resgister bingo user
+     * Register bingo user
+     *
+     * @param RegisterBingoUserRequest $request
+     * @return JsonResponse
      */
-    public function resgister(ResgisterBingoUserRequest $request): JsonResponse
+    public function register(RegisterBingoUserRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -43,7 +49,7 @@ class BingoUserController extends Controller
 
             Auth::guard('bingo')->login($bingoUser);
 
-            return $this->success($bingoUser, __('view.notify.bingo_user.resgister_success'));
+            return $this->success($bingoUser, __('view.notify.bingo_user.register_success'));
         } catch (Exception $e) {
             DB::rollBack();
 
@@ -52,7 +58,10 @@ class BingoUserController extends Controller
     }
 
     /**
-     * Check User bingo by infomation
+     * Check User bingo by information
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function checkUser(Request $request): JsonResponse
     {
@@ -72,13 +81,22 @@ class BingoUserController extends Controller
         return $this->error(null, null, __('view.notify.bingo_user.null_account'));
     }
 
-    public function detail(BingoUser $bingoUser)
+    /**
+     * Redirect view detail
+     *
+     * @param BingoUser $bingoUser
+     * @return View
+     */
+    public function detail(BingoUser $bingoUser): View
     {
         return view('bingo-user.detail', compact('bingoUser'));
     }
 
     /**
-     * Update infomation bingo user
+     * Update information bingo user
+     *
+     * @param UpdateBingoUserRequest $request
+     * @return JsonResponse
      */
     public function update(UpdateBingoUserRequest $request): JsonResponse
     {
@@ -101,6 +119,7 @@ class BingoUserController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
+            Log::error($e->getMessage());
             return $this->error($e->getMessage(), null, __('view.notify.error'));
         }
     }

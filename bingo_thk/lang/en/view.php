@@ -5,8 +5,8 @@ return [
         'name' => 'Full Name',
         'email' => 'Email',
         'phone_number' => 'Phone Number',
-        'resgister_account' => 'Register Account',
-        'btn_resgister' => 'Register',
+        'register_account' => 'Register Account',
+        'btn_register' => 'Register',
         'start' => '💫 Ready — Let’s play 💫',
         'check_info' => '⚠️ Please fill in all required information!',
         'update' => 'Update Information',
@@ -16,11 +16,11 @@ return [
     'notify' => [
         'bingo_user' => [
             'null_account' => 'Incorrect or unregistered information',
-            'resgister_success' => 'Account registered successfully',
+            'register_success' => 'Account registered successfully',
             'login_success' => 'Login successful',
         ],
         'error' => 'An error occurred. Please try again!',
-        'suceess' => 'New data added successfully',
+        'success' => 'New data added successfully',
     ],
 
     'placeholder' => [
@@ -34,7 +34,7 @@ return [
         'pending' => 'Processing...',
     ],
 
-    'resgister' => [
+    'register' => [
         'fail' => '❌ Registration failed!',
         'success' => '🎉 Logging in...',
         'error_server' => '⚠️ Server connection error!',
@@ -42,7 +42,7 @@ return [
     ],
 
     'update' => [
-        'nulll_info' => 'User not found',
+        'null_info' => 'User not found',
         'success' => 'Updated successfully',
         'fail' => 'Update failed',
     ],

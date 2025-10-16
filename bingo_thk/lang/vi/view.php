@@ -5,8 +5,8 @@ return [
         'name' => 'Họ và tên',
         'email' => 'Email',
         'phone_number' => 'Số điện thoại',
-        'resgister_account' => 'Resgister Account',
-        'btn_resgister' => 'Đăng ký',
+        'register_account' => 'Register Account',
+        'btn_register' => 'Đăng ký',
         'start' => '💫 Sẵn sàng — chơi nào 💫',
         'check_info' => '⚠️ Vui lòng nhập đầy đủ thông tin!',
         'update' => 'Update Info',
@@ -15,11 +15,11 @@ return [
     'notify' => [
         'bingo_user' => [
             'null_account' => 'Thông tin không chính xác hoặc chưa đăng ký',
-            'resgister_success' => 'Đăng ký tài khoản thành công',
+            'register_success' => 'Đăng ký tài khoản thành công',
             'login_success' => 'Đăng nhập thành công',
         ],
         'error' => 'Đã xảy ra lỗi xử lý, vui lòng thử lại!',
-        'suceess' => 'Bạn đã thêm mới dữ liệu thành công',
+        'success' => 'Bạn đã thêm mới dữ liệu thành công',
     ],
     'placeholder' => [
         'name' => 'nhập họ và tên...',
@@ -30,14 +30,14 @@ return [
     'button' => [
         'pending' => 'Đang xử lý...',
     ],
-    'resgister' => [
+    'register' => [
         'fail' => '❌ Đăng ký thất bại!',
         'success' => '🎉 Đang đăng nhập...',
         'error_server' => '⚠️ Lỗi kết nối máy chủ!',
         'go_back' => '👋 Chào mừng trở lại',
     ],
     'update' => [
-        'nulll_info' => 'Không tìm thấy người dùng',
+        'null_info' => 'Không tìm thấy người dùng',
         'success' => 'Cập nhập thành công',
         'fail' => 'Cập nhập thất bại',
     ],

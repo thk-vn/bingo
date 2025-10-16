@@ -12,13 +12,13 @@ $(document).ready(function () {
         const phone_number = $('#phone_number').val().trim();
 
         if (!name || !email || !phone_number) {
-            showToast(checkInfomation);
+            showToast(checkInformation);
             return;
         }
 
         try {
             const res = await $.ajax({
-                url: '/bingo/resgister/user',
+                url: '/bingo/register/user',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ name, email, phone_number }),
@@ -27,17 +27,17 @@ $(document).ready(function () {
 
             if (res.status) {
                 localStorage.setItem('bingo_user', JSON.stringify(res.data));
-                showToast(resgisterSuccess);
+                showToast(registerSuccess);
                 setTimeout(() => window.location.href = '/bingo/number-plate', 1200);
             } else {
-                showToast(resgisterFail);
+                showToast(registerFail);
             }
         } catch (err) {
             console.error(err);
             if (err.status === 422 && err.responseJSON?.errors) {
                 showToast(err.responseJSON.message);
             } else {
-                showToast(resgisterErrorServer);
+                showToast(registerErrorServer);
             }
         }
 
@@ -58,7 +58,7 @@ $(document).ready(function () {
 
             if (res.status) {
 
-                showToast(resgisterGoBack + userData.name + '!');
+                showToast(registerGoBack + userData.name + '!');
                 setTimeout(() => window.location.href = '/bingo/number-plate', 1000);
             } else {
                 localStorage.removeItem('bingo_user');
