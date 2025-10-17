@@ -5,20 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ResgisterBingoUserRequest;
 use App\Http\Requests\UpdateBingoUserRequest;
 use App\Models\BingoUser;
+use App\Models\BingoUserBoard;
+use App\Services\BingoUserBoardService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class BingoUserController extends Controller
 {
     private BingoUser $bingoUser;
+    private BingoUserBoardService $bingoUserBoardService;
+    private $authBingoUser;
 
-    public function __construct(BingoUser $bingoUser)
+    public function __construct(
+        BingoUser $bingoUser,
+        BingoUserBoardService $bingoUserBoardService
+    )
     {
         $this->bingoUser = $bingoUser;
+        $this->bingoUserBoardService = $bingoUserBoardService;
+        $this->authBingoUser = Auth('bingo')->user();
     }
 
     /**
@@ -103,5 +113,41 @@ class BingoUserController extends Controller
 
             return $this->error($e->getMessage(), null, __('view.notify.error'));
         }
+    }
+
+    /**
+     * Save Board game
+     *
+     * @return void
+     */
+    public function saveBoardGame(Request $request): JsonResponse
+    {
+        DB::beginTransaction();
+        try{
+            $bingoBoard = !empty($request->bingo_board) ? $request->bingo_board : [];
+            $markedCells = !empty($request->marked_cells) ? $request->marked_cells : [];
+            $bingoUser = Auth('bingo')->user();
+            $result = $this->bingoUserBoardService->create($bingoBoard, $markedCells, $bingoUser);
+            if ($result){
+                DB::commit();
+            }
+            return $this->success();
+        } catch(\Exception $e) {
+            DB::rollBack();
+            Log::error($e);
+            return $this->error(false, "Sever error!!!");
+        }
+    }
+
+    /**
+     * Fetch user bingo game
+     * @return JsonResponse
+     */
+    public function fetchBingoUserBoard(): JsonResponse
+    {
+        $bingoUser = $this->authBingoUser;
+        $bingoUserBoard = $this->bingoUserBoardService->fetchBingoUserBoard($bingoUser);
+        dd($bingoUserBoard);
+        return $this->success();
     }
 }

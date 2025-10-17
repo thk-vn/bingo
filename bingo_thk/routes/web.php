@@ -20,13 +20,15 @@ Route::prefix('bingo')->group(function () {
     Route::post('/check-user', [BingoUserController::class, 'checkUser'])->name('bingo.check_user');
     Route::get('/detail/{bingoUser}', [BingoUserController::class, 'detail'])->name('bingo.detail');
     Route::post('/update-user', [BingoUserController::class, 'update'])->name('bingo.update');
-
 });
 
 Route::middleware(['auth:bingo'])->group(function () {
     Route::prefix('bingo')->group(function () {
         Route::get('/number-plate', [BingoController::class, 'index'])->name('bingo.index');
         Route::get('/dial', [BingoController::class, 'dial'])->name('bingo.dial');
+        Route::post('/save-board-game', [BingoUserController::class, 'saveBoardGame'])->name('bingo.save.board_game');
+        Route::get('/fetch-reset-key', [BingoController::class, 'fetchResetKey'])->name('game.fetch.reset_key');
+        Route::get('/fetch-board-game', [BingoUserController::class, 'fetchBingoUserBoard'])->name('game.fetch.board_game');
     });
 });
 

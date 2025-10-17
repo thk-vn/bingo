@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('css')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 @endsection
 
 @section('main')
@@ -25,14 +25,29 @@
         © 2025 - THK Holdings Vietnam
     </footer>
 
-    @section('script')
+@section('script')
     <script>
         // Bingo logic
         (function() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             const bingoEl = document.getElementById('bingo');
             const winEl = document.getElementById('win');
             let card = []; // 5x5 numbers (or null for free)
             let marks = new Set(); // "r-c" keys
+            const sessionToken = localStorage.getItem('session_token');
+            const name = localStorage.getItem('name');
+            const department = localStorage.getItem('department');
+            const defaultMarkedCells = Array.from({
+                length: 5
+            }, () => Array(5).fill(false));
+
+            if (!sessionToken) {
+                window.location.href = '/login';
+            }
+
+            if (!localStorage.getItem('marked_cells')) {
+                localStorage.setItem('marked_cells', JSON.stringify(defaultMarkedCells));
+            }
 
             function rndSample(total, min, max) {
                 const pool = Array.from({
@@ -56,6 +71,9 @@
                         card[row][column] = numbers[index];
                     }
                 }
+                // Set localstorage bingo board game after generated card done
+                localStorage.removeItem('bingo_board');
+                localStorage.setItem('bingo_board', JSON.stringify(card));
                 marks.clear();
                 renderCard();
                 winEl.style.display = 'none';
@@ -71,7 +89,7 @@
                         cell.setAttribute('role', 'gridcell');
                         cell.dataset.r = r;
                         cell.dataset.c = c;
-                        console.log();
+
                         if (n === null) {
                             cell.classList.add('free');
                             cell.textContent = 'FREE';
@@ -139,6 +157,11 @@
                     const [r, c] = key.split('-').map(Number);
                     M[r][c] = true;
                 }
+
+                // Update localstorage marked_cells
+                localStorage.removeItem('marked_cells');
+                localStorage.setItem('marked_cells', JSON.stringify(M));
+
                 // check rows
                 for (let r = 0; r < 5; r++) {
                     let ok = true;
@@ -306,6 +329,51 @@
                     marks: Array.from(marks),
                 })
             };
+
+            async function saveBoardGame() {
+                try {
+                    const bingo_user = JSON.parse(localStorage.getItem('bingo_user'));
+                    const bingo_board = JSON.parse(localStorage.getItem('bingo_board'));
+                    const marked_cells = JSON.parse(localStorage.getItem('marked_cells'));
+                    const url = '{{route('bingo.save.board_game')}}';
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken,
+                        },
+                        body: JSON.stringify({
+                            bingo_user,
+                            bingo_board,
+                            marked_cells
+                        }),
+                    });
+
+                    // Parse JSON từ response
+                    const res = await response.json();
+
+                    console.log(res);
+
+                    if (response.ok && res.status) {
+                        localStorage.setItem("bingo_user", JSON.stringify(res.data));
+                        showToast(registerSuccess);
+                        setTimeout(() => {
+                            window.location.href = "/bingo/number-plate";
+                        }, 1200);
+                    } else {
+                        showToast(registerFail);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    if (err.status === 422 && err.responseJSON?.errors) {
+                        showToast(err.responseJSON.message);
+                    } else {
+                        showToast(registerErrorServer);
+                    }
+                }
+            }
+
+            saveBoardGame();
         })();
 
         document.addEventListener("DOMContentLoaded", () => {

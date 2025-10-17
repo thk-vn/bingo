@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+
 class BingoController extends Controller
 {
     public function index()
@@ -14,5 +17,11 @@ class BingoController extends Controller
     public function dial()
     {
         return view('dial');
+    }
+
+    public function fetchResetKey(): JsonResponse
+    {
+        $game = DB::table('games')->first();
+        dd($game);
     }
 }
