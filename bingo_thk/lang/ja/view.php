@@ -46,4 +46,8 @@ return [
         'success' => '更新が完了しました',
         'fail' => '更新に失敗しました',
     ],
+
+    'message' => [
+        'successfully_found' => '正常に見つかりました',
+    ],
 ];

@@ -20,6 +20,9 @@
                 <button id="reset" class="small reset">Reset</button>
             </div>
         </div>
+        <div id="toast" class="toast">
+            {{ __('view.bingo_user.start') }}
+        </div>
     </div>
     <footer class="small">
         © 2025 - THK Holdings Vietnam
@@ -40,10 +43,121 @@
             const defaultMarkedCells = Array.from({
                 length: 5
             }, () => Array(5).fill(false));
+            const bingo_user = JSON.parse(localStorage.getItem('bingo_user'));
 
-            if (!sessionToken) {
-                window.location.href = '/login';
+            function showToast(message) {
+                $toast.text(message).addClass('show');
+                setTimeout(() => $toast.removeClass('show'), 2500);
             }
+
+            async function fetchBoardGame() {
+                let responseData = [];
+                try {
+                    const url = '{{ route('bingo.fetch.board_game') }}';
+                    const response = await fetch(url, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken,
+                        },
+                    });
+
+                    // Parse JSON từ response
+                    const res = await response.json();
+                    if (res?.data?.bingo_board.length > 0) {
+                        responseData = res?.data?.bingo_board.flat();
+                    }
+                    return responseData;
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            async function saveBoardGame() {
+                try {
+                    const bingo_board = JSON.parse(localStorage.getItem('bingo_board'));
+                    const marked_cells = JSON.parse(localStorage.getItem('marked_cells'));
+                    const url = '{{ route('bingo.save.board_game') }}';
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken,
+                        },
+                        body: JSON.stringify({
+                            bingo_user,
+                            bingo_board,
+                            marked_cells
+                        }),
+                    });
+
+                    // Parse JSON từ response
+                    const res = await response.json();
+
+                    console.log(res);
+
+                    // if (response.ok && res.status) {
+                    //     localStorage.setItem("bingo_user", JSON.stringify(res.data));
+                    //     showToast(registerSuccess);
+                    //     setTimeout(() => {
+                    //         window.location.href = "/bingo/number-plate";
+                    //     }, 1200);
+                    // } else {
+                    //     showToast(registerFail);
+                    // }
+                } catch (err) {
+                    console.error(err);
+                    if (err.status === 422 && err.responseJSON?.errors) {
+                        showToast(err.responseJSON.message);
+                    } else {
+                        showToast(registerErrorServer);
+                    }
+                }
+            }
+
+            async function resetBoardGame() {
+                try {
+                    const bingo_board = JSON.parse(localStorage.getItem('bingo_board'));
+                    const marked_cells = JSON.parse(localStorage.getItem('marked_cells'));
+                    const url = '{{ route('bingo.reset.board_game') }}';
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken,
+                        },
+                        body: JSON.stringify({
+                            bingo_user,
+                            bingo_board,
+                            marked_cells
+                        }),
+                    });
+
+                    // Parse JSON từ response
+                    const res = await response.json();
+
+                    console.log(res);
+
+                    // if (response.ok && res.status) {
+                    //     localStorage.setItem("bingo_user", JSON.stringify(res.data));
+                    //     showToast(registerSuccess);
+                    //     setTimeout(() => {
+                    //         window.location.href = "/bingo/number-plate";
+                    //     }, 1200);
+                    // } else {
+                    //     showToast(registerFail);
+                    // }
+                } catch (err) {
+                    console.error(err);
+                    if (err.status === 422 && err.responseJSON?.errors) {
+                        showToast(err.responseJSON.message);
+                    } else {
+                        showToast(registerErrorServer);
+                    }
+                }
+            }
+
+            // saveBoardGame();
 
             if (!localStorage.getItem('marked_cells')) {
                 localStorage.setItem('marked_cells', JSON.stringify(defaultMarkedCells));
@@ -61,23 +175,38 @@
                 return pool.slice(0, total);
             }
 
-            function generateCard() {
-                const numbers = rndSample(25, 1, 50);
-                card = [];
-                for (let row = 0; row < 5; row++) {
-                    card[row] = [];
-                    for (let column = 0; column < 5; column++) {
-                        const index = row * 5 + column;
-                        card[row][column] = numbers[index];
+            async function generateCard() {
+                try {
+                    const responseData = await fetchBoardGame(); // waiting Promise resolved
+
+                    let numbers = [];
+                    if (responseData && responseData.length > 0) {
+                        // return response data
+                        numbers = responseData;
+                    } else {
+                        // return random data
+                        numbers = rndSample(25, 1, 50);
                     }
+
+                    card = [];
+                    for (let row = 0; row < 5; row++) {
+                        card[row] = [];
+                        for (let column = 0; column < 5; column++) {
+                            const index = row * 5 + column;
+                            card[row][column] = numbers[index];
+                        }
+                    }
+
+                    // Save bingo_board into local storage
+                    localStorage.setItem('bingo_board', JSON.stringify(card));
+                    marks.clear();
+                    renderCard();
+                    winEl.style.display = 'none';
+                } catch (error) {
+                    console.error('Error when generateCard:', error);
                 }
-                // Set localstorage bingo board game after generated card done
-                localStorage.removeItem('bingo_board');
-                localStorage.setItem('bingo_board', JSON.stringify(card));
-                marks.clear();
-                renderCard();
-                winEl.style.display = 'none';
             }
+
 
             function renderCard() {
                 bingoEl.innerHTML = '';
@@ -313,9 +442,9 @@
                 }
             }
 
-            document.getElementById('reset').addEventListener('click', () => {
+            document.getElementById('reset').addEventListener('click', async () => {
                 if (!confirm('Reset toàn bộ?')) return;
-                generateCard();
+                await generateCard();
             });
 
             // init
@@ -329,51 +458,6 @@
                     marks: Array.from(marks),
                 })
             };
-
-            async function saveBoardGame() {
-                try {
-                    const bingo_user = JSON.parse(localStorage.getItem('bingo_user'));
-                    const bingo_board = JSON.parse(localStorage.getItem('bingo_board'));
-                    const marked_cells = JSON.parse(localStorage.getItem('marked_cells'));
-                    const url = '{{route('bingo.save.board_game')}}';
-                    const response = await fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": csrfToken,
-                        },
-                        body: JSON.stringify({
-                            bingo_user,
-                            bingo_board,
-                            marked_cells
-                        }),
-                    });
-
-                    // Parse JSON từ response
-                    const res = await response.json();
-
-                    console.log(res);
-
-                    if (response.ok && res.status) {
-                        localStorage.setItem("bingo_user", JSON.stringify(res.data));
-                        showToast(registerSuccess);
-                        setTimeout(() => {
-                            window.location.href = "/bingo/number-plate";
-                        }, 1200);
-                    } else {
-                        showToast(registerFail);
-                    }
-                } catch (err) {
-                    console.error(err);
-                    if (err.status === 422 && err.responseJSON?.errors) {
-                        showToast(err.responseJSON.message);
-                    } else {
-                        showToast(registerErrorServer);
-                    }
-                }
-            }
-
-            saveBoardGame();
         })();
 
         document.addEventListener("DOMContentLoaded", () => {

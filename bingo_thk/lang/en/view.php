@@ -46,4 +46,8 @@ return [
         'success' => 'Updated successfully',
         'fail' => 'Update failed',
     ],
+
+    'message' => [
+        'successfully_found' => 'Successfully found',
+    ],
 ];

@@ -28,7 +28,8 @@ Route::middleware(['auth:bingo'])->group(function () {
         Route::get('/dial', [BingoController::class, 'dial'])->name('bingo.dial');
         Route::post('/save-board-game', [BingoUserController::class, 'saveBoardGame'])->name('bingo.save.board_game');
         Route::get('/fetch-reset-key', [BingoController::class, 'fetchResetKey'])->name('game.fetch.reset_key');
-        Route::get('/fetch-board-game', [BingoUserController::class, 'fetchBingoUserBoard'])->name('game.fetch.board_game');
+        Route::get('/fetch-board-game', [BingoUserController::class, 'fetchBingoUserBoard'])->name('bingo.fetch.board_game');
+        Route::post('/reset-board-game', [BingoUserController::class, 'resetBoardGame'])->name('bingo.reset.board_game');
     });
 });
 

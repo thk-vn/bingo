@@ -41,4 +41,7 @@ return [
         'success' => 'Cập nhập thành công',
         'fail' => 'Cập nhập thất bại',
     ],
+    'message' => [
+        'successfully_found' => 'Tìm kiếm thành công',
+    ],
 ];

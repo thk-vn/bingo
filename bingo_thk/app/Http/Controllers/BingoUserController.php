@@ -123,16 +123,16 @@ class BingoUserController extends Controller
     public function saveBoardGame(Request $request): JsonResponse
     {
         DB::beginTransaction();
-        try{
+        try {
             $bingoBoard = !empty($request->bingo_board) ? $request->bingo_board : [];
             $markedCells = !empty($request->marked_cells) ? $request->marked_cells : [];
             $bingoUser = Auth('bingo')->user();
             $result = $this->bingoUserBoardService->create($bingoBoard, $markedCells, $bingoUser);
-            if ($result){
+            if ($result) {
                 DB::commit();
             }
             return $this->success();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e);
             return $this->error(false, "Sever error!!!");
@@ -145,9 +145,29 @@ class BingoUserController extends Controller
      */
     public function fetchBingoUserBoard(): JsonResponse
     {
-        $bingoUser = $this->authBingoUser;
+        $bingoUser = Auth('bingo')->user();
         $bingoUserBoard = $this->bingoUserBoardService->fetchBingoUserBoard($bingoUser);
-        dd($bingoUserBoard);
-        return $this->success();
+        return $this->success($bingoUserBoard, __('message.successfully_foundx'));
+    }
+
+    /**
+     * Reset board game
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function resetBoardGame(Request $request): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $bingoUser = Auth('bingo')->user();
+            $this->bingoUserBoardService->resetBoardGame($bingoUser, $request->all());
+            DB::commit();
+            return $this->success();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e);
+            return $this->error(false, "Sever error!!!");
+        }
     }
 }
