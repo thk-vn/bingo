@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BingoController;
 use App\Http\Controllers\BingoUserController;
 use App\Http\Controllers\EmployeeController;
@@ -22,15 +23,13 @@ Route::prefix('bingo')->group(function () {
 Route::middleware(['auth:bingo'])->group(function () {
     Route::prefix('bingo')->group(function () {
         Route::get('/number-plate', [BingoController::class, 'index'])->name('bingo.index');
-        Route::get('/dial', [BingoController::class, 'dial'])->name('bingo.dial');
     });
 });
 
-// Admin dial via token (from .env): /admin?token=YOUR_TOKEN
-Route::get('/admin', [BingoController::class, 'admin'])->name('bingo.admin');
-
-// Reset endpoint: increment games.reset_key
-Route::post('/games/reset', [BingoController::class, 'resetGame'])->name('games.reset');
+Route::prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('bingo.admin');
+    Route::post('/game/reset', [AdminController::class, 'resetGame'])->name('admin.reset');
+});
 
 Route::get('/login', function () {
     return redirect()->route('admin.login');
