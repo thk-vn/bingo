@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BingoController;
 use App\Http\Controllers\BingoUserController;
 use App\Http\Controllers\EmployeeController;
@@ -30,8 +31,12 @@ Route::prefix('bingo')->group(function () {
 Route::middleware(['auth:bingo'])->group(function () {
     Route::prefix('bingo')->group(function () {
         Route::get('/number-plate', [BingoController::class, 'index'])->name('bingo.index');
-        Route::get('/dial', [BingoController::class, 'dial'])->name('bingo.dial');
     });
+});
+
+Route::prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('bingo.admin');
+    Route::post('/game/reset', [AdminController::class, 'resetGame'])->name('admin.reset');
 });
 
 Route::get('/login', function () {
