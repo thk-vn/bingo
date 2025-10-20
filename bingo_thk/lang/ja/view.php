@@ -5,7 +5,8 @@ return [
         'name' => '氏名',
         'email' => 'メールアドレス',
         'phone_number' => '電話番号',
-        'register_account' => 'アカウント登録',
+        'info_account' => 'Info Account',
+        'btn_play_now' => '今すぐプレイ',
         'btn_register' => '登録',
         'start' => '💫 準備完了 — 始めましょう 💫',
         'check_info' => '⚠️ すべての必須項目を入力してください！',
@@ -27,7 +28,7 @@ return [
         'name' => '氏名を入力...',
         'department' => '部署を入力...',
         'phone_number' => '電話番号を入力...',
-        'email' => 'メールアドレスを入力...',
+        'email' => 'メールアドレスを入力 @thk-hd.vn...',
     ],
 
     'button' => [
@@ -45,5 +46,13 @@ return [
         'null_info' => 'ユーザーが見つかりません',
         'success' => '更新が完了しました',
         'fail' => '更新に失敗しました',
+    ],
+    'rule' => [
+        'validate' => [
+            'error' => '検証中にエラーが発生しました。',
+            'format' => ':attribute の形式が正しくありません。',
+            'email'  => 'メールアドレスの形式が正しくありません。',
+            'email_pattern'=> 'メールアドレスは @thk-hd.vn ドメインでなければなりません。',
+        ],
     ],
 ];

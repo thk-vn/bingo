@@ -5,8 +5,8 @@ return [
         'name' => 'Họ và tên',
         'email' => 'Email',
         'phone_number' => 'Số điện thoại',
-        'register_account' => 'Register Account',
-        'btn_register' => 'Đăng ký',
+        'info_account' => 'Info Account',
+        'btn_play_now' => 'Chơi ngay',
         'start' => '💫 Sẵn sàng — chơi nào 💫',
         'check_info' => '⚠️ Vui lòng nhập đầy đủ thông tin!',
         'update' => 'Update Info',
@@ -25,7 +25,7 @@ return [
         'name' => 'nhập họ và tên...',
         'department' => 'nhập phòng ban...',
         'phone_number' => 'nhập số điện thoại...',
-        'email' => 'nhập email...',
+        'email' => 'nhập email @thk-hd.vn...',
     ],
     'button' => [
         'pending' => 'Đang xử lý...',
@@ -40,5 +40,13 @@ return [
         'null_info' => 'Không tìm thấy người dùng',
         'success' => 'Cập nhập thành công',
         'fail' => 'Cập nhập thất bại',
+    ],
+    'rule' => [
+        'validate' => [
+            'error' => 'Có lỗi trong quá trình kiểm tra',
+            'format' => ':attribute không đúng định dạng.',
+            'email'  => 'email không đúng định dạng',
+            'email_pattern'=> 'email không đúng định dạng @thk-hd.vn',
+        ],
     ],
 ];

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\EmailRule;
+use App\Rules\PhoneRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,8 +26,8 @@ class RegisterBingoUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', Rule::unique('bingo_users', 'email')],
-            'phone_number' => ['required', 'string', 'max:255', Rule::unique('bingo_users', 'phone_number')],
+            'email' => ['required', new EmailRule()],
+            'phone_number' => ['required', new PhoneRule()],
         ];
     }
 
@@ -36,9 +38,7 @@ class RegisterBingoUserRequest extends FormRequest
             'name.string' => __('validation.required', ['attribute' => __('view.bingo_user.name')]),
             'name.max' => __('validation.max.string', ['attribute' => __('view.bingo_user.name')]),
             'email.required' => __('validation.reuqired', ['attribute' => __('view.bingo_user.email')]),
-            'email.email' => __('validation.email', ['attribute' => __('view.bingo_user.email')]),
             'phone_number.required' => __('validation.reuqired', ['attribute' => __('view.bingo_user.phone_number')]),
-            'phone_number.string' => __('validation.string', ['attribute' => __('view.bingo_user.phone_number')]),
         ];
     }
 }

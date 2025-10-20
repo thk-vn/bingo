@@ -38,18 +38,29 @@ class BingoUserController extends Controller
      * @param RegisterBingoUserRequest $request
      * @return JsonResponse
      */
-    public function register(RegisterBingoUserRequest $request): JsonResponse
+    public function registerOrLogin(RegisterBingoUserRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
             $data = $request->validated();
-            $bingoUser = $this->bingoUser->create($data);
+
+            $bingoUser = $this->bingoUser
+                ->where('email', $data['email'])
+                ->orWhere('phone_number', $data['phone_number'])
+                ->first();
+
+            if($bingoUser) {
+                Auth::guard('bingo')->login($bingoUser);
+                return $this->success($bingoUser, __('view.notify.bingo_user.login_success'));
+            }
+
+            $bingoUserRegister = $this->bingoUser->create($data);
 
             DB::commit();
 
-            Auth::guard('bingo')->login($bingoUser);
+            Auth::guard('bingo')->login($bingoUserRegister);
 
-            return $this->success($bingoUser, __('view.notify.bingo_user.register_success'));
+            return $this->success($bingoUserRegister, __('view.notify.bingo_user.register_success'));
         } catch (Exception $e) {
             DB::rollBack();
 

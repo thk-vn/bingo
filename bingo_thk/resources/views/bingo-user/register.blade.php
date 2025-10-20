@@ -8,7 +8,7 @@
     <div class="card">
         <h1 class="neon-title">
             <span class="logo-dot"></span>
-            {{ __("view.bingo_user.register_account") }}
+            {{ __("view.bingo_user.info_account") }}
         </h1>
 
         <form id="loginForm" action="" method="POST">
@@ -29,7 +29,7 @@
                 placeholder="{{ __('view.placeholder.phone_number') }}"
             />
             <button id="loginBtn" class="btn" type="submit">
-                {{ __("view.bingo_user.btn_register") }}
+                {{ __("view.bingo_user.btn_play_now") }}
             </button>
 
             <div class="footer">

@@ -5,8 +5,8 @@ return [
         'name' => 'Full Name',
         'email' => 'Email',
         'phone_number' => 'Phone Number',
-        'register_account' => 'Register Account',
-        'btn_register' => 'Register',
+        'info_account' => 'Info Account',
+        'btn_play_now' => 'Play now',
         'start' => '💫 Ready — Let’s play 💫',
         'check_info' => '⚠️ Please fill in all required information!',
         'update' => 'Update Information',
@@ -27,7 +27,7 @@ return [
         'name' => 'enter full name...',
         'department' => 'enter department...',
         'phone_number' => 'enter phone number...',
-        'email' => 'enter email...',
+        'email' => 'enter email @thk-hd.vn...',
     ],
 
     'button' => [
@@ -45,5 +45,13 @@ return [
         'null_info' => 'User not found',
         'success' => 'Updated successfully',
         'fail' => 'Update failed',
+    ],
+    'rule' => [
+        'validate' => [
+            'error' => 'An error occurred during validation.',
+            'format' => ':attribute format is invalid.',
+            'email'  => 'The email format is invalid.',
+            'email_pattern'=> 'The email must use the domain @thk-hd.vn.',
+        ],
     ],
 ];

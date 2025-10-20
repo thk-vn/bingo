@@ -58,7 +58,7 @@ $(document).ready(function () {
 
             if (res.status) {
 
-                showToast(registerGoBack + userData.name + '!');
+                showToast(`${registerGoBack} ${userData.name}`);
                 setTimeout(() => window.location.href = '/bingo/number-plate', 1000);
             } else {
                 localStorage.removeItem('bingo_user');
