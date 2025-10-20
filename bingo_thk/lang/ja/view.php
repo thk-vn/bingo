@@ -49,5 +49,6 @@ return [
 
     'message' => [
         'successfully_found' => '正常に見つかりました',
+        'successfully_reset' => '正常にリセットされました',
     ],
 ];

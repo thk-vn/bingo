@@ -13,7 +13,7 @@ class BingoUserBoard extends Model
     const STATUS_END = 1;
     const STATUS_NOT_END = 0;
 
-    protected $fillable = ['bingo_board', 'marked_cells'];
+    protected $fillable = ['bingo_board', 'marked_cells', 'status'];
 
     protected $casts = [
         'bingo_board' => 'array',

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ResgisterBingoUserRequest;
 use App\Http\Requests\UpdateBingoUserRequest;
 use App\Models\BingoUser;
-use App\Models\BingoUserBoard;
 use App\Services\BingoUserBoardService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -127,11 +126,15 @@ class BingoUserController extends Controller
             $bingoBoard = !empty($request->bingo_board) ? $request->bingo_board : [];
             $markedCells = !empty($request->marked_cells) ? $request->marked_cells : [];
             $bingoUser = Auth('bingo')->user();
-            $result = $this->bingoUserBoardService->create($bingoBoard, $markedCells, $bingoUser);
-            if ($result) {
-                DB::commit();
+            $checkBoardGameNotEnd = $this->bingoUserBoardService->fetchBingoUserBoard($bingoUser);
+            $result = false;
+            if(!$checkBoardGameNotEnd) {
+                $result = $this->bingoUserBoardService->create($bingoBoard, $markedCells, $bingoUser);
+                if ($result) {
+                    DB::commit();
+                }
             }
-            return $this->success();
+            return $this->success(['status' => $result]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e);
@@ -147,7 +150,7 @@ class BingoUserController extends Controller
     {
         $bingoUser = Auth('bingo')->user();
         $bingoUserBoard = $this->bingoUserBoardService->fetchBingoUserBoard($bingoUser);
-        return $this->success($bingoUserBoard, __('message.successfully_foundx'));
+        return $this->success($bingoUserBoard, __('view.message.successfully_found'));
     }
 
     /**
@@ -163,7 +166,7 @@ class BingoUserController extends Controller
             $bingoUser = Auth('bingo')->user();
             $this->bingoUserBoardService->resetBoardGame($bingoUser, $request->all());
             DB::commit();
-            return $this->success();
+            return $this->success(['bingo_user' => $bingoUser], __('view.message.successfully_reset'));
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e);

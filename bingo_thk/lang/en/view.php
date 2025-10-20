@@ -49,5 +49,6 @@ return [
 
     'message' => [
         'successfully_found' => 'Successfully found',
+        'successfully_reset' => 'Successfully reset',
     ],
 ];

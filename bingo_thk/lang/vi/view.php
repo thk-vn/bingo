@@ -43,5 +43,6 @@ return [
     ],
     'message' => [
         'successfully_found' => 'Tìm kiếm thành công',
+        'successfully_reset' => 'Đặt lại thành công',
     ],
 ];

@@ -45,31 +45,44 @@
             }, () => Array(5).fill(false));
             const bingo_user = JSON.parse(localStorage.getItem('bingo_user'));
 
+            // Save default marked_cells
+            if (!localStorage.getItem('marked_cells')) {
+                localStorage.setItem('marked_cells', JSON.stringify(defaultMarkedCells));
+            }
+
             function showToast(message) {
                 $toast.text(message).addClass('show');
                 setTimeout(() => $toast.removeClass('show'), 2500);
             }
 
             async function fetchBoardGame() {
-                let responseData = [];
                 try {
-                    const url = '{{ route('bingo.fetch.board_game') }}';
+                    const url = "{{ route('bingo.fetch.board_game') }}";
+
                     const response = await fetch(url, {
                         method: "GET",
                         headers: {
+                            "Accept": "application/json",
                             "Content-Type": "application/json",
                             "X-CSRF-TOKEN": csrfToken,
                         },
                     });
 
-                    // Parse JSON từ response
-                    const res = await response.json();
-                    if (res?.data?.bingo_board.length > 0) {
-                        responseData = res?.data?.bingo_board.flat();
+                    // Check HTTP status
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
                     }
+
+                    const res = await response.json();
+
+                    // Safely handle response
+                    const bingoBoard = res?.data?.bingo_board ?? [];
+                    const responseData = Array.isArray(bingoBoard) ? bingoBoard.flat() : [];
+
                     return responseData;
                 } catch (err) {
-                    console.error(err);
+                    console.error("Error fetching board game:", err);
+                    return []; // always return an array so the caller won't break
                 }
             }
 
@@ -91,27 +104,13 @@
                         }),
                     });
 
-                    // Parse JSON từ response
-                    const res = await response.json();
-
-                    console.log(res);
-
-                    // if (response.ok && res.status) {
-                    //     localStorage.setItem("bingo_user", JSON.stringify(res.data));
-                    //     showToast(registerSuccess);
-                    //     setTimeout(() => {
-                    //         window.location.href = "/bingo/number-plate";
-                    //     }, 1200);
-                    // } else {
-                    //     showToast(registerFail);
-                    // }
+                    // Check HTTP status
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
                 } catch (err) {
                     console.error(err);
-                    if (err.status === 422 && err.responseJSON?.errors) {
-                        showToast(err.responseJSON.message);
-                    } else {
-                        showToast(registerErrorServer);
-                    }
+                    showToast(registerErrorServer);
                 }
             }
 
@@ -135,18 +134,15 @@
 
                     // Parse JSON từ response
                     const res = await response.json();
-
-                    console.log(res);
-
-                    // if (response.ok && res.status) {
-                    //     localStorage.setItem("bingo_user", JSON.stringify(res.data));
-                    //     showToast(registerSuccess);
-                    //     setTimeout(() => {
-                    //         window.location.href = "/bingo/number-plate";
-                    //     }, 1200);
-                    // } else {
-                    //     showToast(registerFail);
-                    // }
+                    if (response.ok) {
+                        if (res?.data?.bingo_user) {
+                            // Update localStorage bingo_user
+                            localStorage.removeItem('bingo_user');
+                            localStorage.setItem('bingo_user', JSON.stringify(res.data.bingo_user));
+                        }
+                    } else {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
                 } catch (err) {
                     console.error(err);
                     if (err.status === 422 && err.responseJSON?.errors) {
@@ -155,12 +151,6 @@
                         showToast(registerErrorServer);
                     }
                 }
-            }
-
-            // saveBoardGame();
-
-            if (!localStorage.getItem('marked_cells')) {
-                localStorage.setItem('marked_cells', JSON.stringify(defaultMarkedCells));
             }
 
             function rndSample(total, min, max) {
@@ -207,7 +197,30 @@
                 }
             }
 
+            // Restore marked_cells after reload page
+            function restoreMarkedCells() {
+                try {
+                    const stored = JSON.parse(localStorage.getItem('marked_cells'));
+                    if (!stored || !Array.isArray(stored)) return;
 
+                    for (let r = 0; r < stored.length; r++) {
+                        for (let c = 0; c < stored[r].length; c++) {
+                            if (stored[r][c]) {
+                                marks.add(`${r}-${c}`);
+                                const cell = bingoEl.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+                                if (cell) cell.classList.add('marked');
+                            }
+                        }
+                    }
+
+                    // Check if reload has BINGO then show
+                    checkWin();
+                } catch (err) {
+                    console.error("Error restoring marked cells:", err);
+                }
+            }
+
+            // Function render card UI
             function renderCard() {
                 bingoEl.innerHTML = '';
                 for (let r = 0; r < 5; r++) {
@@ -232,6 +245,8 @@
                         bingoEl.appendChild(cell);
                     }
                 }
+                // Add event reload page show previous marked_cells
+                restoreMarkedCells();
             }
 
             function onCellClick(e) {
@@ -444,6 +459,7 @@
 
             document.getElementById('reset').addEventListener('click', async () => {
                 if (!confirm('Reset toàn bộ?')) return;
+                await resetBoardGame();
                 await generateCard();
             });
 

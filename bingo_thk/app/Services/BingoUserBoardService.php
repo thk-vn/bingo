@@ -53,7 +53,7 @@ class BingoUserBoardService
             ->where('bingo_user_id', $bingoUser->id)
             ->first();
 
-        return $this->transformBingoUserBoard($bingoUserBoard);
+        return $bingoUserBoard ? $this->transformBingoUserBoard($bingoUserBoard) : [];
     }
 
     /**
@@ -81,18 +81,22 @@ class BingoUserBoardService
     public function resetBoardGame(BingoUser $bingoUser, $request): void
     {
         $bingoUserBoard = BingoUserBoard::where('bingo_user_id', $bingoUser->id)
-            ->join('bingo_users', 'bingo_users.id', '=', 'bingo_user_boards.bingo_user_id')
+            ->leftJoin('bingo_users', 'bingo_users.id', '=', 'bingo_user_boards.bingo_user_id')
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('games')
                     ->whereColumn('games.reset_key', '>', 'bingo_users.reset_key');
             })
             ->where('status', BingoUserBoard::STATUS_NOT_END)
+            ->select('bingo_user_boards.*')
             ->first();
+
         if ($bingoUserBoard) {
-            $bingoUserBoard->bingo_board = json_encode($request['bingo_board']);
-            $bingoUserBoard->marked_cells = json_encode($request['marked_cells']);
-            $bingoUserBoard->status = BingoUserBoard::STATUS_END;
+            $bingoUserBoard->forceFill([
+                'bingo_board' => json_encode($request['bingo_board']),
+                'marked_cells' => json_encode($request['marked_cells']),
+                'status' => BingoUserBoard::STATUS_END,
+            ]);
             $bingoUserBoard->save();
 
             // Auto increment reset key after bingo board game end round and admin start new game
