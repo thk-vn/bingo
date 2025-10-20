@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Throwable;
 
 class BingoUserController extends Controller
 {
@@ -33,37 +34,38 @@ class BingoUserController extends Controller
     }
 
     /**
-     * Register bingo user
+     * Register or login bingo user
      *
      * @param RegisterBingoUserRequest $request
      * @return JsonResponse
      */
     public function registerOrLogin(RegisterBingoUserRequest $request): JsonResponse
     {
-        DB::beginTransaction();
         try {
             $data = $request->validated();
 
-            $bingoUser = $this->bingoUser
-                ->where('email', $data['email'])
-                ->orWhere('phone_number', $data['phone_number'])
-                ->first();
+            $user = DB::transaction(
+                fn() =>
+                $this->bingoUser->
+                    updateOrCreate(
+                        [
+                            'name' => $data['name'],
+                            'email' => $data['email'] ?? null,
+                            'phone_number' => $data['phone_number'] ?? null
+                        ],
+                        $data
+                    )
+            );
 
-            if($bingoUser) {
-                Auth::guard('bingo')->login($bingoUser);
-                return $this->success($bingoUser, __('view.notify.bingo_user.login_success'));
-            }
+            Auth::guard('bingo')->login($user);
 
-            $bingoUserRegister = $this->bingoUser->create($data);
-
-            DB::commit();
-
-            Auth::guard('bingo')->login($bingoUserRegister);
-
-            return $this->success($bingoUserRegister, __('view.notify.bingo_user.register_success'));
-        } catch (Exception $e) {
-            DB::rollBack();
-
+            return $this->success(
+                $user,
+                $user->wasRecentlyCreated
+                ? __('view.notify.bingo_user.register_success')
+                : __('view.notify.bingo_user.login_success')
+            );
+        } catch (Throwable $e) {
             return $this->error($e->getMessage(), null, __('view.notify.error'));
         }
     }
