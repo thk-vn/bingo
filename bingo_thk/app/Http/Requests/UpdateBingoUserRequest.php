@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\EmailRule;
+use App\Rules\PhoneRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBingoUserRequest extends FormRequest
@@ -23,8 +25,8 @@ class UpdateBingoUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email'],
-            'phone_number' => ['required', 'string', 'max:255'],
+            'email' => ['required', new EmailRule()],
+            'phone_number' => ['required', new PhoneRule()],
         ];
     }
 
@@ -34,10 +36,8 @@ class UpdateBingoUserRequest extends FormRequest
             'name.required' => __('validation.required', ['attribute' => __('view.bingo_user.name')]),
             'name.string' => __('validation.required', ['attribute' => __('view.bingo_user.name')]),
             'name.max' => __('validation.max.string', ['attribute' => __('view.bingo_user.name')]),
-            'email.required' => __('validation.reuqired', ['attribute' => __('view.bingo_user.email')]),
-            'email.email' => __('validation.email', ['attribute' => __('view.bingo_user.email')]),
-            'phone_number.required' => __('validation.reuqired', ['attribute' => __('view.bingo_user.phone_number')]),
-            'phone_number.string' => __('validation.string', ['attribute' => __('view.bingo_user.phone_number')]),
+            'email.required' => __('validation.required', ['attribute' => __('view.bingo_user.email')]),
+            'phone_number.required' => __('validation.required', ['attribute' => __('view.bingo_user.phone_number')]),
         ];
     }
 }
