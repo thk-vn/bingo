@@ -40,7 +40,11 @@ $(document).ready(function () {
             }
         } catch (err) {
             console.error(err);
-            showToast(updateErrorServer);
+            if (err.status === 422 && err.responseJSON?.errors) {
+                showToast(err.responseJSON.message);
+            } else {
+                showToast(registerErrorServer);
+            }
         }
     });
 
