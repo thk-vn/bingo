@@ -39,8 +39,12 @@ $(document).ready(function () {
                 showToast(updateFail);
             }
         } catch (err) {
-            console.error(err);
-            showToast(updateErrorServer);
+           console.error(err);
+            if (err.status === 422 && err.responseJSON?.errors) {
+                showToast(err.responseJSON.message);
+            } else {
+                showToast(registerErrorServer);
+            }
         }
     });
 
