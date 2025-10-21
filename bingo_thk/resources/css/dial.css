@@ -57,17 +57,17 @@ body {
     font-size: 15px;
     font-weight: bold;
     transition: all 0.3s;
-    text-shadow: 0 0 6px var(--neon-color), 0 0 20px var(--neon-accent);
-    box-shadow: 0 0 6px var(--neon-color), 0 0 18px var(--neon-accent), inset 0 0 6px rgba(255,255,255,0.1);
+    text-shadow: 0 0 6px var(--neon-color), 0 0 20px var(--neon-color);
+    box-shadow: 0 0 6px var(--neon-color), 0 0 18px var(--neon-color), inset 0 0 6px rgba(255,255,255,0.1);
     width: 100%;
     box-sizing: border-box;
 }
 
 .group-button .btn-reset:hover {
     transform: scale(1.05);
-    color: var(--neon-accent);
-    box-shadow: 0 0 12px var(--neon-color), 0 0 30px var(--neon-accent), inset 0 0 10px rgba(255,255,255,0.2);
-    text-shadow: 0 0 10px var(--neon-accent), 0 0 30px var(--neon-accent);
+    color: var(--neon-color);
+    box-shadow: 0 0 12px var(--neon-color), 0 0 30px var(--neon-color), inset 0 0 10px rgba(255,255,255,0.2);
+    text-shadow: 0 0 10px var(--neon-color), 0 0 30px var(--neon-color);
 }
 
 .group-button .btn-reset:active {
@@ -78,7 +78,7 @@ body {
 .group-button .btn-reset::before {
     content: "↻";
     font-size: 18px;
-    color: var(--neon-accent);
+    color: white;
     text-shadow: 0 0 6px var(--neon-accent), 0 0 12px var(--neon-color);
     display: inline-block;
     transform-origin: center center;
@@ -86,18 +86,19 @@ body {
 }
 
 #drawn-numbers {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 33.33vw;
-    height: 100vh;
-    background: radial-gradient(circle at center, darkred, #0f0f1a);
-    padding: 20px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
-    overflow-y: auto;
-    z-index: 10;
-    border: 2px solid var(--neon-color);
-    box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 33.33vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, darkred, #0f0f1a);
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 10;
+  box-sizing: border-box;
+
+  border: 2px solid var(--neon-color);
+  animation: glow 6s ease-in-out infinite;
 }
 
 .numbers-grid {
@@ -159,3 +160,20 @@ body {
         grid-template-columns: repeat(5, 1fr);
     }
 }
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow:
+      0 0 8px var(--neon-color),
+      0 0 12px rgba(0, 247, 255, 0.6),
+      0 0 18px rgba(0, 247, 255, 0.4),
+      0 0 25px rgba(0, 247, 255, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 5px var(--neon-color),
+      0 0 10px rgba(0, 247, 255, 0.3),
+      0 0 15px rgba(0, 247, 255, 0.15);
+  }
+}
+
