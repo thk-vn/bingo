@@ -10,11 +10,10 @@
 <body>
     <div id="container"></div>
     <div id="drawn-numbers">
-        <h2>Dãy số đã quay</h2>
         <div class="numbers-grid" id="numbersGrid"></div>
     </div>
     <div class="group-button">
-        <button class="btn-reset">🔄 RESET</button>
+        <button class="btn-reset">RESET</button>
     </div>
 
 <script src="{{ Vite::asset('resources/js/page/libs/three.min.js') }}" defer></script>
