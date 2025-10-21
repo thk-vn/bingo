@@ -190,6 +190,9 @@
 
                     // Save bingo_board into local storage
                     localStorage.setItem('bingo_board', JSON.stringify(card));
+                    if (responseData && responseData.length === 0) {
+                        await saveBoardGame();
+                    }
                     marks.clear();
                     renderCard();
                     winEl.style.display = 'none';
@@ -255,16 +258,8 @@
                         cell.setAttribute('role', 'gridcell');
                         cell.dataset.r = r;
                         cell.dataset.c = c;
-
-                        if (n === null) {
-                            cell.classList.add('free');
-                            cell.textContent = 'FREE';
-                            marks.add(`${r}-${c}`); // free is always marked
-                            cell.classList.add('marked');
-                        } else {
-                            cell.textContent = n;
-                            if (marks.has(`${r}-${c}`)) cell.classList.add('marked');
-                        }
+                        cell.textContent = n;
+                        if (marks.has(`${r}-${c}`)) cell.classList.add('marked');
                         cell.addEventListener('click', onCellClick);
                         bingoEl.appendChild(cell);
                     }
@@ -485,7 +480,6 @@
                 if (!confirm('Reset toàn bộ?')) return;
                 await resetBoardGame();
                 await generateCard();
-                await saveBoardGame();
             });
 
             // init
