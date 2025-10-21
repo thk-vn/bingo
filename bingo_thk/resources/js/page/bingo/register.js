@@ -6,7 +6,7 @@ $(document).ready(function () {
     }, () => Array(5).fill(false));
     let card = [];
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-    
+
     // Save default marked_cells
     if (!localStorage.getItem('marked_cells')) {
         localStorage.setItem('marked_cells', JSON.stringify(defaultMarkedCells));
@@ -37,7 +37,7 @@ $(document).ready(function () {
 
             if (res.status) {
                 localStorage.setItem('bingo_user', JSON.stringify(res.data));
-                showToast(resgisterSuccess);
+                showToast(registerSuccess);
                 generateCard();
                 saveBoardGame();
             } else {
@@ -136,8 +136,8 @@ $(document).ready(function () {
             setTimeout(() => window.location.href = '/bingo/number-plate', 1200);
         } catch (err) {
             console.error(err);
-            // `resgisterErrorServer` is defined in the blade view; fallback to a generic message
-            showToast(typeof resgisterErrorServer !== 'undefined' ? resgisterErrorServer : 'Server error, please try again.');
+            // `registerErrorServer` is defined in the blade view; fallback to a generic message
+            showToast(typeof registerErrorServer !== 'undefined' ? registerErrorServer : 'Server error, please try again.');
         }
     }
 });
