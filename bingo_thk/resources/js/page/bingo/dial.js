@@ -1,4 +1,5 @@
 import logoUrl from '../../../images/thk_logo.png';
+import backgroundUrl from '../../../images/backgroud_bingo.png';
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
@@ -35,11 +36,12 @@ const MAX_FIREWORKS = 3; // Giới hạn số lượng pháo hoa tối đa
 // Logo texture (gắn lên mỗi quả bóng)
 const textureLoader = new THREE.TextureLoader();
 const logoTexture = textureLoader.load(logoUrl);
+const backgroundTexture = textureLoader.load(backgroundUrl);
 
 function init() {
     // Tạo scene 3D với nền đen
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
+    scene.background = backgroundTexture;
 
     // Tạo camera phối cảnh với góc nhìn 60 độ
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
