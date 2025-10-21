@@ -139,6 +139,7 @@
                             // Update localStorage bingo_user
                             localStorage.removeItem('bingo_user');
                             localStorage.setItem('bingo_user', JSON.stringify(res.data.bingo_user));
+                            clearMarkedCells();
                         }
                     } else {
                         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -217,6 +218,29 @@
                     checkWin();
                 } catch (err) {
                     console.error("Error restoring marked cells:", err);
+                }
+            }
+
+            // Clear marked_cells function
+            function clearMarkedCells() {
+                try {
+                    // Clear the in-memory marks Set
+                    marks.clear();
+
+                    // Remove the 'marked' class from all cells in the DOM
+                    const cells = bingoEl.querySelectorAll('.cell.marked');
+                    cells.forEach(cell => cell.classList.remove('marked'));
+
+                    // Reset localStorage
+                    const defaultMarkedCells = Array.from({
+                        length: 5
+                    }, () => Array(5).fill(false));
+                    localStorage.setItem('marked_cells', JSON.stringify(defaultMarkedCells));
+
+                    // Hide win banner if it was showing
+                    winEl.style.display = 'none';
+                } catch (err) {
+                    console.error("Error clearing marked cells:", err);
                 }
             }
 
@@ -461,6 +485,7 @@
                 if (!confirm('Reset toàn bộ?')) return;
                 await resetBoardGame();
                 await generateCard();
+                await saveBoardGame();
             });
 
             // init
