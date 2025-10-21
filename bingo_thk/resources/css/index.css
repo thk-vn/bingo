@@ -738,21 +738,20 @@ button.reset:active {
 
 .toast {
     position: absolute;
-    bottom: -20%;
-    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: #071022;
-    font-weight: 700;
-    box-shadow: 0 0 25px rgba(20, 246, 255, 0.2), 0 0 25px rgba(255, 78, 198, 0.2);
-    transition: bottom .5s ease, opacity .4s;
-    opacity: 0;
-    display:block;
-    width: calc(100% - 60px);
-    height: auto;
+    top: 18%;
+    right: 10%;
+    left: 10%;
+    background: linear-gradient(90deg, #ff3, #f0f);
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: #071126;
+    font-weight: bold;
+    box-shadow: 0 0 25px #ff3;
+    animation: pulse 1s infinite alternate;
+    width: fit-content;
 }
 
-.toast.show {
-    bottom: 20px;
-    opacity: 1
+@keyframes pulse {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(2); }
 }

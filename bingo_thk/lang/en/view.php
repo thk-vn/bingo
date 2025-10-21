@@ -5,8 +5,8 @@ return [
         'name' => 'Full Name',
         'email' => 'Email',
         'phone_number' => 'Phone Number',
-        'resgister_account' => 'Register Account',
-        'btn_resgister' => 'Register',
+        'info_account' => 'Info Account',
+        'btn_play_now' => 'Play now',
         'start' => '💫 Ready — Let’s play 💫',
         'check_info' => '⚠️ Please fill in all required information!',
         'update' => 'Update Information',
@@ -16,25 +16,25 @@ return [
     'notify' => [
         'bingo_user' => [
             'null_account' => 'Incorrect or unregistered information',
-            'resgister_success' => 'Account registered successfully',
+            'register_success' => 'Account registered successfully',
             'login_success' => 'Login successful',
         ],
         'error' => 'An error occurred. Please try again!',
-        'suceess' => 'New data added successfully',
+        'success' => 'New data added successfully',
     ],
 
     'placeholder' => [
         'name' => 'enter full name...',
         'department' => 'enter department...',
         'phone_number' => 'enter phone number...',
-        'email' => 'enter email...',
+        'email' => 'enter email @thk-hd.vn...',
     ],
 
     'button' => [
         'pending' => 'Processing...',
     ],
 
-    'resgister' => [
+    'register' => [
         'fail' => '❌ Registration failed!',
         'success' => '🎉 Logging in...',
         'error_server' => '⚠️ Server connection error!',
@@ -42,7 +42,7 @@ return [
     ],
 
     'update' => [
-        'nulll_info' => 'User not found',
+        'null_info' => 'User not found',
         'success' => 'Updated successfully',
         'fail' => 'Update failed',
     ],
@@ -50,5 +50,17 @@ return [
     'message' => [
         'successfully_found' => 'Successfully found',
         'successfully_reset' => 'Successfully reset',
+        'now_allow_reset' => 'You are not allowed to reset the game now!!!',
+        'reset_all' => 'Do you want to reset a new game board?',
+        'server_error' => 'Server error!!!',
+    ],
+
+    'rule' => [
+        'validate' => [
+            'error' => 'An error occurred during validation.',
+            'format' => ':attribute format is invalid.',
+            'email'  => 'The email format is invalid.',
+            'email_pattern'=> 'The email must use the domain @thk-hd.vn.',
+        ],
     ],
 ];

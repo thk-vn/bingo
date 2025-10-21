@@ -20,15 +20,15 @@
                 <button id="reset" class="small reset">Reset</button>
             </div>
         </div>
-        <div id="toast" class="toast">
-            {{ __('view.bingo_user.start') }}
-        </div>
     </div>
     <footer class="small">
         © 2025 - THK Holdings Vietnam
     </footer>
 
 @section('script')
+    <script>
+        const resetBoardConfirm = "{{ __('view.bingo_user.check_info') }}";
+    </script>
     <script>
         // Bingo logic
         (function() {
@@ -50,9 +50,12 @@
                 localStorage.setItem('marked_cells', JSON.stringify(defaultMarkedCells));
             }
 
-            function showToast(message) {
-                $toast.text(message).addClass('show');
-                setTimeout(() => $toast.removeClass('show'), 2500);
+           function showToast(msg) {
+                const el = document.createElement("div");
+                el.classList.add("toast");
+                el.innerText = msg;
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 5000);
             }
 
             async function fetchBoardGame() {
@@ -110,7 +113,6 @@
                     }
                 } catch (err) {
                     console.error(err);
-                    showToast(registerErrorServer);
                 }
             }
 
@@ -142,15 +144,11 @@
                             clearMarkedCells();
                         }
                     } else {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
+                        showToast(res.message);
                     }
                 } catch (err) {
-                    console.error(err);
-                    if (err.status === 422 && err.responseJSON?.errors) {
-                        showToast(err.responseJSON.message);
-                    } else {
-                        showToast(registerErrorServer);
-                    }
+                    console.error("Error reset board game:", err);
+                    showToast(err.responseJSON.message);
                 }
             }
 

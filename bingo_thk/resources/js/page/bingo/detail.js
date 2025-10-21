@@ -16,7 +16,7 @@ $(document).ready(function () {
         const phone_number = $("#phone_number").val().trim();
 
         if (!name || !email || !phone_number) {
-            showToast(checkInfomation);
+            showToast(checkInformation);
             return;
         }
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ResgisterBingoUserRequest;
+use App\Http\Requests\RegisterBingoUserRequest;
 use App\Http\Requests\UpdateBingoUserRequest;
 use App\Models\BingoUser;
 use App\Services\BingoUserBoardService;
@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Throwable;
 
 class BingoUserController extends Controller
 {
     private BingoUser $bingoUser;
     private BingoUserBoardService $bingoUserBoardService;
-    private $authBingoUser;
 
     public function __construct(
         BingoUser $bingoUser,
@@ -27,41 +27,59 @@ class BingoUserController extends Controller
     {
         $this->bingoUser = $bingoUser;
         $this->bingoUserBoardService = $bingoUserBoardService;
-        $this->authBingoUser = Auth('bingo')->user();
     }
 
     /**
-     * View login
+     * View register
+     *
+     * @return View
      */
     public function index(): View
     {
-        return view('bingo-user.resgister');
+        return view('bingo-user.register');
     }
 
     /**
-     * Resgister bingo user
+     * Register or login bingo user
+     *
+     * @param RegisterBingoUserRequest $request
+     * @return JsonResponse
      */
-    public function resgister(ResgisterBingoUserRequest $request): JsonResponse
+    public function registerOrLogin(RegisterBingoUserRequest $request): JsonResponse
     {
-        DB::beginTransaction();
         try {
             $data = $request->validated();
-            $bingoUser = $this->bingoUser->create($data);
 
-            DB::commit();
+            $user = DB::transaction(
+                fn() =>
+                $this->bingoUser->
+                    updateOrCreate(
+                        [
+                            'email' => $data['email'] ?? null,
+                            'phone_number' => $data['phone_number'] ?? null
+                        ],
+                        $data
+                    )
+            );
 
-            Auth::guard('bingo')->login($bingoUser);
+            Auth::guard('bingo')->login($user);
 
-            return $this->success($bingoUser, __('view.notify.bingo_user.resgister_success'));
-        } catch (Exception $e) {
-            DB::rollBack();
-
+            return $this->success(
+                $user,
+                $user->wasRecentlyCreated
+                ? __('view.notify.bingo_user.register_success')
+                : __('view.notify.bingo_user.login_success')
+            );
+        } catch (Throwable $e) {
             return $this->error($e->getMessage(), null, __('view.notify.error'));
         }
     }
 
     /**
-     * Check User bingo by infomation
+     * Check User bingo by information
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function checkUser(Request $request): JsonResponse
     {
@@ -81,13 +99,22 @@ class BingoUserController extends Controller
         return $this->error(null, null, __('view.notify.bingo_user.null_account'));
     }
 
-    public function detail(BingoUser $bingoUser)
+    /**
+     * Redirect view detail
+     *
+     * @param BingoUser $bingoUser
+     * @return View
+     */
+    public function detail(BingoUser $bingoUser): View
     {
         return view('bingo-user.detail', compact('bingoUser'));
     }
 
     /**
-     * Update infomation bingo user
+     * Update information bingo user
+     *
+     * @param UpdateBingoUserRequest $request
+     * @return JsonResponse
      */
     public function update(UpdateBingoUserRequest $request): JsonResponse
     {
@@ -110,6 +137,7 @@ class BingoUserController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
+            Log::error($e->getMessage());
             return $this->error($e->getMessage(), null, __('view.notify.error'));
         }
     }
@@ -117,6 +145,7 @@ class BingoUserController extends Controller
     /**
      * Save Board game
      *
+     * @param Request $request
      * @return void
      */
     public function saveBoardGame(Request $request): JsonResponse
@@ -138,7 +167,7 @@ class BingoUserController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e);
-            return $this->error(false, "Sever error!!!");
+            return $this->error(null, __('view.message.server_error'));
         }
     }
 
@@ -164,13 +193,17 @@ class BingoUserController extends Controller
         DB::beginTransaction();
         try {
             $bingoUser = Auth('bingo')->user();
+            $checkGameAllowedReset = $this->bingoUserBoardService->checkGameAllowedReset($bingoUser);
+            if(!$checkGameAllowedReset) {
+                return $this->error(null, null, __('view.message.now_allow_reset'), 400);
+            }
             $this->bingoUserBoardService->resetBoardGame($bingoUser, $request->all());
             DB::commit();
             return $this->success(['bingo_user' => $bingoUser], __('view.message.successfully_reset'));
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e);
-            return $this->error(false, "Sever error!!!");
+            return $this->error(null, __('view.message.server_error'));
         }
     }
 }

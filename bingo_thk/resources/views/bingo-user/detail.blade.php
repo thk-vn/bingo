@@ -61,11 +61,11 @@
 
     @push('section-scripts')
         <script>
-            const checkInfomation = "{{ __('view.bingo_user.check_info') }}";
-            const errroNullInfo = "{{ __('view.update.nulll_info') }}";
+            const checkInformation = "{{ __('view.bingo_user.check_info') }}";
+            const errroNullInfo = "{{ __('view.update.null_info') }}";
             const updateSuccess = "{{ __('view.update.success') }}";
             const updateFail = "{{ __('view.update.fail') }}";
-            const updateErrorServer = "{{ __('view.resgister.error_server') }}";
+            const updateErrorServer = "{{ __('view.register.error_server') }}";
         </script>
         @vite('resources/js/page/bingo/detail.js')
     @endpush

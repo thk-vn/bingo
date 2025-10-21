@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\BingoUser;
 use App\Models\BingoUserBoard;
+use App\Models\Game;
 use Illuminate\Support\Facades\DB;
 
 class BingoUserBoardService
@@ -20,22 +21,6 @@ class BingoUserBoardService
     {
         $bingoUserBoard = new BingoUserBoard();
         $bingoUserBoard->bingo_user_id = $bingoUser->id;
-        $bingoUserBoard->bingo_board = json_encode($bingoBoard);
-        $bingoUserBoard->marked_cells = json_encode($markedCells);
-        return $bingoUserBoard->save();
-    }
-
-    /**
-     * Update user bingo game
-     *
-     * @param array $bingoBoard
-     * @param array $markedCells
-     * @param BingoUser $bingoUser
-     * @return bool
-     */
-    public function update(array $bingoBoard, array $markedCells, BingoUser $bingoUser): bool
-    {
-        $bingoUserBoard = new BingoUserBoard();
         $bingoUserBoard->bingo_board = json_encode($bingoBoard);
         $bingoUserBoard->marked_cells = json_encode($markedCells);
         return $bingoUserBoard->save();
@@ -103,5 +88,20 @@ class BingoUserBoardService
             $bingoUser->reset_key += 1;
             $bingoUser->save();
         }
+    }
+
+    /**
+     * Check game allow reset
+     *
+     * @param BingoUser $bingoUser
+     * @return bool
+     */
+    public function checkGameAllowedReset(BingoUser $bingoUser): bool
+    {
+        $game = Game::first();
+        if($game && $game->reset_key > $bingoUser->reset_key) {
+            return true;
+        }
+        return false;
     }
 }
