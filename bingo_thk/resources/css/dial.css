@@ -47,7 +47,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: linear-gradient(180deg, #16324a, #0f3a68);
+    background: linear-gradient(180deg, #491215, #223447);
     color: var(--neon-color);
     border: 2px solid var(--neon-color);
     padding: 12px 30px;
@@ -94,32 +94,58 @@ body {
     background: radial-gradient(circle at center, darkred, #0f0f1a);
     padding: 20px;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
-    overflow-y: auto;
     z-index: 10;
     border: 2px solid var(--neon-color);
     box-sizing: border-box;
 }
 
 .numbers-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 64px);
-    gap: 12px 12px;
-    margin-top: 10px;
-    justify-content: start;
-    align-content: start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    justify-content: flex-start;
+    align-content: flex-start;
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+    padding-right: 8px;
+    width: 100%;
+}
+
+/* Custom scrollbar styling */
+.numbers-grid::-webkit-scrollbar {
+    width: 5px;
+}
+
+.numbers-grid::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.numbers-grid::-webkit-scrollbar-thumb {
+    background: var(--neon-color);
+    border-radius: 4px;
+    /*box-shadow: 0 0 6px var(--neon-color);*/
+}
+
+.numbers-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--neon-accent);
+    box-shadow: 0 0 8px var(--neon-accent);
 }
 
 .mini-ball {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: calc((100% - 60px) / 6);
+    height: calc((100% - 60px) / 6);
+    min-width: 64px;
+    min-height: 64px;
+    border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, #fff3c4 0%, #f3d991 30%, #e4c47f 60%, #c9a75e 100%);
     box-shadow: inset -6px -10px 14px rgba(0,0,0,0.2), inset 8px 10px 18px rgba(255,255,255,0.35), 0 6px 14px rgba(0,0,0,0.35);
     border: 1px solid rgba(0,0,0,0.15);
     position: relative;
+    flex: 0 0 calc((100% - 60px) / 6);
 }
 
 .mini-ball::after {
@@ -139,23 +165,4 @@ body {
     font-size: 22px;
     color: #da3b42;
     text-shadow: 0 1px 0 rgba(255,255,255,0.35), 0 0 4px rgba(0,0,0,0.25);
-}
-
-@media (max-width: 1200px) {
-    #container {
-        width: 70vw;
-    }
-
-    #drawn-numbers {
-        width: 30vw;
-        height: 100vh;
-    }
-
-    .group-button {
-        width: calc(30vw - 40px);
-    }
-
-    .numbers-grid {
-        grid-template-columns: repeat(5, 1fr);
-    }
 }
