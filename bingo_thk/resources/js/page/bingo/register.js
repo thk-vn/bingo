@@ -1,10 +1,10 @@
 $(document).ready(function () {
-    const $formLogin = $('#loginForm');
-    const $toast = $('#toast');
+    const formLogin = $('#loginForm');
+    const toast = $('#toast');
 
     checkUser();
 
-    $formLogin.on('submit', async function (e) {
+    formLogin.on('submit', async function (e) {
         e.preventDefault();
 
         const name  = $('#name').val().trim();
@@ -69,7 +69,7 @@ $(document).ready(function () {
     }
 
     function showToast(message) {
-        $toast.text(message).addClass('show');
-        setTimeout(() => $toast.removeClass('show'), 2500);
+        toast.text(message).addClass('show');
+        setTimeout(() => toast.removeClass('show'), 2500);
     }
 });
