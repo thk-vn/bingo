@@ -32,6 +32,8 @@ let numberOfBalls = 50 // Tổng số quả cầu hiển thị
 let pendingSpin = false; // Đánh dấu người dùng đã click để quay tiếp sau khi di chuyển winner
 let fireworks = []; // Các hệ hạt pháo hoa đang hoạt động
 const MAX_FIREWORKS = 3; // Giới hạn số lượng pháo hoa tối đa
+let lastCleanup = 0; // Thời gian cleanup cuối cùng
+const CLEANUP_INTERVAL = 30000; // Cleanup mỗi 30 giây
 
 // Logo texture (gắn lên mỗi quả bóng)
 const textureLoader = new THREE.TextureLoader();
@@ -325,13 +327,6 @@ function pickWinner() {
 
         // Remove from group and add to scene
         ballsGroup.remove(winner);
-        winner.traverse(obj => {
-            if (obj.geometry) obj.geometry.dispose();
-            if (obj.material) {
-                if (obj.material?.map && obj.material?.map.isTexture) obj.material.map.dispose();
-                obj.material.dispose();
-            }
-        });
         winner.position.copy(worldPos);
         winner.quaternion.copy(worldQuaternion);
         scene.add(winner);
@@ -432,7 +427,18 @@ function disposeObject(obj) {
             if (child.material) {
                 const materials = Array.isArray(child.material) ? child.material : [child.material];
                 materials.forEach(mat => {
-                    if (mat.map && mat.map.isTexture) mat.map.dispose();
+                    if (mat.map && mat.map.isTexture) {
+                        // Dispose canvas textures properly
+                        if (mat.map.source && mat.map.source.data) {
+                            // This is a canvas texture - clear the canvas
+                            const canvas = mat.map.source.data;
+                            if (canvas && canvas.getContext) {
+                                const ctx = canvas.getContext('2d');
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            }
+                        }
+                        mat.map.dispose();
+                    }
                     mat.dispose();
                 });
             }
@@ -476,10 +482,20 @@ function animate() {
     // Lên lịch frame tiếp theo
     requestAnimationFrame(animate);
 
+    // Lấy thời gian hiện tại (tính bằng mili-giây, độ chính xác cao)
     const now = performance.now();
+    // Nếu đây là frame đầu tiên thì gán thời điểm hiện tại làm mốc ban đầu
     if (!animate.lastTime) animate.lastTime = now;
+    // Tính thời gian trôi qua giữa hai frame (đổi từ mili-giây sang giây)
     const deltaSeconds = (now - animate.lastTime) / 1000;
+    // Cập nhật lại mốc thời gian cho frame tiếp theo
     animate.lastTime = now;
+
+    // Performance monitoring - skip frame if delta is too high
+    if (deltaSeconds > 0.1) {
+        console.warn('Animation lag detected:', deltaSeconds);
+        return;
+    }
 
     // ===== XỬ LÝ KHI ĐANG QUAY =====
     if (isSpinning) {
@@ -507,8 +523,15 @@ function animate() {
         ballsGroup.rotation.y += 0.01;
     }
 
-    updateBallFacingCamera(); // Giúp các quả cầu luôn hướng về camera
+    handleBallFacingCamera(); // Giúp các quả cầu luôn hướng về camera
     updateFireworks(deltaSeconds); // Cập nhật pháo hoa
+
+    // Periodic cleanup to prevent memory leaks
+    if (now - lastCleanup > CLEANUP_INTERVAL) {
+        performPeriodicCleanup();
+        lastCleanup = now;
+    }
+
     renderer.render(scene, camera); // Vẽ scene lên màn hình
 }
 
@@ -542,17 +565,21 @@ function updateBallMotionWhileSpinning() {
                 ball.position.setLength(5.2); // Đặt lại vị trí về biên
             }
 
-            // Thêm chuyển động hỗn loạn ngẫu nhiên (60% khả năng) - tăng tần suất
-            if (Math.random() < 0.8) {
-                ball.userData.velocity.x += (Math.random() - 0.5) * 0.05; // Tăng cường độ
-                ball.userData.velocity.y += (Math.random() - 0.5) * 0.05;
-                ball.userData.velocity.z += (Math.random() - 0.5) * 0.05;
+            // Thêm chuyển động hỗn loạn ngẫu nhiên (giảm tần suất để tối ưu)
+            if (Math.random() < 0.3) { // Giảm từ 0.8 xuống 0.3
+                const randomFactor = (Math.random() - 0.5) * 0.05;
+                ball.userData.velocity.x += randomFactor;
+                ball.userData.velocity.y += randomFactor;
+                ball.userData.velocity.z += randomFactor;
             }
 
-            // Thêm xoay ngẫu nhiên cho từng quả cầu
-            ball.rotation.x += (Math.random() - 0.5) * 0.1;
-            ball.rotation.y += (Math.random() - 0.5) * 0.1;
-            ball.rotation.z += (Math.random() - 0.5) * 0.1;
+            // Thêm xoay ngẫu nhiên cho từng quả cầu (giảm tần suất)
+            if (Math.random() < 0.2) { // Chỉ 20% khả năng xoay
+                const rotationFactor = (Math.random() - 0.5) * 0.1;
+                ball.rotation.x += rotationFactor;
+                ball.rotation.y += rotationFactor;
+                ball.rotation.z += rotationFactor;
+            }
 
             // Giới hạn vận tốc tối đa - tăng để xáo trộn nhiều hơn
             const speed = ball.userData.velocity.length();
@@ -649,8 +676,9 @@ function animateWinnerMoveToGrid() {
         // Cập nhật grid và xóa quả cầu
         const number = winnerBall.userData.number;
 
-        // Xóa quả cầu khỏi scene
+        // Xóa quả cầu khỏi scene và dispose resources
         scene.remove(winnerBall);
+        disposeObject(winnerBall); // Properly dispose textures and materials
         balls = balls.filter(b => b !== winnerBall);
         winnerBall = null;
 
@@ -668,7 +696,7 @@ function animateWinnerMoveToGrid() {
 }
 
 // Xử lý để tất cả quả cầu luôn hướng về camera
-function updateBallFacingCamera() {
+function handleBallFacingCamera() {
     // Làm tất cả quả cầu hướng về camera (trừ quả cầu đang rơi)
     balls.forEach(ball => {
         if (!ball.userData.isFalling) {
@@ -767,7 +795,7 @@ function moveWinnerBallToCell(targetCell) {
 function spawnFireworksAroundWinner() {
     if (!winnerBall) return;
 
-    // Giới hạn số lượng pháo hoa - xóa cũ nếu quá nhiều
+    // Giới hạn số lượng pháo hoa
     while (fireworks.length >= MAX_FIREWORKS) {
         const oldFirework = fireworks.shift();
         if (oldFirework && oldFirework.parent) {
@@ -777,56 +805,116 @@ function spawnFireworksAroundWinner() {
         }
     }
 
+    // Lấy vị trí thực tế của quả bóng thắng
     const worldPos = new THREE.Vector3();
     winnerBall.getWorldPosition(worldPos);
-    // Spawn few bursts around the winner (slightly more particles)
-    spawnFireworks(worldPos, 0xffdd66, 300);
-    spawnFireworks(worldPos.clone().add(new THREE.Vector3(0.3, 0.2, 0)), 0x66eeff, 200);
-    spawnFireworks(worldPos.clone().add(new THREE.Vector3(-0.25, -0.15, 0)), 0xff66cc, 100);
+
+    // Số lượng vụ nổ phụ quanh quả bóng (3–5 ngẫu nhiên)
+    const burstCount = 3 + Math.floor(Math.random() * 3);
+
+    for (let i = 0; i < burstCount; i++) {
+        // Ngẫu nhiên vị trí lệch trong phạm vi ±0.5 quanh quả bóng
+        const offset = new THREE.Vector3(
+            (Math.random() - 0.5) * 1.0, // X
+            (Math.random() - 0.5) * 1.0, // Y
+            (Math.random() - 0.5) * 0.5  // Z
+        );
+
+        // Chọn màu ngẫu nhiên từ danh sách tươi sáng
+        const colors = [
+            0xffdd66, // vàng sáng
+            0x66eeff, // xanh cyan
+            0xff66cc, // hồng tím
+            0x99ff99, // xanh lá nhạt
+            0xff9966, // cam đào
+            0xffffff, // trắng tinh (hiệu ứng lóe sáng)
+            0xff3333, // đỏ tươi
+            0x33ff77, // xanh neon
+            0x3366ff, // xanh lam đậm
+            0xcc99ff, // tím lavender
+            0xffff66, // vàng chanh
+            0xffccff  // hồng pastel
+        ];
+
+        // const color = colors[Math.floor(Math.random() * colors.length)];
+        const baseColor = new THREE.Color(colors[Math.floor(Math.random() * colors.length)]);
+        const color = baseColor.multiplyScalar(0.8 + Math.random() * 0.4);
+
+        // Ngẫu nhiên số hạt và độ sáng ban đầu
+        const particleCount = 1000 + Math.floor(Math.random() * 2000);
+        const spawnPos = worldPos.clone().add(offset);
+
+        // Tạo pháo hoa
+        const firework = spawnFireworks(spawnPos, color, particleCount);
+
+        // Hiệu ứng sáng lóe lúc đầu → mờ dần (fade-out)
+        if (firework && firework.material) {
+            firework.material.transparent = true;
+            firework.material.opacity = 1.5; // sáng hơn bình thường
+            gsap.to(firework.material, {
+                opacity: 0,
+                duration: 2.2,
+                ease: "power2.out"
+            });
+        }
+    }
 }
 
-function spawnFireworks(origin, colorHex = 0xffcc33, particleCount = 60) {
+// Hàm tạo pháo hoa (nổ tại vị trí origin)
+function spawnFireworks(origin, colorHex = 0xffcc33, particleCount = 80) {
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
     const lifetimes = new Float32Array(particleCount);
 
+    // Sinh ngẫu nhiên hạt pháo hoa
     for (let i = 0; i < particleCount; i++) {
-        positions[i * 3 + 0] = origin.x;
-        positions[i * 3 + 1] = origin.y;
-        positions[i * 3 + 2] = origin.z;
+        // Random vị trí gốc lệch ±0.5 để pháo hoa tản đều
+        const offset = new THREE.Vector3(
+            (Math.random() - 0.5) * 0.5,
+            (Math.random() - 0.5) * 0.5,
+            (Math.random() - 0.5) * 0.5
+        );
 
-        // random spherical direction
+        positions[i * 3 + 0] = origin.x + offset.x;
+        positions[i * 3 + 1] = origin.y + offset.y;
+        positions[i * 3 + 2] = origin.z + offset.z;
+
+        // random hướng bay (trên mặt cầu)
         const theta = Math.acos(2 * Math.random() - 1);
         const phi = 2 * Math.PI * Math.random();
         const speed = 0.05 + Math.random() * 0.12;
+
         velocities[i * 3 + 0] = Math.sin(theta) * Math.cos(phi) * speed;
         velocities[i * 3 + 1] = Math.cos(theta) * speed;
         velocities[i * 3 + 2] = Math.sin(theta) * Math.sin(phi) * speed;
 
-        lifetimes[i] = 0.9 + Math.random() * 0.5; // seconds
+        // Thời gian sống mỗi hạt (giây)
+        lifetimes[i] = 0.9 + Math.random() * 0.6;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
     geometry.setAttribute('lifetime', new THREE.BufferAttribute(lifetimes, 1));
 
+    // Vật liệu hạt pháo hoa (ánh sáng cộng dồn để sáng rực)
     const material = new THREE.PointsMaterial({
         color: colorHex,
-        size: 0.07,
+        size: 0.08,
         transparent: true,
         opacity: 1,
-        depthWrite: false
+        blending: THREE.AdditiveBlending, // tạo hiệu ứng sáng
+        depthWrite: false,
+        sizeAttenuation: true // giảm kích thước khi xa camera
     });
 
     const points = new THREE.Points(geometry, material);
-    points.userData = {
-        age: 0
-    };
+    points.userData = { age: 0 };
     scene.add(points);
     fireworks.push(points);
 }
 
+// Cập nhật pháo hoa mỗi frame
 function updateFireworks(deltaSeconds) {
     const gravity = -0.25;
     for (let i = fireworks.length - 1; i >= 0; i--) {
@@ -837,27 +925,62 @@ function updateFireworks(deltaSeconds) {
         const lifetimes = geom.attributes.lifetime.array;
 
         sys.userData.age += deltaSeconds;
-
-        const dt = deltaSeconds;
         let maxOpacity = 0;
         for (let p = 0; p < lifetimes.length; p++) {
             const base = p * 3;
-            velocities[base + 1] += gravity * dt; // gravity on Y
-            positions[base + 0] += velocities[base + 0];
-            positions[base + 1] += velocities[base + 1];
-            positions[base + 2] += velocities[base + 2];
-            lifetimes[p] -= dt;
+
+            // Trọng lực (giảm vận tốc Y)
+            velocities[base + 1] += gravity * deltaSeconds * 0.5;
+
+            // Lưu vị trí cũ để tạo đuôi mờ
+            const trailFactor = 0.98; // độ mờ của đuôi
+            positions[base + 0] += velocities[base + 0] * trailFactor;
+            positions[base + 1] += velocities[base + 1] * trailFactor;
+            positions[base + 2] += velocities[base + 2] * trailFactor;
+
+            // Giảm dần thời gian sống
+            lifetimes[p] -= deltaSeconds * 0.7;
+
+            // Lưu opacity tối đa cho toàn hệ
             if (lifetimes[p] > maxOpacity) maxOpacity = lifetimes[p];
         }
 
+        // Cập nhật hiển thị
         geom.attributes.position.needsUpdate = true;
-        sys.material.opacity = Math.max(0, Math.min(1, maxOpacity));
+        sys.material.opacity = Math.max(0, Math.min(1, maxOpacity * 1.5));
 
-        // cleanup
+        // Giảm dần kích thước hạt theo thời gian (đuôi nhỏ dần)
+        sys.material.size *= 0.995;
+
+        // Xóa nếu đã tắt
         const alive = lifetimes.some(v => v > 0);
         if (!alive || sys.userData.age > 2.2) {
             scene.remove(sys);
+            sys.geometry.dispose();
+            sys.material.dispose();
             fireworks.splice(i, 1);
         }
+    }
+}
+
+// Periodic cleanup to prevent memory leaks
+function performPeriodicCleanup() {
+    console.log('Performing periodic cleanup...');
+
+    // Force garbage collection if available
+    if (window.gc) {
+        window.gc();
+    }
+
+    // Clean up any orphaned fireworks
+    cleanupAllFireworks();
+
+    // Log memory usage
+    if (performance.memory) {
+        console.log('Memory usage:', {
+            used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + 'MB',
+            total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024) + 'MB',
+            limit: Math.round(performance.memory.jsHeapSizeLimit / 1024 / 1024) + 'MB'
+        });
     }
 }
