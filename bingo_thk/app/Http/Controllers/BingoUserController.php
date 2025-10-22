@@ -56,7 +56,6 @@ class BingoUserController extends Controller
                     updateOrCreate(
                         [
                             'email' => $data['email'] ?? null,
-                            'phone_number' => $data['phone_number'] ?? null
                         ],
                         $data
                     )
