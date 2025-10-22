@@ -739,8 +739,6 @@ button.reset:active {
 .toast {
     position: absolute;
     top: 18%;
-    right: 10%;
-    left: 10%;
     background: linear-gradient(90deg, #ff3, #f0f);
     padding: 12px 20px;
     border-radius: 8px;
@@ -754,4 +752,12 @@ button.reset:active {
 @keyframes pulse {
   0% { filter: brightness(1); }
   100% { filter: brightness(2); }
+}
+
+
+@media(max-width: 425px) {
+  .toast {
+    left: 5%;
+    right: 5%;
+  }
 }
