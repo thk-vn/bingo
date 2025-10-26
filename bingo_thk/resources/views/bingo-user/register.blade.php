@@ -8,7 +8,7 @@
     <div class="card">
         <h1 class="neon-title">
             <span class="logo-dot"></span>
-            {{ __("view.bingo_user.resgister_account") }}
+            {{ __("view.bingo_user.info_account") }}
         </h1>
 
         <form id="loginForm" action="" method="POST">
@@ -29,7 +29,7 @@
                 placeholder="{{ __('view.placeholder.phone_number') }}"
             />
             <button id="loginBtn" class="btn" type="submit">
-                {{ __("view.bingo_user.btn_resgister") }}
+                {{ __("view.bingo_user.btn_play_now") }}
             </button>
 
             <div class="footer">
@@ -58,14 +58,14 @@
 
     @push('section-scripts')
         <script>
-            const checkInfomation = "{{ __('view.bingo_user.check_info') }}";
+            const checkInformation = "{{ __('view.bingo_user.check_info') }}";
             const buttonPending = "{{ __('view.button.pending') }}";
-            const resgisterFail = "{{ __('view.resgister.fail') }}";
-            const resgisterSuccess = "{{ __('view.resgister.success') }}";
-            const resgisterErrorServer = "{{ __('view.resgister.error_server') }}";
-            const resgisterGoBack = "{{ __('view.resgister.go_back') }}";
+            const registerFail = "{{ __('view.register.fail') }}";
+            const registerSuccess = "{{ __('view.register.success') }}";
+            const registerErrorServer = "{{ __('view.register.error_server') }}";
+            const registerGoBack = "{{ __('view.register.go_back') }}";
         </script>
-        @vite('resources/js/page/bingo/resgister.js')
+        @vite('resources/js/page/bingo/register.js')
     @endpush
 
 @endsection

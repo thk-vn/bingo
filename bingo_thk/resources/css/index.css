@@ -1,13 +1,15 @@
 :root {
-    --bg: #0f1724;
-    --card: #071126;
-    --accent: #ffb020;
-    --accent-2: #22c1c3;
-    --muted: #94a3b8;
-    --win: #10b981;
-    --font-color: #222222;
-    --neon-color: #00f7ff;     /* Xanh ngọc sáng hơn */
-    --neon-accent: #32ffe0;    /* Xanh cyan pha ngọc */
+  --bg: #0f1724;
+  --card: #071126;
+  --accent: #ffb020;
+  --accent-2: #22c1c3;
+  --muted: #94a3b8;
+  --win: #10b981;
+  --font-color: #222222;
+  --neon-color: #00f7ff;
+  /* Xanh ngọc sáng hơn */
+  --neon-accent: #32ffe0;
+  /* Xanh cyan pha ngọc */
 }
 
 body {
@@ -24,36 +26,44 @@ body {
 }
 
 .app {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /*logo*/
 .logo-fixed {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    font-size: 48px;
-    font-weight: 900;
-    font-family: 'Poppins', sans-serif;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, #00eaff, #ff00ff, #ff9900);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: hueRotate 5s linear infinite;
-    filter: drop-shadow(0 0 8px #00eaff) drop-shadow(0 0 16px #ff00ff);
-    user-select: none;
-    z-index: 999;
-    cursor: default;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 48px;
+  font-weight: 900;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #00eaff, #ff00ff, #ff9900);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hueRotate 5s linear infinite;
+  filter: drop-shadow(0 0 8px #00eaff) drop-shadow(0 0 16px #ff00ff);
+  user-select: none;
+  z-index: 999;
+  cursor: default;
 }
 
 @keyframes hueRotate {
-    0% { filter: hue-rotate(0deg) drop-shadow(0 0 8px #00eaff) drop-shadow(0 0 16px #ff00ff); }
-    50% { filter: hue-rotate(180deg) drop-shadow(0 0 8px #ff00ff) drop-shadow(0 0 20px #00ffff); }
-    100% { filter: hue-rotate(360deg) drop-shadow(0 0 8px #00eaff) drop-shadow(0 0 16px #ff00ff); }
+  0% {
+    filter: hue-rotate(0deg) drop-shadow(0 0 8px #00eaff) drop-shadow(0 0 16px #ff00ff);
+  }
+
+  50% {
+    filter: hue-rotate(180deg) drop-shadow(0 0 8px #ff00ff) drop-shadow(0 0 20px #00ffff);
+  }
+
+  100% {
+    filter: hue-rotate(360deg) drop-shadow(0 0 8px #00eaff) drop-shadow(0 0 16px #ff00ff);
+  }
 }
 
 h1 {
@@ -69,63 +79,72 @@ p.lead {
 }
 
 .card-wrap {
-    position: relative;
-    display: inline-block;
-    padding: 24px;
-    border-radius: 24px;
-    background: radial-gradient(circle at center, #1b1b2f, #0f0f1a);
-    box-shadow:
-        0 0 25px rgba(0, 255, 255, 0.25),
-        0 0 60px rgba(255, 0, 255, 0.15);
-    transition: all 0.4s ease;
-    overflow: hidden;
+  position: relative;
+  display: inline-block;
+  padding: 24px;
+  border-radius: 24px;
+  background: radial-gradient(circle at center, #1b1b2f, #0f0f1a);
+  box-shadow:
+    0 0 25px rgba(0, 255, 255, 0.25),
+    0 0 60px rgba(255, 0, 255, 0.15);
+  transition: all 0.4s ease;
+  overflow: hidden;
 }
 
 .card-wrap::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 24px;
-    padding: 2px;
-    background: linear-gradient(135deg, #00eaff, #ff00ff, #00ffcc, #ff0077);
-    background-size: 400%;
-    -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: borderflow 5s linear infinite;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 2px;
+  background: linear-gradient(135deg, #00eaff, #ff00ff, #00ffcc, #ff0077);
+  background-size: 400%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: borderflow 5s linear infinite;
 }
 
 @keyframes borderflow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Khi trúng Bingo – hiệu ứng nhịp sáng */
 .card-wrap.bingo-flash {
-    box-shadow:
-        0 0 30px rgba(255, 255, 255, 0.8),
-        0 0 80px rgba(0, 255, 200, 0.5),
-        0 0 120px rgba(255, 0, 255, 0.4);
-    animation: flash 1.5s ease-in-out infinite alternate;
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.8),
+    0 0 80px rgba(0, 255, 200, 0.5),
+    0 0 120px rgba(255, 0, 255, 0.4);
+  animation: flash 1.5s ease-in-out infinite alternate;
 }
 
 @keyframes flash {
-    from {
-        filter: brightness(1);
-    }
-    to {
-        filter: brightness(1.4);
-    }
+  from {
+    filter: brightness(1);
+  }
+
+  to {
+    filter: brightness(1.4);
+  }
 }
 
 .bingo {
-    display: grid;
-    grid-template-columns: repeat(5, 70px);
-    grid-gap: 10px;
-    justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(5, 70px);
+  grid-gap: 10px;
+  justify-content: center;
 }
 
 .bingo-header {
@@ -182,113 +201,112 @@ p.lead {
 }
 
 .cell {
-    position: relative;
-    width: 70px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(
-        145deg,
-        rgba(0, 255, 255, 0.08) 0%,
-        rgba(0, 200, 255, 0.04) 50%,
-        rgba(255, 255, 255, 0.02) 100%
-    );
-    border: 2px solid var(--neon-accent);
-    border-radius: 10px;
-    font-size: 1.4rem;
-    font-weight: 500; /* Chữ mảnh vừa */
-    letter-spacing: 0.5px;
-    color: var(--neon-color);
-    text-shadow: 0 0 6px var(--neon-color), 0 0 16px var(--neon-accent);
-    cursor: pointer;
-    transition: all 0.25s ease;
-    backdrop-filter: blur(6px);
-    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.04);
-    animation: textPulse 2.5s infinite alternate ease-in-out;
+  position: relative;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg,
+      rgba(0, 255, 255, 0.08) 0%,
+      rgba(0, 200, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.02) 100%);
+  border: 2px solid var(--neon-accent);
+  border-radius: 10px;
+  font-size: 1.4rem;
+  font-weight: 500;
+  /* Chữ mảnh vừa */
+  letter-spacing: 0.5px;
+  color: var(--neon-color);
+  text-shadow: 0 0 6px var(--neon-color), 0 0 16px var(--neon-accent);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.04);
+  animation: textPulse 2.5s infinite alternate ease-in-out;
 }
 
 @keyframes textPulse {
-    0% {
-        text-shadow: 0 0 4px var(--neon-color), 0 0 10px var(--neon-accent);
-    }
-    100% {
-        text-shadow: 0 0 8px var(--neon-accent), 0 0 20px var(--neon-color);
-    }
+  0% {
+    text-shadow: 0 0 4px var(--neon-color), 0 0 10px var(--neon-accent);
+  }
+
+  100% {
+    text-shadow: 0 0 8px var(--neon-accent), 0 0 20px var(--neon-color);
+  }
 }
 
 .cell:nth-child(odd) {
-    background: linear-gradient(145deg, rgba(0,255,200,0.08), rgba(0,100,255,0.04));
+  background: linear-gradient(145deg, rgba(0, 255, 200, 0.08), rgba(0, 100, 255, 0.04));
 }
 
 .cell:hover {
-    transform: scale(1.08);
-    background: linear-gradient(
-        145deg,
-        rgba(0, 255, 255, 0.25) 0%,
-        rgba(0, 200, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0.05) 100%
-    );
-    box-shadow:
-        0 0 10px var(--neon-color),
-        0 0 25px var(--neon-accent),
-        inset 0 0 10px rgba(255,255,255,0.1);
+  transform: scale(1.08);
+  background: linear-gradient(145deg,
+      rgba(0, 255, 255, 0.25) 0%,
+      rgba(0, 200, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.05) 100%);
+  box-shadow:
+    0 0 10px var(--neon-color),
+    0 0 25px var(--neon-accent),
+    inset 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 .cell.active {
-    background: var(--neon-accent);
-    color: #fff;
-    box-shadow: 0 0 25px var(--neon-accent), 0 0 50px var(--neon-color);
-    transform: scale(1.08);
+  background: var(--neon-accent);
+  color: #fff;
+  box-shadow: 0 0 25px var(--neon-accent), 0 0 50px var(--neon-color);
+  transform: scale(1.08);
 }
 
 @keyframes neonSweep {
-    0% {
-        box-shadow: 0 0 6px var(--neon-accent),
-        inset 0 0 8px rgba(255,255,255,0.1);
-        background: linear-gradient(
-            90deg,
-            rgba(255,255,255,0.1) 0%,
-            var(--neon-color) 50%,
-            rgba(255,255,255,0.1) 100%
-        );
-        background-size: 200% 100%;
-        background-position: -100% 0;
-    }
-    100% {
-        background-position: 100% 0;
-        box-shadow:
-            0 0 15px var(--neon-color),
-            0 0 40px var(--neon-accent),
-            inset 0 0 10px rgba(255,255,255,0.2);
-    }
+  0% {
+    box-shadow: 0 0 6px var(--neon-accent),
+      inset 0 0 8px rgba(255, 255, 255, 0.1);
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        var(--neon-color) 50%,
+        rgba(255, 255, 255, 0.1) 100%);
+    background-size: 200% 100%;
+    background-position: -100% 0;
+  }
+
+  100% {
+    background-position: 100% 0;
+    box-shadow:
+      0 0 15px var(--neon-color),
+      0 0 40px var(--neon-accent),
+      inset 0 0 10px rgba(255, 255, 255, 0.2);
+  }
 }
 
 .cell.bingo-wave {
-    animation: neonSweep 1.4s ease-in-out forwards;
+  animation: neonSweep 1.4s ease-in-out forwards;
 }
 
 /* Reflection glow */
 .cell::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 10px;
-    background: radial-gradient(circle at top, rgba(255,255,255,0.15), transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.15), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
+
 .cell:hover::after {
-    opacity: 1;
+  opacity: 1;
 }
+
 .cell.marked {
-    background: linear-gradient(180deg, var(--accent), #ffa44a);
-    color: #071126;
-    box-shadow:
-        0 0 8px rgba(255, 176, 32, 0.6),
-        0 0 20px rgba(255, 176, 32, 0.4),
-        inset 0 0 8px rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
+  background: linear-gradient(180deg, var(--accent), #ffa44a);
+  color: #071126;
+  box-shadow:
+    0 0 8px rgba(255, 176, 32, 0.6),
+    0 0 20px rgba(255, 176, 32, 0.4),
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
 
 .cell.free {
@@ -321,27 +339,28 @@ button.reset {
 }
 
 @keyframes pulseGlow {
-    0% {
-        text-shadow:
-            0 0 5px var(--neon-color),
-            0 0 10px var(--neon-color),
-            0 0 20px var(--neon-accent),
-            0 0 40px var(--neon-accent);
-        box-shadow:
-            0 0 5px var(--neon-color),
-            0 0 15px var(--neon-accent),
-            inset 0 0 5px rgba(255,255,255,0.1);
-    }
-    100% {
-        text-shadow:
-            0 0 10px var(--neon-accent),
-            0 0 25px var(--neon-accent),
-            0 0 50px var(--neon-accent);
-        box-shadow:
-            0 0 10px var(--neon-color),
-            0 0 30px var(--neon-accent),
-            inset 0 0 10px rgba(255,255,255,0.2);
-    }
+  0% {
+    text-shadow:
+      0 0 5px var(--neon-color),
+      0 0 10px var(--neon-color),
+      0 0 20px var(--neon-accent),
+      0 0 40px var(--neon-accent);
+    box-shadow:
+      0 0 5px var(--neon-color),
+      0 0 15px var(--neon-accent),
+      inset 0 0 5px rgba(255, 255, 255, 0.1);
+  }
+
+  100% {
+    text-shadow:
+      0 0 10px var(--neon-accent),
+      0 0 25px var(--neon-accent),
+      0 0 50px var(--neon-accent);
+    box-shadow:
+      0 0 10px var(--neon-color),
+      0 0 30px var(--neon-accent),
+      inset 0 0 10px rgba(255, 255, 255, 0.2);
+  }
 }
 
 button.warn {
@@ -407,13 +426,13 @@ button.warn {
 }
 
 footer.small {
-    color: var(--muted);
-    font-size: 12px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
 }
 
 /* === NÚT RESET NEON FIXED === */
@@ -442,37 +461,37 @@ button.reset {
     align-items: center;
     gap: 8px;
     animation: pulseGlow 2s infinite alternate;
-    margin-right: 170px;
+    /* margin-right: 170px; */
 }
 
 button.reset::before {
-    content: "↻";
-    font-size: 18px;
-    color: var(--neon-accent);
-    text-shadow: 0 0 6px var(--neon-accent), 0 0 12px var(--neon-color);
-    display: inline-block;
-    transform-origin: center;
-    transition: transform 0.3s ease;
+  content: "↻";
+  font-size: 18px;
+  color: var(--neon-accent);
+  text-shadow: 0 0 6px var(--neon-accent), 0 0 12px var(--neon-color);
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 0.3s ease;
 }
 
 button.reset:hover {
-    color: var(--neon-accent);
-    transform: scale(1.08);
-    box-shadow:
-        0 0 12px var(--neon-color),
-        0 0 30px var(--neon-accent),
-        inset 0 0 10px rgba(255,255,255,0.2);
+  color: var(--neon-accent);
+  transform: scale(1.08);
+  box-shadow:
+    0 0 12px var(--neon-color),
+    0 0 30px var(--neon-accent),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 button.reset:hover::before {
-    transform: rotate(360deg);
+  transform: rotate(360deg);
 }
 
 button.reset:active {
-    transform: scale(0.95);
-    box-shadow:
-        0 0 8px var(--neon-accent),
-        0 0 20px var(--neon-color);
+  transform: scale(0.95);
+  box-shadow:
+    0 0 8px var(--neon-accent),
+    0 0 20px var(--neon-color);
 }
 
 .info {
@@ -503,11 +522,12 @@ button.reset:active {
     text-decoration: none;
 }
 
-.info::before {
+.info::before, .user-info a::before {
     content: "👨‍💼";
+    margin-right: 5px;
     font-size: 18px;
-    color: var(--neon-accent);
-    text-shadow: 0 0 6px var(--neon-accent), 0 0 12px var(--neon-color);
+    /* color: var(--neon-accent); */
+    /* text-shadow: 0 0 6px var(--neon-accent), 0 0 12px var(--neon-color); */
     display: inline-block;
     transform-origin: center;
     transition: transform 0.3s ease;
@@ -530,118 +550,214 @@ button.reset:active {
 }
 
 @keyframes pulseGlow {
-    0% {
-        text-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-accent);
-        box-shadow:
-            0 0 6px var(--neon-color),
-            0 0 18px var(--neon-accent),
-            inset 0 0 6px rgba(255,255,255,0.1);
-    }
-    100% {
-        text-shadow: 0 0 10px var(--neon-accent), 0 0 30px var(--neon-accent);
-        box-shadow:
-            0 0 12px var(--neon-color),
-            0 0 36px var(--neon-accent),
-            inset 0 0 10px rgba(255,255,255,0.2);
-    }
+  0% {
+    text-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-accent);
+    box-shadow:
+      0 0 6px var(--neon-color),
+      0 0 18px var(--neon-accent),
+      inset 0 0 6px rgba(255, 255, 255, 0.1);
+  }
+
+  100% {
+    text-shadow: 0 0 10px var(--neon-accent), 0 0 30px var(--neon-accent);
+    box-shadow:
+      0 0 12px var(--neon-color),
+      0 0 36px var(--neon-accent),
+      inset 0 0 10px rgba(255, 255, 255, 0.2);
+  }
 }
 
 @keyframes neonSweep {
-    0% {
-        background: linear-gradient(
-            90deg,
-            rgba(255,255,255,0.1) 0%,
-            var(--neon-accent) 50%,
-            rgba(255,255,255,0.1) 100%
-        );
-        background-size: 200% 100%;
-        background-position: -100% 0;
-        box-shadow:
-            0 0 8px var(--neon-color),
-            0 0 20px var(--neon-accent);
-    }
-    100% {
-        background-position: 100% 0;
-        box-shadow:
-            0 0 20px var(--neon-color),
-            0 0 40px var(--neon-accent);
-    }
+  0% {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        var(--neon-accent) 50%,
+        rgba(255, 255, 255, 0.1) 100%);
+    background-size: 200% 100%;
+    background-position: -100% 0;
+    box-shadow:
+      0 0 8px var(--neon-color),
+      0 0 20px var(--neon-accent);
+  }
+
+  100% {
+    background-position: 100% 0;
+    box-shadow:
+      0 0 20px var(--neon-color),
+      0 0 40px var(--neon-accent);
+  }
 }
 
 .cell.bingo-wave {
-    animation: neonSweep 1.2s ease-in-out forwards;
-    color: var(--neon-accent);
-    text-shadow: 0 0 8px var(--neon-color), 0 0 16px var(--neon-accent);
+  animation: neonSweep 1.2s ease-in-out forwards;
+  color: var(--neon-accent);
+  text-shadow: 0 0 8px var(--neon-color), 0 0 16px var(--neon-accent);
 }
 
 /* Hiệu ứng nổ sáng khi thắng */
 @keyframes flashBang {
-    0%, 100% { box-shadow: 0 0 0px transparent; }
-    50% { box-shadow: 0 0 60px var(--neon-accent); }
+  0%, 100% {
+    box-shadow: 0 0 0px transparent;
+  }
+
+  50% {
+    box-shadow: 0 0 60px var(--neon-accent);
+  }
 }
+
 .card-wrap.bingo-flash {
-    animation: flashBang 1.5s ease;
+  animation: flashBang 1.5s ease;
 }
 
 .win-banner.show-bingo {
-    display: block;
-    font-size: 2.6rem;
-    letter-spacing: 6px;
-    color: var(--neon-accent);
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: 800;
-    animation: bingoGlow 2.2s ease-in-out infinite alternate,
+  display: block;
+  font-size: 2.6rem;
+  letter-spacing: 6px;
+  color: var(--neon-accent);
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 800;
+  animation: bingoGlow 2.2s ease-in-out infinite alternate,
     bingoWave 4s linear infinite;
-    background: radial-gradient(circle at center, rgba(0,255,200,0.08), transparent 60%);
-    text-shadow:
-        0 0 10px var(--neon-color),
-        0 0 25px var(--neon-accent),
-        0 0 50px var(--neon-accent);
+  background: radial-gradient(circle at center, rgba(0, 255, 200, 0.08), transparent 60%);
+  text-shadow:
+    0 0 10px var(--neon-color),
+    0 0 25px var(--neon-accent),
+    0 0 50px var(--neon-accent);
 }
 
 @keyframes bingoGlow {
-    0% {
-        text-shadow:
-            0 0 6px var(--neon-color),
-            0 0 20px var(--neon-accent),
-            0 0 40px var(--neon-color);
-        transform: scale(1);
-    }
-    100% {
-        text-shadow:
-            0 0 12px var(--neon-accent),
-            0 0 40px var(--neon-color),
-            0 0 80px var(--neon-accent);
-        transform: scale(1.1);
-    }
+  0% {
+    text-shadow:
+      0 0 6px var(--neon-color),
+      0 0 20px var(--neon-accent),
+      0 0 40px var(--neon-color);
+    transform: scale(1);
+  }
+
+  100% {
+    text-shadow:
+      0 0 12px var(--neon-accent),
+      0 0 40px var(--neon-color),
+      0 0 80px var(--neon-accent);
+    transform: scale(1.1);
+  }
 }
 
 /* Tia sáng quét ngang qua chữ */
 @keyframes bingoWave {
-    0% {
-        background: linear-gradient(
-            90deg,
-            rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.8) 50%,
-            rgba(255,255,255,0) 100%
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-size: 200% 100%;
-        background-position: -100% 0;
-    }
-    100% {
-        background-position: 100% 0;
-    }
+  0% {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
+    background-position: -100% 0;
+  }
+
+  100% {
+    background-position: 100% 0;
+  }
 }
+
 @media(max-width:880px) {
   .app {
     grid-template-columns: 1fr;
   }
 
   .bingo-header .col, .cell {
-    width: 56px;
-    height: 56px;
+    width: 12vw;
+    height: 12vw;
+  }
+}
+
+.user-info {
+  position: absolute;
+  top: 12%;
+  left: 20px;
+  border-radius: 14px;
+  font-weight: 900;
+  font-size: 24px;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500, 0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
+  animation: blink 12s infinite;
+  -webkit-animation: blink 12s infinite;
+}
+
+@-webkit-keyframes blink {
+
+  20%,
+  24%,
+  55% {
+    color: #111;
+    text-shadow: none;
+  }
+
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500, 0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
+    color: #fff6a9;
+  }
+}
+
+@keyframes blink {
+
+  20%,
+  24%,
+  55% {
+    color: #111;
+    text-shadow: none;
+  }
+
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500, 0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
+    color: #fff6a9;
+  }
+}
+
+.user-info a {
+  font-size: 14px;
+  text-decoration: none;
+  color: #fff6a9 !important;
+}
+
+.toast {
+    position: absolute;
+    top: 18%;
+    background: linear-gradient(90deg, #ff3, #f0f);
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: #071126;
+    font-weight: bold;
+    box-shadow: 0 0 25px #ff3;
+    animation: pulse 1s infinite alternate;
+    width: fit-content;
+}
+
+@keyframes pulse {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(2); }
+}
+
+
+@media(max-width: 425px) {
+  .toast {
+    left: 5%;
+    right: 5%;
   }
 }

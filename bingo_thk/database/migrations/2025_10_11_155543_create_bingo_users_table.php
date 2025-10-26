@@ -13,8 +13,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone_number', 11);
-            $table->json('bingo_board')->nullable();
-            $table->json('marked_cells')->nullable();
             $table->string('reset_key');
             $table->timestamps();
         });

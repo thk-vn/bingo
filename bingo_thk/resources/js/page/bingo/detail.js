@@ -16,7 +16,7 @@ $(document).ready(function () {
         const phone_number = $("#phone_number").val().trim();
 
         if (!name || !email || !phone_number) {
-            showToast(checkInfomation);
+            showToast(checkInformation);
             return;
         }
 
@@ -40,7 +40,11 @@ $(document).ready(function () {
             }
         } catch (err) {
             console.error(err);
-            showToast(updateErrorServer);
+            if (err.status === 422 && err.responseJSON?.errors) {
+                showToast(err.responseJSON.message);
+            } else {
+                showToast(registerErrorServer);
+            }
         }
     });
 
