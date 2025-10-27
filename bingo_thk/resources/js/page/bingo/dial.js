@@ -1,5 +1,5 @@
 import logoUrl from '../../../images/thk_logo.png';
-import backgroundUrl from '../../../images/backgroud_bingo.png';
+import backgroundUrl from '../../../images/background_bingo.png';
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
@@ -71,87 +71,6 @@ const geometryPool = {
     }
 };
 
-function createBallsOptimized() {
-    const startTime = performance.now();
-
-    // Pre-generate textures TRƯỚC
-    preGenerateNumberTextures();
-
-    // Lấy shared geometries
-    const sharedSphereGeometry = geometryPool.getSphereGeometry();
-    const sharedPlaneGeometry1x1 = geometryPool.getPlaneGeometry(1, 1);
-    const sharedLogoPlaneGeometry = geometryPool.getPlaneGeometry(0.45, 0.5);
-
-    for (let i = 1; i <= numberOfBalls; i++) {
-        const ballGroup = new THREE.Group();
-
-        // Sphere mesh (dùng shared geometry)
-        const sphere = new THREE.Mesh(
-            sharedSphereGeometry,
-            new THREE.MeshPhongMaterial({
-                color: 0xe4c47f,
-                shininess: 100
-            })
-        );
-        ballGroup.add(sphere);
-
-        // Number texture (từ cache)
-        const numberTexture = getNumberTexture(i);
-        if (!numberTexture) {
-            console.error(`Failed to get texture for ball ${i}`);
-            continue;
-        }
-
-        const textMaterial = new THREE.MeshBasicMaterial({
-            map: numberTexture,
-            transparent: true
-        });
-        const textPlane = new THREE.Mesh(sharedPlaneGeometry1x1, textMaterial);
-        textPlane.position.z = 0.61;
-        textPlane.renderOrder = 1;
-        ballGroup.add(textPlane);
-
-        // Logo plane
-        const logoMaterial = new THREE.MeshBasicMaterial({
-            map: logoTexture,
-            transparent: true,
-            depthTest: true,
-            depthWrite: false
-        });
-        const logoPlane = new THREE.Mesh(sharedLogoPlaneGeometry, logoMaterial);
-        logoPlane.position.set(0, 0.3, 0.7);
-        logoPlane.renderOrder = 2;
-        ballGroup.add(logoPlane);
-
-        // Random position
-        const phi = Math.random() * Math.PI * 2;
-        const theta = Math.random() * Math.PI;
-        const radius = Math.random() * 4.5 + 0.5;
-
-        ballGroup.position.set(
-            radius * Math.sin(theta) * Math.cos(phi),
-            radius * Math.sin(theta) * Math.sin(phi),
-            radius * Math.cos(theta)
-        );
-
-        // User data
-        ballGroup.userData = {
-            number: i,
-            initialPos: ballGroup.position.clone(),
-            velocity: new THREE.Vector3(
-                (Math.random() - 0.5) * 0.03,
-                (Math.random() - 0.5) * 0.03,
-                (Math.random() - 0.5) * 0.03
-            ),
-            isFalling: false,
-        };
-
-        ballsGroup.add(ballGroup);
-        balls.push(ballGroup);
-    }
-}
-
-
 function init() {
     // Tạo scene 3D với nền đen
     scene = new THREE.Scene();
@@ -198,8 +117,7 @@ function init() {
     createDotSphere();
 
     // Tạo các quả cầu số
-    // createBalls();
-    createBallsOptimized();
+    createBalls();
 
     // Tạo lưới hiển thị số đã quay
     createNumbersGrid();
@@ -326,35 +244,42 @@ function sortNumbersGrid() {
     });
 }
 
-
 // ===== TẠO CÁC QUẢ CẦU SỐ =====
 function createBalls() {
     // Pre-generate tất cả textures TRƯỚC KHI tạo balls
     preGenerateNumberTextures();
+
+    // Lấy shared geometries
+    const sharedSphereGeometry = geometryPool.getSphereGeometry();
+    const sharedPlaneGeometry1x1 = geometryPool.getPlaneGeometry(1, 1);
+    const sharedLogoPlaneGeometry = geometryPool.getPlaneGeometry(0.45, 0.5);
 
     for (let i = 1; i <= numberOfBalls; i++) {
         const ballGroup = new THREE.Group(); // Tạo nhóm chứa quả cầu và chữ số
 
         // ===== TẠO QUẢ CẦU CHÍNH =====
         const sphere = new THREE.Mesh(
-            new THREE.SphereGeometry(0.6, 32, 32), // Hình cầu bán kính 0.6, 32x32 segments
+            sharedSphereGeometry, // Hình cầu bán kính 0.6, 32x32 segments
             new THREE.MeshPhongMaterial({
                 color: 0xe4c47f, // Màu vàng nhạt
                 shininess: 100 // Độ bóng cao
             })
         );
-        // Thêm quả cầu vào nhóm
         ballGroup.add(sphere);
 
         //tạo chữ số trên quả cầu
         const numberTexture = getNumberTexture(i);
+        if (!numberTexture) {
+            console.error(`Failed to get texture for ball ${i}`);
+            continue;
+        }
 
         // Chuyển canvas thành texture và áp dụng lên mặt phẳng
         const textMaterial = new THREE.MeshBasicMaterial({
             map: numberTexture,
             transparent: true
         });
-        const textPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), textMaterial);
+        const textPlane = new THREE.Mesh(sharedPlaneGeometry1x1, textMaterial);
         textPlane.position.z = 0.61; // Đặt sát bề mặt quả cầu
         textPlane.renderOrder = 1; // dưới logo
         ballGroup.add(textPlane); // Thêm mặt phẳng chữ số vào nhóm
@@ -368,15 +293,15 @@ function createBalls() {
         });
 
         // Logo nổi phía trước con số, không dính vào bề mặt quả bóng
-        const logoPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.45, 0.5), logoMaterial);
+        const logoPlane = new THREE.Mesh(sharedLogoPlaneGeometry, logoMaterial);
         logoPlane.position.set(0, 0.3, 0.7); // đẩy ra trước số rõ ràng
         logoPlane.renderOrder = 2; // trên số
         ballGroup.add(logoPlane);
 
         // Đặt vị trí ngẫu nhiên
-        const phi = Math.random() * Math.PI * 2; // Góc ngẫu nhiên 0-2π
-        const theta = Math.random() * Math.PI; // Góc ngẫu nhiên 0-π
-        const radius = Math.random() * 4.5 + 0.5; // Bán kính ngẫu nhiên 0.5-5.0
+        const phi = Math.random() * Math.PI * 2;
+        const theta = Math.random() * Math.PI;
+        const radius = Math.random() * 4.5 + 0.5;
 
         // Chuyển đổi tọa độ cầu sang tọa độ Descartes
         ballGroup.position.set(
@@ -401,7 +326,6 @@ function createBalls() {
         balls.push(ballGroup); // Thêm vào mảng balls
     }
 }
-
 
 /**
  * Pre-generate tất cả textures 1 lần duy nhất
