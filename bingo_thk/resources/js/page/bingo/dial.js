@@ -9,18 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const resetBtn = document.querySelector('.btn-reset');
-    resetBtn.addEventListener('click', () => {
+    document.querySelector('.btn-reset').addEventListener('click', () => {
         resetGame();
     });
 });
 
 let scene, camera, renderer, sphereGroup, ballsGroup; // Các đối tượng Three.js chính
 let balls = []; // Mảng chứa tất cả quả cầu số
-let rotationSpeed = {
-    x: 0,
-    y: 0
-}; // Tốc độ quay của sphere và balls
+let rotationSpeed = { x: 0, y: 0};
 let isSpinning = false; // Trạng thái đang quay hay không
 let winnerBall = null; // Quả cầu trúng thưởng hiện tại
 let drawnNumbers = []; // Mảng lưu các số đã quay
@@ -30,16 +26,16 @@ let winnerBallMoving = false; // Trạng thái quả cầu đang di chuyển đ�
 let winnerBallTarget = null; // Vị trí đích của quả cầu trúng thưởng
 let numberOfBalls = 50 // Tổng số quả cầu hiển thị
 let pendingSpin = false; // Đánh dấu người dùng đã click để quay tiếp sau khi di chuyển winner
-let lastCleanup = 0; // Thời gian cleanup cuối cùng
-const CLEANUP_INTERVAL = 5000; // Cleanup mỗi 5 giây
 
 // Logo texture (gắn lên mỗi quả bóng)
 const textureLoader = new THREE.TextureLoader();
 const logoTexture = textureLoader.load(logoUrl);
 const backgroundTexture = textureLoader.load(backgroundUrl);
 
-const canvasTextureCache = new Map(); // Cache texture theo số (1-50)
+let canvasTextureCache = null;
 let isTexturesCached = false;
+let sharedSphereMaterial = null;
+let sharedLogoMaterial = null;
 
 
 const geometryPool = {
@@ -117,6 +113,7 @@ function init() {
     createDotSphere();
 
     // Tạo các quả cầu số
+    createSharedMaterials();
     createBalls();
 
     // Tạo lưới hiển thị số đã quay
@@ -244,6 +241,25 @@ function sortNumbersGrid() {
     });
 }
 
+function createSharedMaterials() {
+    if (!sharedSphereMaterial) {
+        sharedSphereMaterial = new THREE.MeshPhongMaterial({
+            color: 0xe4c47f,
+            shininess: 100
+        });
+    }
+
+    if (!sharedLogoMaterial) {
+        sharedLogoMaterial = new THREE.MeshBasicMaterial({
+            map: logoTexture,
+            transparent: true,
+            depthTest: true,
+            depthWrite: false
+        });
+    }
+}
+
+
 // ===== TẠO CÁC QUẢ CẦU SỐ =====
 function createBalls() {
     // Pre-generate tất cả textures TRƯỚC KHI tạo balls
@@ -260,15 +276,12 @@ function createBalls() {
         // ===== TẠO QUẢ CẦU CHÍNH =====
         const sphere = new THREE.Mesh(
             sharedSphereGeometry, // Hình cầu bán kính 0.6, 32x32 segments
-            new THREE.MeshPhongMaterial({
-                color: 0xe4c47f, // Màu vàng nhạt
-                shininess: 100 // Độ bóng cao
-            })
+            sharedSphereMaterial
         );
         ballGroup.add(sphere);
 
         //tạo chữ số trên quả cầu
-        const numberTexture = getNumberTexture(i);
+        const numberTexture = canvasTextureCache.has(i) ? canvasTextureCache.get(i) : null;
         if (!numberTexture) {
             console.error(`Failed to get texture for ball ${i}`);
             continue;
@@ -284,16 +297,8 @@ function createBalls() {
         textPlane.renderOrder = 1; // dưới logo
         ballGroup.add(textPlane); // Thêm mặt phẳng chữ số vào nhóm
 
-        // thêm logo
-        const logoMaterial = new THREE.MeshBasicMaterial({
-            map: logoTexture,
-            transparent: true, // dùng alpha
-            depthTest: true, // vẫn bị quả bóng che khi quay ra sau
-            depthWrite: false
-        });
-
         // Logo nổi phía trước con số, không dính vào bề mặt quả bóng
-        const logoPlane = new THREE.Mesh(sharedLogoPlaneGeometry, logoMaterial);
+        const logoPlane = new THREE.Mesh(sharedLogoPlaneGeometry, sharedLogoMaterial);
         logoPlane.position.set(0, 0.3, 0.7); // đẩy ra trước số rõ ràng
         logoPlane.renderOrder = 2; // trên số
         ballGroup.add(logoPlane);
@@ -331,10 +336,11 @@ function createBalls() {
  * Pre-generate tất cả textures 1 lần duy nhất
  * Tránh memory leak từ việc tạo canvas liên tục
  */
-function preGenerateNumberTextures(number) {
+function preGenerateNumberTextures() {
     if (isTexturesCached) return;
 
     console.log('Pre-generating number textures...');
+    canvasTextureCache = new Map();
     for (let i = 1; i <= numberOfBalls; i++) {
         // Tạo canvas RIÊNG cho mỗi số
         const canvas = document.createElement('canvas');
@@ -351,30 +357,10 @@ function preGenerateNumberTextures(number) {
         ctx.fillStyle = '#da3b42';
         ctx.strokeText(i.toString(), 128, 128);
         ctx.fillText(i.toString(), 128, 128);
-
-        // Tạo texture từ canvas
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.needsUpdate = true;
-
-        // Lưu vào cache
-        canvasTextureCache.set(i, texture);
+        canvasTextureCache.set(i, new THREE.CanvasTexture(canvas));
     }
 
     isTexturesCached = true;
-    console.log(`Pre-generated ${canvasTextureCache.size} textures`);
-}
-
-function getNumberTexture(number) {
-    if (!isTexturesCached) {
-        preGenerateNumberTextures();
-    }
-
-    if (canvasTextureCache.has(number)) {
-        return canvasTextureCache.get(number);
-    }
-
-    console.error(`Texture for number ${number} not found in cache!`);
-    return null;
 }
 
 // ===== HÀM BẮT ĐẦU QUAY SỐ =====
@@ -395,7 +381,6 @@ function startSpin() {
     startNewSpin();
 }
 
-// ===== HÀM BẮT ĐẦU QUAY MỚI =====
 function startNewSpin() {
     // Thiết lập tốc độ quay ngẫu nhiên - tăng cường độ xáo trộn
     rotationSpeed.x = (Math.random() - 0.5) * 1.2;
@@ -413,10 +398,7 @@ function pickWinner() {
     isSpinning = false;
 
     // ===== CHỌN NGẪU NHIÊN 1 QUẢ CẦU KHÔNG ĐANG RƠI =====
-    const candidates = balls.filter(ball => !ball.userData.isFalling);
-    if (candidates.length === 0) return;
-    const winner = candidates[Math.floor(Math.random() * candidates.length)];
-
+    const winner = balls[Math.floor(Math.random() * balls.length)];
     if (winner) {
         winnerBall = winner;
         winner.userData.isFalling = true;
@@ -524,41 +506,22 @@ function disposeAllBalls() {
 
 function disposeObject(obj) {
     obj.traverse(child => {
-        if (child.isMesh) {
-            if (child.geometry) child.geometry.dispose();
+        if (!child.isMesh || !child.material) return;
 
-            if (child.material) {
-                const materials = Array.isArray(child.material) ? child.material : [child.material];
-                materials.forEach(mat => {
-                    if (mat.map && mat.map.isTexture) {
-                        const isFromCache = Array.from(canvasTextureCache.values()).includes(mat.map);
-                        const isSharedTexture = (mat.map === logoTexture || mat.map === backgroundTexture);
+        child.geometry.dispose();
 
-                        if (!isFromCache && !isSharedTexture) {
-                            // Chỉ dispose nếu KHÔNG phải texture từ cache
-                            if (mat.map.source && mat.map.source.data) {
-                                // This is a canvas texture - clear the canvas
-                                const canvas = mat.map.source.data;
-                                if (canvas && canvas.getContext) {
-                                    const ctx = canvas.getContext('2d');
-                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                }
-                            }
-                            mat.map.dispose();
-                        }
+        const materials = Array.isArray(child.material) ? child.material : [child.material];
+        materials.forEach(mat => {
+            const map = mat.map;
+            const isSharedMap = (map=== logoTexture || map=== backgroundTexture);
+            const isCachedCanvasTexture = Array.from(canvasTextureCache.values()).includes(map);
 
-                    }
-
-                    // Dispose additional texture maps
-                    if (mat.normalMap) mat.normalMap.dispose();
-                    if (mat.bumpMap) mat.bumpMap.dispose();
-                    if (mat.specularMap) mat.specularMap.dispose();
-                    if (mat.emissiveMap) mat.emissiveMap.dispose();
-                    if (mat.alphaMap) mat.alphaMap.dispose();
-                    mat.dispose();
-                });
+            if ((map && map.isTexture && !isCachedCanvasTexture && !isSharedMap)
+                || !((mat === sharedSphereMaterial) || (mat === sharedLogoMaterial)))
+            {
+                try { mat.dispose(); } catch (e) {}
             }
-        }
+        });
     });
 }
 
@@ -589,25 +552,14 @@ function animate() {
     const deltaSeconds = (now - animate.lastTime) / 1000;
     animate.lastTime = now;
 
-    // Performance monitoring - skip frame if delta is too high
-    if (deltaSeconds > 0.1) {
-        console.warn('Animation lag detected:', deltaSeconds);
-        return;
-    }
+    if (deltaSeconds > 0.1) return;
 
-    if (!animate.frameCount) animate.frameCount = 0;
-    animate.frameCount++;
-
-    // ===== XỬ LÝ KHI ĐANG QUAY =====
     if (isSpinning) {
         // Quay khung lưới & nhóm quả cầu
-        updateSphereRotation();
+        sphereRotation();
         // Cập nhật chuyển động vật lý của các quả cầu
-        updateBallMotionWhileSpinning();
-    }
-
-    // ===== XỬ LÝ KHI KHÔNG QUAY VÀ KHÔNG CÓ QUẢ CẦU TRÚNG THƯỞNG =====
-    else if (!winnerBall) {
+        ballMotionWhileSpinning();
+    } else if (!winnerBall) {
         // Hiệu ứng quay nhẹ khi chờ
         idleMotion();
     }
@@ -621,7 +573,8 @@ function animate() {
             // di chuyển đến grid
             animateWinnerMoveToGrid();
         }
-        // Trong khi winner đang di chuyển, sphere vẫn quay nhẹ
+
+        // Khi winner, sphere vẫn quay nhẹ
         sphereGroup.rotation.y += 0.01;
         ballsGroup.rotation.y += 0.01;
     }
@@ -629,20 +582,12 @@ function animate() {
     // Giúp các quả cầu luôn hướng về camera
     handleBallFacingCamera();
 
-    // Periodic cleanup to prevent memory leaks - chỉ check mỗi 60 frames (~1s)
-    if (animate.frameCount % 60 === 0) {
-        if (now - lastCleanup > CLEANUP_INTERVAL) {
-            performPeriodicCleanup();
-            lastCleanup = now;
-        }
-    }
-
-    // Vẽ scene lên màn hình
     renderer.render(scene, camera);
+
 }
 
 // Quay khối cầu và nhóm quả cầu trong khi quay
-function updateSphereRotation() {
+function sphereRotation() {
     // Sphere chỉ xoay trục Y
     sphereGroup.rotation.y += rotationSpeed.y;
 
@@ -657,23 +602,28 @@ function updateSphereRotation() {
 }
 
 // Cập nhật chuyển động của từng quả cầu khi đang quay
-function updateBallMotionWhileSpinning() {
-    // Chỉ xử lý quả cầu đang không rơi
-    const activeBalls = balls.filter(ball => !ball.userData.isFalling);
-    activeBalls.forEach(ball => {
-        ball.position.add(ball.userData.velocity); // Cập nhật vị trí theo vận tốc
+function ballMotionWhileSpinning() {
+    const maxRadius = 5.2;
+    const maxSpeed = 0.5;
+    const randomChance = 0.3;
+    const rotationChance = 0.2;
+
+    balls.forEach(ball => {
+        if (ball.userData.isFalling) return;
+
+        ball.position.add(ball.userData.velocity);
 
         // Kiểm tra va chạm với biên sphere
         const distance = ball.position.length();
-        if (distance > 5.2) { // Nếu vượt quá bán kính cho phép
-            const normal = ball.position.clone().normalize(); // Vector pháp tuyến
-            ball.userData.velocity.reflect(normal); // Phản xạ vận tốc
-            ball.userData.velocity.multiplyScalar(0.95); // Giảm vận tốc 5%
-            ball.position.setLength(5.2); // Đặt lại vị trí về biên
+        if (distance > maxRadius) {
+            const normal = ball.position.clone().normalize();
+            ball.userData.velocity.reflect(normal);
+            ball.userData.velocity.multiplyScalar(0.95);
+            ball.position.setLength(maxRadius);
         }
 
         // Thêm chuyển động hỗn loạn ngẫu nhiên (giảm tần suất để tối ưu)
-        if (Math.random() < 0.3) {
+        if (Math.random() < randomChance) {
             const randomFactor = (Math.random() - 0.5) * 0.05;
             ball.userData.velocity.x += randomFactor;
             ball.userData.velocity.y += randomFactor;
@@ -681,7 +631,7 @@ function updateBallMotionWhileSpinning() {
         }
 
         // Thêm xoay ngẫu nhiên cho từng quả cầu (giảm tần suất)
-        if (Math.random() < 0.2) { // Chỉ 10% khả năng xoay
+        if (Math.random() < rotationChance) {
             const rotationFactor = (Math.random() - 0.5) * 0.1;
             ball.rotation.x += rotationFactor;
             ball.rotation.y += rotationFactor;
@@ -690,8 +640,8 @@ function updateBallMotionWhileSpinning() {
 
         // Giới hạn vận tốc tối đa - tăng để xáo trộn nhiều hơn
         const speed = ball.userData.velocity.length();
-        if (speed > 0.5) {
-            ball.userData.velocity.setLength(0.5);
+        if (speed > maxSpeed) {
+            ball.userData.velocity.setLength(maxSpeed);
         }
     });
 }
@@ -702,34 +652,35 @@ function idleMotion() {
     sphereGroup.rotation.y += 0.008;
     ballsGroup.rotation.y += 0.008;
 
+    const maxRadius = 5.2;
+
     // Chuyển động nhẹ nhàng của quả cầu khi nghỉ
     balls.forEach(ball => {
-        if (!ball.userData.isFalling) {
-            ball.position.add(ball.userData.velocity); // Cập nhật vị trí
+        if (ball.userData.isFalling) return;
 
-            // Kiểm tra va chạm với biên (tương tự khi quay)
-            const distance = ball.position.length();
-            if (distance > 5.2) {
-                const normal = ball.position.clone().normalize();
-                ball.userData.velocity.reflect(normal);
-                ball.userData.velocity.multiplyScalar(0.85); // Giảm vận tốc 15%
-                ball.position.setLength(5.2);
-            }
+        ball.position.add(ball.userData.velocity);
+
+        // Kiểm tra va chạm với biên (tương tự khi quay)
+        const distance = ball.position.length();
+        if (distance > maxRadius) {
+            const normal = ball.position.clone().normalize();
+            ball.userData.velocity.reflect(normal);
+            ball.userData.velocity.multiplyScalar(0.85); // Giảm vận tốc 15%
+            ball.position.setLength(maxRadius);
         }
     });
 }
 
 // Quả cầu trúng thưởng rơi về giữa màn hình
 function animateWinnerFalling() {
-    // Cập nhật vị trí
     winnerBall.position.add(winnerBall.userData.fallVelocity);
 
-    // Di chuyển về giữa màn hình (tọa độ 0,0,6) gần camera
+    // Di chuyển về giữa màn hình gần camera
     const targetPos = new THREE.Vector3(0, 0, camera.position.z - 8);
     if (!winnerBall.userData.targetDirection) {
         winnerBall.userData.targetDirection = targetPos.clone().sub(winnerBall.position).normalize();
     }
-    // const direction = winnerBall.userData.targetDirection.clone().sub(winnerBall.position).normalize();
+
     // Di chuyển với tốc độ cố định theo hướng đã tính
     winnerBall.userData.fallVelocity = winnerBall.userData.targetDirection.clone().multiplyScalar(0.15);
     winnerBall.position.add(winnerBall.userData.fallVelocity);
@@ -737,9 +688,6 @@ function animateWinnerFalling() {
     // Phóng to quả cầu dần (tối đa 3 lần)
     const scale = Math.min(winnerBall.scale.x + 0.04, 3);
     winnerBall.scale.set(scale, scale, scale);
-
-    // Giữ quả cầu hướng về camera (không xoay)
-    winnerBall.rotation.set(0, 0, 0);
 
     // Kiểm tra đã đến giữa màn hình chưa
     if (winnerBall.position.distanceTo(targetPos) < 0.5) {
@@ -759,9 +707,7 @@ function animateWinnerFalling() {
 function animateWinnerMoveToGrid() {
     if (!winnerBallTarget) return;
 
-    // Tăng tiến độ
     winnerBall.userData.moveProgress += winnerBall.userData.moveSpeed;
-
     if (winnerBall.userData.moveProgress < 1) {
         // Di chuyển mượt mà với hiệu ứng easing
         const t = winnerBall.userData.moveProgress; // Tiến độ 0-1
@@ -778,17 +724,20 @@ function animateWinnerMoveToGrid() {
         const scale = 3 - (t * 2.5);
         winnerBall.scale.set(scale, scale, scale);
     } else {
-        // ===== HOÀN THÀNH DI CHUYỂN =====
+        // hoàng thành di chuyển
         winnerBallMoving = false;
         winnerBallTarget = null;
 
-        // Cập nhật grid và xóa quả cầu
-        const number = winnerBall.userData.number;
-
         // Xóa quả cầu khỏi scene và dispose resources
         scene.remove(winnerBall);
-        disposeObject(winnerBall); // Properly dispose textures and materials
-        balls = balls.filter(b => b !== winnerBall);
+        disposeObject(winnerBall);
+
+        // Remove from balls array efficiently
+        const winnerIndex = balls.indexOf(winnerBall);
+        if (winnerIndex > -1) {
+            balls.splice(winnerIndex, 1);
+        }
+
         winnerBall = null;
 
         // Nếu người dùng vừa click yêu cầu quay tiếp, bắt đầu quay sau khi di chuyển xong
@@ -808,16 +757,19 @@ function animateWinnerMoveToGrid() {
  * Xử lý để tất cả quả cầu luôn hướng về camera
  */
 function handleBallFacingCamera() {
-    // Làm tất cả quả cầu hướng về camera (trừ quả cầu đang rơi)
+    // Cache camera position to avoid repeated calculations
+    const cameraPos = camera.position;
+
+    // Only update balls that are visible and not falling (reduce lookAt calls)
     balls.forEach(ball => {
-        if (!ball.userData.isFalling) {
-            ball.lookAt(camera.position); // Hướng về camera
+        if (!ball.userData.isFalling && ball.visible) {
+            ball.lookAt(cameraPos);
         }
     });
 
     // Làm quả cầu trúng thưởng hướng về camera và không xoay theo sphere
     if (winnerBall && winnerBall.userData.isFalling) {
-        winnerBall.lookAt(camera.position);
+        winnerBall.lookAt(cameraPos);
     }
 }
 
@@ -834,7 +786,6 @@ function loadStateFromLocalStorage() {
     try {
         const rawDrawnNumbers = localStorage.getItem('drawn_numbers');
         const restored = rawDrawnNumbers ? JSON.parse(rawDrawnNumbers) : [];
-        if (!Array.isArray(drawnNumbers)) return;
 
         // Lọc hợp lệ
         drawnNumbers = restored.filter(n => Number.isInteger(n) && n >= 1 && n <= numberOfBalls);
@@ -901,23 +852,4 @@ function moveWinnerBallToCell(targetCell) {
     // Cài đặt thông số di chuyển cho bóng (tốc độ nhanh hơn)
     winnerBall.userData.moveSpeed = 0.04;
     winnerBall.userData.moveProgress = 0;
-}
-
-// Periodic cleanup to prevent memory leaks
-function performPeriodicCleanup() {
-    // Force garbage collection if available
-    if (window.gc) {
-        window.gc();
-    }
-
-    // Log memory usage
-    if (performance.memory) {
-        console.log('Memory usage:', {
-            used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + 'MB',
-            total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024) + 'MB',
-            limit: Math.round(performance.memory.jsHeapSizeLimit / 1024 / 1024) + 'MB',
-            textureCache: canvasTextureCache.size + ' textures',
-            activeBalls: balls.length + ' balls',
-        });
-    }
 }
