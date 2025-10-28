@@ -299,7 +299,7 @@ function createBalls() {
 
         // Logo nổi phía trước con số, không dính vào bề mặt quả bóng
         const logoPlane = new THREE.Mesh(sharedLogoPlaneGeometry, sharedLogoMaterial);
-        logoPlane.position.set(0, 0.3, 0.7); // đẩy ra trước số rõ ràng
+        logoPlane.position.set(0, 0.25, 1); // đẩy ra trước số rõ ràng
         logoPlane.renderOrder = 2; // trên số
         ballGroup.add(logoPlane);
 
@@ -383,13 +383,12 @@ function startSpin() {
 
 function startNewSpin() {
     // Thiết lập tốc độ quay ngẫu nhiên - tăng cường độ xáo trộn
-    rotationSpeed.x = (Math.random() - 0.5) * 1.2;
-    rotationSpeed.y = (Math.random() - 0.5) * 1.0;
+    rotationSpeed.x = (Math.random() + 0.5) * 1.2;
+    rotationSpeed.y = (Math.random() + 0.5) * 1.0;
 
-    // Dừng quay sau 3 giây và chọn quả cầu trúng thưởng
     setTimeout(() => {
         pickWinner();
-    }, 3000);
+    }, 4000);
 }
 
 // ===== HÀM CHỌN QUẢ CẦU TRÚNG THƯỞNG =====
@@ -407,25 +406,25 @@ function pickWinner() {
         const worldPos = new THREE.Vector3();
         winner.getWorldPosition(worldPos);
 
-        // Get world rotation
-        const worldQuaternion = new THREE.Quaternion();
-        winner.getWorldQuaternion(worldQuaternion);
+        // // Get world rotation
+        // const worldQuaternion = new THREE.Quaternion();
+        // winner.getWorldQuaternion(worldQuaternion);
 
         // Remove from group and add to scene
         ballsGroup.remove(winner);
         winner.position.copy(worldPos);
-        winner.quaternion.copy(worldQuaternion);
+        // winner.quaternion.copy(worldQuaternion);
         scene.add(winner);
 
         // Set fall velocity toward center of screen - faster
         const targetPos = new THREE.Vector3(0, 0, 5);
         const direction = targetPos.clone().sub(worldPos).normalize();
         winner.userData.fallVelocity = direction.multiplyScalar(0.25);
-        winner.userData.rotationSpeed = {
-            x: Math.random() * 0.2 - 0.1,
-            y: Math.random() * 0.2 - 0.1,
-            z: Math.random() * 0.2 - 0.1
-        };
+        // winner.userData.rotationSpeed = {
+        //     x: Math.random() * 0.2 - 0.1,
+        //     y: Math.random() * 0.2 - 0.1,
+        //     z: Math.random() * 0.2 - 0.1
+        // };
 
         // Thêm vào drawn numbers và hiển thị vào danh sách bên phải
         drawnNumbers.push(winner.userData.number);
@@ -744,11 +743,11 @@ function animateWinnerMoveToGrid() {
         if (pendingSpin) {
             pendingSpin = false;
             isSpinning = true;
-            rotationSpeed.x = (Math.random() - 0.5) * 1.2;
-            rotationSpeed.y = (Math.random() - 0.5) * 1.0;
+            rotationSpeed.x = (Math.random() + 0.5) * 1.2;
+            rotationSpeed.y = (Math.random() + 0.5) * 1.2;
             setTimeout(() => {
                 pickWinner();
-            }, 3000);
+            }, 4000);
         }
     }
 }
