@@ -297,11 +297,11 @@ function createBalls() {
         textPlane.renderOrder = 1; // dưới logo
         ballGroup.add(textPlane); // Thêm mặt phẳng chữ số vào nhóm
 
-        // Logo nổi phía trước con số, không dính vào bề mặt quả bóng
-        const logoPlane = new THREE.Mesh(sharedLogoPlaneGeometry, sharedLogoMaterial);
-        logoPlane.position.set(0, 0.25, 1); // đẩy ra trước số rõ ràng
-        logoPlane.renderOrder = 2; // trên số
-        ballGroup.add(logoPlane);
+        // // Logo nổi phía trước con số, không dính vào bề mặt quả bóng
+        // const logoPlane = new THREE.Mesh(sharedLogoPlaneGeometry, sharedLogoMaterial);
+        // logoPlane.position.set(0, 0.25, 1); // đẩy ra trước số rõ ràng
+        // logoPlane.renderOrder = 2; // trên số
+        // ballGroup.add(logoPlane);
 
         // Đặt vị trí ngẫu nhiên
         const phi = Math.random() * Math.PI * 2;
