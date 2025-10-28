@@ -27,16 +27,12 @@ let winnerBallTarget = null; // Vị trí đích của quả cầu trúng thư�
 let numberOfBalls = 50 // Tổng số quả cầu hiển thị
 let pendingSpin = false; // Đánh dấu người dùng đã click để quay tiếp sau khi di chuyển winner
 
-// Logo texture (gắn lên mỗi quả bóng)
 const textureLoader = new THREE.TextureLoader();
-const logoTexture = textureLoader.load(logoUrl);
 const backgroundTexture = textureLoader.load(backgroundUrl);
 
 let canvasTextureCache = null;
 let isTexturesCached = false;
 let sharedSphereMaterial = null;
-let sharedLogoMaterial = null;
-
 
 const geometryPool = {
     sphere: null,
@@ -44,7 +40,7 @@ const geometryPool = {
 
     getSphereGeometry() {
         if (!this.sphere) {
-            this.sphere = new THREE.SphereGeometry(0.6, 32, 32);
+            this.sphere = new THREE.SphereGeometry(0.6, 16, 16);
         }
         return this.sphere;
     },
@@ -68,7 +64,7 @@ const geometryPool = {
 };
 
 function init() {
-    // Tạo scene 3D với nền đen
+    // Tạo scene 3D với background
     scene = new THREE.Scene();
     scene.background = backgroundTexture;
 
@@ -81,6 +77,7 @@ function init() {
     renderer = new THREE.WebGLRenderer({
         antialias: true
     });
+
     // Cập nhật kích thước renderer
     updateRendererSize();
     document.getElementById('container').appendChild(renderer.domElement);
@@ -95,7 +92,7 @@ function init() {
     pointLight1.position.set(10, 10, 10);
     scene.add(pointLight1);
 
-    // Ánh sáng điểm 2 - chiếu sáng phụ từ góc trái dưới
+    // Ánh sáng điểm 2 chiếu sáng phụ từ góc trái dưới
     const pointLight2 = new THREE.PointLight(0xffffff, 0.5, 100);
     pointLight2.position.set(-10, -10, 5);
     scene.add(pointLight2);
@@ -105,7 +102,7 @@ function init() {
     sphereGroup = new THREE.Group();
     scene.add(sphereGroup);
 
-    // Nhóm chứa các quả cầu số (bên trong sphere)
+    // Nhóm chứa các quả cầu số bên trong sphere
     ballsGroup = new THREE.Group();
     scene.add(ballsGroup);
 
@@ -113,7 +110,6 @@ function init() {
     createDotSphere();
 
     // Tạo các quả cầu số
-    createSharedMaterials();
     createBalls();
 
     // Tạo lưới hiển thị số đã quay
@@ -131,75 +127,55 @@ function init() {
 
 // ===== TẠO KHUNG LƯỚI SPHERE =====
 function createDotSphere() {
-    // Bán kính của sphere
     const radius = 6.5;
-    // Số điểm để tạo đường tròn mượt mà
-    const circlePoints = 128;
-
-    // Tạo vật liệu cho các đường viền - màu trắng với độ trong suốt
+    const circlePoints = 64; // đủ mượt
     const circleMaterial = new THREE.LineBasicMaterial({
-        color: 0xffffff, // Màu trắng
-        linewidth: 3, // Độ dày đường viền
-        transparent: true, // Cho phép trong suốt
-        opacity: 0.8 // Độ trong suốt 80%
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.8
     });
 
-    // ===== TẠO CÁC VÒNG NGANG =====
-    // Tạo các vòng tròn ngang từ -90° đến +90° (từ dưới lên trên)
+    // Vòng ngang
     for (let lat = -Math.PI / 2; lat <= Math.PI / 2; lat += Math.PI / 8) {
-        const points = []; // Mảng chứa các điểm của vòng tròn
         const r = radius * Math.cos(lat); // Bán kính của vòng tròn tại vĩ độ này
         const y = radius * Math.sin(lat); // Tọa độ Y của vòng tròn
 
         // Tạo các điểm xung quanh vòng tròn
-        for (let i = 0; i <= circlePoints; i++) {
-            const angle = (i / circlePoints) * Math.PI * 2; // Góc từ 0 đến 2π
-            points.push(new THREE.Vector3(
-                r * Math.cos(angle), // Tọa độ X
-                y, // Tọa độ Y (cố định cho vòng tròn)
-                r * Math.sin(angle) // Tọa độ Z
-            ));
-        }
+        const curve = new THREE.EllipseCurve(0, 0, r, r, 0, 2 * Math.PI);
+        const points = curve.getPoints(circlePoints).map(p => new THREE.Vector3(p.x, y, p.y));
 
-        // Tạo geometry và line từ các điểm
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const circle = new THREE.Line(geometry, circleMaterial);
-        sphereGroup.add(circle); // Thêm vào nhóm sphere
+        sphereGroup.add(new THREE.Line(geometry, circleMaterial));
     }
 
-    // ===== TẠO CÁC VÒNG DỌC =====
-    // Tạo 24 vòng tròn dọc xung quanh sphere
-    for (let i = 0; i < 24; i++) {
-        const points = []; // Mảng chứa các điểm của vòng tròn
-        const angle = (i / 24) * Math.PI; // Góc quay của vòng tròn dọc
+    // Vòng dọc
+    const verticalRings = 24;
+    for (let i = 0; i < verticalRings; i++) {
+        const angle = (i / verticalRings) * Math.PI;
+        const points = [];
 
-        // Tạo các điểm xung quanh vòng tròn dọc
         for (let j = 0; j <= circlePoints; j++) {
-            const phi = (j / circlePoints) * Math.PI * 2; // Góc từ 0 đến 2π
+            const phi = (j / circlePoints) * Math.PI * 2;
             points.push(new THREE.Vector3(
-                radius * Math.sin(phi) * Math.cos(angle), // Tọa độ X
-                radius * Math.cos(phi), // Tọa độ Y
-                radius * Math.sin(phi) * Math.sin(angle) // Tọa độ Z
+                radius * Math.sin(phi) * Math.cos(angle),
+                radius * Math.cos(phi),
+                radius * Math.sin(phi) * Math.sin(angle)
             ));
         }
 
-        // Tạo geometry và line từ các điểm
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const circle = new THREE.Line(geometry, circleMaterial);
-        sphereGroup.add(circle); // Thêm vào nhóm sphere
+        sphereGroup.add(new THREE.Line(geometry, circleMaterial));
     }
 }
 
-// ===== TẠO LƯỚI HIỂN THỊ SỐ ĐÃ QUAY =====
+// Tạo lưới hiển thị số đã quay
 function createNumbersGrid() {
     const grid = document.getElementById('numbersGrid');
     grid.innerHTML = '';
     numbersGrid = [];
 }
 
-/**
- * Thêm winner vào danh sách và tự động sắp xếp
- */
+// Thêm winner vào danh sách và tự động sắp xếp
 function appendWinnerToList(number) {
     const grid = document.getElementById('numbersGrid');
     const ball = document.createElement('div');
@@ -217,28 +193,35 @@ function appendWinnerToList(number) {
     return ball;
 }
 
-
-/**
- * Sắp xếp danh sách winners theo thứ tự số tăng dần
- */
+// Sắp xếp danh sách winners thoe hàng đơn vị, chục
 function sortNumbersGrid() {
     const grid = document.getElementById('numbersGrid');
+    const ballElements = Array.from(grid.querySelectorAll('.mini-ball'));
+    const sorted = ballElements
+        .map(ball => ({
+            el: ball,
+            num: parseInt(ball.querySelector('span').textContent)
+        }))
+        .sort((a, b) => a.num - b.num);
 
-    // Lấy tất cả các ball elements và số của chúng
-    const ballElements = Array.from(grid.children);
-    const ballData = ballElements.map(ball => ({
-        element: ball,
-        number: parseInt(ball.querySelector('span').textContent)
-    }));
+    const groups = new Map();
+    for (const { el, num } of sorted) {
+        const group = Math.floor(num / 10) * 10;
+        if (!groups.has(group)) groups.set(group, []);
+        groups.get(group).push(el);
+    }
 
-    // Sắp xếp theo số tăng dần
-    ballData.sort((a, b) => a.number - b.number);
+    const fragment = document.createDocumentFragment();
+    Array.from(groups.keys())
+        .sort((a, b) => a - b)
+        .forEach(group => {
+            const row = document.createElement('div');
+            row.className = 'number-row';
+            groups.get(group).forEach(el => row.appendChild(el));
+            fragment.appendChild(row);
+        });
 
-    // Xóa tất cả và thêm lại theo thứ tự
-    grid.innerHTML = '';
-    ballData.forEach(item => {
-        grid.appendChild(item.element);
-    });
+    grid.replaceChildren(fragment);
 }
 
 function createSharedMaterials() {
@@ -248,34 +231,22 @@ function createSharedMaterials() {
             shininess: 100
         });
     }
-
-    if (!sharedLogoMaterial) {
-        sharedLogoMaterial = new THREE.MeshBasicMaterial({
-            map: logoTexture,
-            transparent: true,
-            depthTest: true,
-            depthWrite: false
-        });
-    }
 }
-
 
 // ===== TẠO CÁC QUẢ CẦU SỐ =====
 function createBalls() {
-    // Pre-generate tất cả textures TRƯỚC KHI tạo balls
     preGenerateNumberTextures();
+    createSharedMaterials();
 
-    // Lấy shared geometries
     const sharedSphereGeometry = geometryPool.getSphereGeometry();
     const sharedPlaneGeometry1x1 = geometryPool.getPlaneGeometry(1, 1);
-    const sharedLogoPlaneGeometry = geometryPool.getPlaneGeometry(0.45, 0.5);
 
     for (let i = 1; i <= numberOfBalls; i++) {
-        const ballGroup = new THREE.Group(); // Tạo nhóm chứa quả cầu và chữ số
+        const ballGroup = new THREE.Group();
 
-        // ===== TẠO QUẢ CẦU CHÍNH =====
+        // tạo quả cầu chính
         const sphere = new THREE.Mesh(
-            sharedSphereGeometry, // Hình cầu bán kính 0.6, 32x32 segments
+            sharedSphereGeometry,
             sharedSphereMaterial
         );
         ballGroup.add(sphere);
@@ -293,15 +264,9 @@ function createBalls() {
             transparent: true
         });
         const textPlane = new THREE.Mesh(sharedPlaneGeometry1x1, textMaterial);
-        textPlane.position.z = 0.61; // Đặt sát bề mặt quả cầu
-        textPlane.renderOrder = 1; // dưới logo
-        ballGroup.add(textPlane); // Thêm mặt phẳng chữ số vào nhóm
-
-        // // Logo nổi phía trước con số, không dính vào bề mặt quả bóng
-        // const logoPlane = new THREE.Mesh(sharedLogoPlaneGeometry, sharedLogoMaterial);
-        // logoPlane.position.set(0, 0.25, 1); // đẩy ra trước số rõ ràng
-        // logoPlane.renderOrder = 2; // trên số
-        // ballGroup.add(logoPlane);
+        textPlane.position.z = 0.61;
+        textPlane.renderOrder = 1;
+        ballGroup.add(textPlane);
 
         // Đặt vị trí ngẫu nhiên
         const phi = Math.random() * Math.PI * 2;
@@ -317,36 +282,33 @@ function createBalls() {
 
         // Lưu thông tin quả cầu
         ballGroup.userData = {
-            number: i, // Số trên quả cầu
+            number: i,
             initialPos: ballGroup.position.clone(), // Vị trí ban đầu
             velocity: new THREE.Vector3( // Vận tốc ngẫu nhiên
                 (Math.random() - 0.5) * 0.03,
                 (Math.random() - 0.5) * 0.03,
                 (Math.random() - 0.5) * 0.03
             ),
-            isFalling: false, // Trạng thái không rơi
+            isFalling: false,
         };
 
-        ballsGroup.add(ballGroup); // Thêm vào nhóm balls
-        balls.push(ballGroup); // Thêm vào mảng balls
+        ballsGroup.add(ballGroup);
+        balls.push(ballGroup);
     }
 }
 
-/**
- * Pre-generate tất cả textures 1 lần duy nhất
- * Tránh memory leak từ việc tạo canvas liên tục
- */
+// Pre-generate tất cả textures 1 lần duy nhất
 function preGenerateNumberTextures() {
     if (isTexturesCached) return;
 
-    console.log('Pre-generating number textures...');
     canvasTextureCache = new Map();
+
     for (let i = 1; i <= numberOfBalls; i++) {
-        // Tạo canvas RIÊNG cho mỗi số
+        // Tạo canvas riêng cho mỗi số
         const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
         canvas.width = 256;
         canvas.height = 256;
-        const ctx = canvas.getContext('2d');
 
         // Vẽ số
         ctx.font = 'bold 120px Arial';
@@ -363,10 +325,7 @@ function preGenerateNumberTextures() {
     isTexturesCached = true;
 }
 
-// ===== HÀM BẮT ĐẦU QUAY SỐ =====
 function startSpin() {
-    // Nếu đang di chuyển sang danh sách thì không xử lý
-    // Ngăn chặn quay nhiều lần cùng lúc
     if (winnerBallMoving || isSpinning) return;
 
     // Nếu có winner đang đứng giữa, click này sẽ đưa nó sang danh sách rồi mới quay
@@ -396,40 +355,30 @@ function pickWinner() {
     if (winnerBall) return;
     isSpinning = false;
 
-    // ===== CHỌN NGẪU NHIÊN 1 QUẢ CẦU KHÔNG ĐANG RƠI =====
-    const winner = balls[Math.floor(Math.random() * balls.length)];
-    if (winner) {
-        winnerBall = winner;
-        winner.userData.isFalling = true;
+    // Lọc các quả chưa rơi
+    const availableBalls = balls.filter(b => !b.userData.isFalling);
+    if (!availableBalls.length) return;
 
-        // Get world position
-        const worldPos = new THREE.Vector3();
-        winner.getWorldPosition(worldPos);
+    // Chọn ngẫu nhiên
+    const winner = availableBalls[Math.floor(Math.random() * availableBalls.length)];
+    winnerBall = winner;
+    winner.userData.isFalling = true;
 
-        // // Get world rotation
-        // const worldQuaternion = new THREE.Quaternion();
-        // winner.getWorldQuaternion(worldQuaternion);
+    // Get world position
+    const worldPos = new THREE.Vector3();
+    winner.getWorldPosition(worldPos);
 
-        // Remove from group and add to scene
-        ballsGroup.remove(winner);
-        winner.position.copy(worldPos);
-        // winner.quaternion.copy(worldQuaternion);
-        scene.add(winner);
+    // Di chuyển ra scene
+    ballsGroup.remove(winner);
+    winner.position.copy(worldPos);
+    scene.add(winner);
 
-        // Set fall velocity toward center of screen - faster
-        const targetPos = new THREE.Vector3(0, 0, 5);
-        const direction = targetPos.clone().sub(worldPos).normalize();
-        winner.userData.fallVelocity = direction.multiplyScalar(0.25);
-        // winner.userData.rotationSpeed = {
-        //     x: Math.random() * 0.2 - 0.1,
-        //     y: Math.random() * 0.2 - 0.1,
-        //     z: Math.random() * 0.2 - 0.1
-        // };
+    // Rơi về trung tâm nhanh hơn
+    const targetPos = new THREE.Vector3(0, 0, 5);
+    winner.userData.fallVelocity = targetPos.clone().sub(worldPos).normalize().multiplyScalar(0.25);
 
-        // Thêm vào drawn numbers và hiển thị vào danh sách bên phải
-        drawnNumbers.push(winner.userData.number);
-        saveStateToLocalStorage();
-    }
+    drawnNumbers.push(winner.userData.number);
+    saveStateToLocalStorage();
 }
 
 async function resetGame() {
@@ -512,11 +461,10 @@ function disposeObject(obj) {
         const materials = Array.isArray(child.material) ? child.material : [child.material];
         materials.forEach(mat => {
             const map = mat.map;
-            const isSharedMap = (map=== logoTexture || map=== backgroundTexture);
+            const isSharedMap = (map=== backgroundTexture);
             const isCachedCanvasTexture = Array.from(canvasTextureCache.values()).includes(map);
 
-            if ((map && map.isTexture && !isCachedCanvasTexture && !isSharedMap)
-                || !((mat === sharedSphereMaterial) || (mat === sharedLogoMaterial)))
+            if ((map && map.isTexture && !isCachedCanvasTexture && !isSharedMap) || mat !== sharedSphereMaterial)
             {
                 try { mat.dispose(); } catch (e) {}
             }
@@ -664,7 +612,7 @@ function idleMotion() {
         if (distance > maxRadius) {
             const normal = ball.position.clone().normalize();
             ball.userData.velocity.reflect(normal);
-            ball.userData.velocity.multiplyScalar(0.85); // Giảm vận tốc 15%
+            ball.userData.velocity.multiplyScalar(0.85);
             ball.position.setLength(maxRadius);
         }
     });
@@ -752,9 +700,7 @@ function animateWinnerMoveToGrid() {
     }
 }
 
-/**
- * Xử lý để tất cả quả cầu luôn hướng về camera
- */
+//Xử lý để tất cả quả cầu luôn hướng về camera
 function handleBallFacingCamera() {
     // Cache camera position to avoid repeated calculations
     const cameraPos = camera.position;
@@ -830,11 +776,8 @@ function onWindowResize() {
 
 //Di chuyển quả cầu đến một ô trong danh sách ball
 function moveWinnerBallToCell(targetCell) {
-    // Nếu chưa có quả bóng winner thì thoát
-    // Ngăn việc di chuyển nhiều lần cùng lúc
     if (!winnerBall || !targetCell || winnerBallMoving) return;
 
-    // Đánh dấu là bóng đang di chuyển
     winnerBallMoving = true;
 
     // Lấy vị trí của ô đích và container trên màn hình
