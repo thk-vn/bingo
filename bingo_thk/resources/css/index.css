@@ -14,15 +14,43 @@
 
 body {
   margin: 0;
-  font-family: Inter, Segoe UI, Roboto, system-ui, Arial;
-  background: linear-gradient(180deg, #071330 0%, #0b1a2d 100%);
-  color: #e6eef8;
-  display: flex;
   min-height: 100vh;
+  font-family: Inter, Segoe UI, Roboto, system-ui, Arial;
+  overflow: hidden;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
   box-sizing: border-box;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 50%, #032437 0%, #010a14 100%);
+  color: #e6eef8;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%;
+  background: radial-gradient(circle at 40% 60%, rgba(0, 255, 255, 0.05), transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 
 .app {
@@ -609,7 +637,7 @@ button.reset:active {
   animation: flashBang 1.5s ease;
 }
 
-.win-banner.show-bingo {
+.show-bingo {
   display: block;
   font-size: 2.6rem;
   letter-spacing: 6px;
@@ -644,7 +672,6 @@ button.reset:active {
   }
 }
 
-/* Tia sáng quét ngang qua chữ */
 @keyframes bingoWave {
   0% {
     background: linear-gradient(90deg,
@@ -662,19 +689,8 @@ button.reset:active {
   }
 }
 
-@media(max-width:880px) {
-  .app {
-    grid-template-columns: 1fr;
-  }
-
-  .bingo-header .col, .cell {
-    width: 12vw;
-    height: 12vw;
-  }
-}
-
 .user-info {
-  position: absolute;
+  position: fixed;
   top: 12%;
   left: 20px;
   border-radius: 14px;
@@ -754,10 +770,52 @@ button.reset:active {
   100% { filter: brightness(2); }
 }
 
+#bingoWinOverlay {
+  position: fixed;
+  left: 0;
+  width: 100vw; 
+  height: 50vw;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+ 
+}
 
-@media(max-width: 425px) {
-  .toast {
-    left: 5%;
-    right: 5%;
+.bingo-text {
+  font-size: 5rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 
+    0 0 10px #ff00de,
+    0 0 20px #00f5ff,
+    0 0 40px #ff00de;
+  animation: neonPulse 1s infinite alternate, floatUp 3s ease-in-out infinite;
+  text-align: center;
+}
+
+@keyframes neonPulse {
+  from { text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00de; }
+  to { text-shadow: 0 0 30px #ff00de, 0 0 60px #00ffff; }
+}
+
+@keyframes floatUp {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@media(max-width:880px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .bingo-header .col, .cell {
+    width: 12vw;
+    height: 12vw;
+  }
+
+  .bingo-text {
+    font-size: 2.5rem;
   }
 }

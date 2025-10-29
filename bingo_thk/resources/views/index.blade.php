@@ -12,6 +12,10 @@
             <a href="{{ route('bingo.detail', auth('bingo')->user()) }}" id="info">{{ $userBingoName }} 🖋️</a>
         </div>
         <div id="win" class="win-banner" role="status">BINGO! 🎉</div>
+        <div id="bingoWinOverlay">
+            <div class="bingo-text show-bingo">🎉 BINGO!!! 🎉</div>
+            <div class="canvas" id="confetti"></div>
+        </div>
         <div class="card-wrap" aria-live="polite">
             <div class="card-bingo">
                 <div id="bingo" class="bingo" role="grid" aria-label="Bingo card">
@@ -25,8 +29,10 @@
     <footer class="small">
         © 2025 - THK Holdings Vietnam
     </footer>
+@endsection
 
 @section('script')
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         const resetBoardConfirm = "{{ __('view.bingo_user.check_info') }}";
     </script>
@@ -51,7 +57,7 @@
                 localStorage.setItem('marked_cells', JSON.stringify(defaultMarkedCells));
             }
 
-           function showToast(msg) {
+            function showToast(msg) {
                 const el = document.createElement("div");
                 el.classList.add("toast");
                 el.innerText = msg;
@@ -165,7 +171,7 @@
                 return pool.slice(0, total);
             }
 
-            async function generateCard() {
+            async function generateCard(reset_flg = false) {
                 try {
                     const responseData = await fetchBoardGame(); // waiting Promise resolved
 
@@ -193,7 +199,7 @@
                         await saveBoardGame();
                     }
                     marks.clear();
-                    renderCard();
+                    renderCard(reset_flg);
                     winEl.style.display = 'none';
                 } catch (error) {
                     console.error('Error when generateCard:', error);
@@ -201,7 +207,7 @@
             }
 
             // Restore marked_cells after reload page
-            function restoreMarkedCells() {
+            function restoreMarkedCells(reset_flg = false) {
                 try {
                     const stored = JSON.parse(localStorage.getItem('marked_cells'));
                     if (!stored || !Array.isArray(stored)) return;
@@ -217,7 +223,9 @@
                     }
 
                     // Check if reload has BINGO then show
-                    checkWin();
+                    if(!reset_flg){
+                        checkWin();
+                    }
                 } catch (err) {
                     console.error("Error restoring marked cells:", err);
                 }
@@ -247,7 +255,7 @@
             }
 
             // Function render card UI
-            function renderCard() {
+            function renderCard(reset_flg = false) {
                 bingoEl.innerHTML = '';
                 for (let r = 0; r < 5; r++) {
                     for (let c = 0; c < 5; c++) {
@@ -264,7 +272,7 @@
                     }
                 }
                 // Add event reload page show previous marked_cells
-                restoreMarkedCells();
+                restoreMarkedCells(reset_flg);
             }
 
             function onCellClick(e) {
@@ -416,6 +424,14 @@
                 cells.forEach(c => c.style.boxShadow = '');
             }
 
+            function triggerBingoWin() {
+                const overlay = document.getElementById('bingoWinOverlay');
+                overlay.style.display = 'flex';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 500000);
+            }
+
             function showWin() {
                 const cells = document.querySelectorAll(".cell");
                 const size = 5;
@@ -455,9 +471,7 @@
                 if (bingo) {
                     // Thêm hiệu ứng sóng sáng
                     document.querySelector(".card-wrap").classList.add("bingo-flash");
-                    const winBanner = document.querySelector(".win-banner");
-                    winBanner.classList.add("show-bingo");
-                    winBanner.style.display = "block";
+                    triggerBingoWin();
 
                     lines.forEach((line, index) => {
                         setTimeout(() => {
@@ -478,7 +492,7 @@
             document.getElementById('reset').addEventListener('click', async () => {
                 if (!confirm('Reset toàn bộ?')) return;
                 await resetBoardGame();
-                await generateCard();
+                await generateCard(true);
             });
 
             // init
@@ -496,13 +510,9 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const bingoCells = document.querySelectorAll(".cell");
-            const winBanner = document.getElementById("win");
             const resetBtn = document.getElementById("reset");
 
             function triggerBingo(cells) {
-                // Hiển thị banner
-                winBanner.style.display = "block";
-                winBanner.classList.add("show-bingo");
 
                 // Hiệu ứng sáng lan từng ô
                 cells.forEach((cell, i) => {
@@ -521,8 +531,21 @@
             // Nút reset
             resetBtn.addEventListener("click", () => {
                 bingoCells.forEach(c => c.classList.remove("bingo-wave"));
-                winBanner.style.display = "none";
             });
         });
+    </script>
+    <script>
+        // --- Create star for background ---
+        for (let i = 0; i < 60; i++) {
+            const star = document.createElement("div");
+            star.className = "star";
+            const size = Math.random() * 2 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.animationDelay = `${Math.random() * 3}s`;
+            document.body.appendChild(star);
+        }
     </script>
 @endsection
