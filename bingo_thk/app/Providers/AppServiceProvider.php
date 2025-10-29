@@ -23,5 +23,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Observer
         BingoUser::observe(BingoUserObserver::class);
+        if (app()->environment('local')) {
+            \URL::forceScheme('https');
+        }
     }
 }

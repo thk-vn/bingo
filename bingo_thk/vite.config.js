@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/animation.css',
                 'resources/css/dial.css',
                 'resources/js/page/bingo/dial.js',
+                'resources/js/page/bingo/register.js',
                 'resources/js/app.js'
             ],
             refresh: true,
