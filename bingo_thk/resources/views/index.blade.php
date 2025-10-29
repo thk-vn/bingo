@@ -429,7 +429,7 @@
                 overlay.style.display = 'flex';
                 setTimeout(() => {
                     overlay.style.display = 'none';
-                }, 500000);
+                }, 5000);
             }
 
             function showWin() {
