@@ -9,14 +9,14 @@
 </head>
 <body>
     <div id="container"></div>
-    <div id="drawn-numbers">
+    <div class="group-numbers">
         <div class="numbers-grid" id="numbersGrid"></div>
     </div>
     <div class="group-button">
         <button class="btn-reset">RESET</button>
     </div>
 
-<script src="{{ Vite::asset('resources/js/page/libs/three.min.js') }}" defer></script>
+<script src="{{ asset('js/libs/three.min.js') }}"></script>
 @vite(['resources/js/page/bingo/dial.js'])
 </body>
 </html>
