@@ -24,10 +24,9 @@ return [
     ],
 
     'placeholder' => [
-        'name' => 'enter full name...',
-        'department' => 'enter department...',
-        'phone_number' => 'enter phone number...',
-        'email' => 'enter email @thk-hd.vn...',
+        'name' => 'Full name',
+        'phone_number' => 'Phone number...',
+        'email' => 'Email @thk-hd.vn...',
     ],
 
     'button' => [
