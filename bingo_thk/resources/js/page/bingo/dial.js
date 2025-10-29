@@ -128,7 +128,7 @@ function init() {
 // ===== TẠO KHUNG LƯỚI SPHERE =====
 function createDotSphere() {
     const radius = 6.5;
-    const circlePoints = 64; // đủ mượt
+    const circlePoints = 64;
     const circleMaterial = new THREE.LineBasicMaterial({
         color: 0xffffff,
         transparent: true,
@@ -224,22 +224,19 @@ function sortNumbersGrid() {
     grid.replaceChildren(fragment);
 }
 
-function createSharedMaterials() {
+// ===== TẠO CÁC QUẢ CẦU SỐ =====
+function createBalls() {
+    const sharedSphereGeometry = geometryPool.getSphereGeometry();
+    const sharedPlaneGeometry1x1 = geometryPool.getPlaneGeometry(1, 1);
+
+    preGenerateNumberTextures();
+
     if (!sharedSphereMaterial) {
         sharedSphereMaterial = new THREE.MeshPhongMaterial({
             color: 0xe4c47f,
             shininess: 100
         });
     }
-}
-
-// ===== TẠO CÁC QUẢ CẦU SỐ =====
-function createBalls() {
-    preGenerateNumberTextures();
-    createSharedMaterials();
-
-    const sharedSphereGeometry = geometryPool.getSphereGeometry();
-    const sharedPlaneGeometry1x1 = geometryPool.getPlaneGeometry(1, 1);
 
     for (let i = 1; i <= numberOfBalls; i++) {
         const ballGroup = new THREE.Group();

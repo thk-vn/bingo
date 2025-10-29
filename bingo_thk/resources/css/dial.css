@@ -13,12 +13,10 @@
 body {
     margin: 0;
     overflow: hidden;
-    background: linear-gradient(180deg, #071330 0%, #0b1a2d 100%);
     font-family: 'Inter', 'Segoe UI', 'Roboto', system-ui, Arial;
-    color: #e6eef8;
 }
 
-#container, #drawn-numbers, button {
+#container, .group-numbers, button {
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -85,7 +83,7 @@ body {
     transition: transform 0.3s;
 }
 
-#drawn-numbers {
+.group-numbers {
     position: absolute;
     top: 0;
     right: 0;
@@ -99,42 +97,42 @@ body {
     animation: glow 6s ease-in-out infinite;
 }
 
-.numbers-grid {
+.group-numbers .numbers-grid {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
     gap: 15px;
     max-height: calc(100vh - 20%);
     overflow-y: auto;
-    padding-bottom: 35%;
+    padding-bottom: 40px;
     width: 100%;
 }
 
-.number-row {
+.group-numbers .numbers-grid .number-row {
     display: flex;
     gap: 6px;
 }
 
-.numbers-grid::-webkit-scrollbar {
-    width: 5px;
+.group-numbers .numbers-grid::-webkit-scrollbar {
+    width: 1px;
 }
 
-.numbers-grid::-webkit-scrollbar-track {
+.group-numbers .numbers-grid::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
 }
 
-.numbers-grid::-webkit-scrollbar-thumb {
+.group-numbers .numbers-grid::-webkit-scrollbar-thumb {
     background: var(--neon-color);
     border-radius: 4px;
 }
 
-.numbers-grid::-webkit-scrollbar-thumb:hover {
+.group-numbers .numbers-grid::-webkit-scrollbar-thumb:hover {
     background: var(--neon-accent);
     box-shadow: 0 0 8px var(--neon-accent);
 }
 
-.mini-ball {
+.group-numbers .numbers-grid .number-row .mini-ball {
     display: flex;
     align-items: center;
     justify-content: center;
