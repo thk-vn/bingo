@@ -339,12 +339,12 @@ function startSpin() {
 
 function startNewSpin() {
     // Thiết lập tốc độ quay ngẫu nhiên - tăng cường độ xáo trộn
-    rotationSpeed.x = (Math.random() + 0.5) * 1.2;
-    rotationSpeed.y = (Math.random() + 0.5) * 1.0;
+    rotationSpeed.x = (Math.random() + 0.5) * 0.3;
+    rotationSpeed.y = (Math.random() + 0.5) * 0.3;
 
     setTimeout(() => {
         pickWinner();
-    }, 4000);
+    }, 2000);
 }
 
 // ===== HÀM CHỌN QUẢ CẦU TRÚNG THƯỞNG =====
@@ -536,9 +536,9 @@ function sphereRotation() {
     sphereGroup.rotation.y += rotationSpeed.y;
 
     // Balls xoay cả 2 trục để xáo trộn nhiều hơn
-    ballsGroup.rotation.x += rotationSpeed.x * 1.5; // Tăng tốc độ xoay X
-    ballsGroup.rotation.y += rotationSpeed.y;
-    ballsGroup.rotation.z += rotationSpeed.x * 0.8; // Thêm xoay trục Z
+    ballsGroup.rotation.x += rotationSpeed.x * 0.3; // Tăng tốc độ xoay X
+    ballsGroup.rotation.y += rotationSpeed.y * 0.3;
+    ballsGroup.rotation.z += rotationSpeed.x * 0.1; // Thêm xoay trục Z
 
     // Giảm tốc độ quay dần (hiệu ứng chậm lại)
     rotationSpeed.x *= 0.98;
@@ -547,10 +547,11 @@ function sphereRotation() {
 
 // Cập nhật chuyển động của từng quả cầu khi đang quay
 function ballMotionWhileSpinning() {
-    const maxRadius = 5.2;
-    const maxSpeed = 0.5;
-    const randomChance = 0.3;
-    const rotationChance = 0.2;
+    const maxRadius = 5.2;    // Bán kính tối đa - khung chứa của quả cầu
+    const maxSpeed = 0.5;     // Tốc độ tối đa cho phép của mỗi quả bóng
+    const randomChance = 0.6; // Xác suất 30% để áp dụng dao động ngẫu nhiên
+    const rotationChance = 0.9; // Xác suất 20% để quay nhẹ quả bóng
+
 
     balls.forEach(ball => {
         if (ball.userData.isFalling) return;
@@ -568,7 +569,7 @@ function ballMotionWhileSpinning() {
 
         // Thêm chuyển động hỗn loạn ngẫu nhiên (giảm tần suất để tối ưu)
         if (Math.random() < randomChance) {
-            const randomFactor = (Math.random() - 0.5) * 0.05;
+            const randomFactor = (Math.random() - 0.5) * 0.15;
             ball.userData.velocity.x += randomFactor;
             ball.userData.velocity.y += randomFactor;
             ball.userData.velocity.z += randomFactor;
@@ -688,11 +689,11 @@ function animateWinnerMoveToGrid() {
         if (pendingSpin) {
             pendingSpin = false;
             isSpinning = true;
-            rotationSpeed.x = (Math.random() + 0.5) * 1.2;
-            rotationSpeed.y = (Math.random() + 0.5) * 1.2;
+            rotationSpeed.x = (Math.random() + 0.5) * 0.5;
+            rotationSpeed.y = (Math.random() + 0.5) * 0.5;
             setTimeout(() => {
                 pickWinner();
-            }, 4000);
+            }, 2000);
         }
     }
 }
