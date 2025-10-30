@@ -47,7 +47,12 @@
             }
 
             const res = await response.json();
-
+            if (localStorage.getItem('bingo_board_id') && res?.data?.id != localStorage.getItem('bingo_board_id')) 
+            {
+                clearMarkedCells();
+                localStorage.removeItem('bingo_board_id');
+                localStorage.setItem('bingo_board_id', res?.data?.id);
+            }
             // Safely handle response
             const bingoBoard = res?.data?.bingo_board ?? [];
             const responseData = Array.isArray(bingoBoard) ? bingoBoard.flat() : [];
