@@ -34,7 +34,7 @@ $(document).ready(function () {
             if (res.status) {
                 localStorage.setItem('bingo_user', JSON.stringify(res.data));
                 showToast(updateSuccess);
-                setTimeout(() => window.location.href = '/bingo/number-plate', 1200);
+                setTimeout(() => window.location.href = '/bingo', 1200);
             } else {
                 showToast(updateFail);
             }

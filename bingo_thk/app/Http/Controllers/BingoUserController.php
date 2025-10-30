@@ -158,8 +158,12 @@ class BingoUserController extends Controller
             $result = false;
             if(!$checkBoardGameNotEnd) {
                 $result = $this->bingoUserBoardService->create($bingoBoard, $markedCells, $bingoUser);
-                if ($result) {
+                if ($result['status']) {
                     DB::commit();
+                    return $this->success([
+                        'status' => $result, 
+                        'bingo_user_board_id' => $result['id']], 
+                        __('view.message.successfully_saved'));
                 }
             }
             return $this->success(['status' => $result]);

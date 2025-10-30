@@ -33,7 +33,7 @@ body {
   background: white;
   border-radius: 50%;
   opacity: 0.8;
-  animation: twinkle 3s infinite ease-in-out;
+  animation: twinkle 2s infinite ease-in-out;
 }
 
 @keyframes twinkle {
@@ -161,10 +161,12 @@ p.lead {
 @keyframes flash {
   from {
     filter: brightness(1);
+    transform: translateZ(0);
   }
 
   to {
     filter: brightness(1.4);
+    transform: translateZ(0);
   }
 }
 
@@ -226,6 +228,15 @@ p.lead {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 15px;
+}
+
+.cell,button.reset,.logo-fixed,.user-info {
+  will-change: transform, opacity, box-shadow;
+}
+
+.cell,.bingo-text,.player-icon,.logo-fixed {
+  transform: translateZ(0);
+  will-change: transform, opacity;
 }
 
 .cell {
@@ -359,6 +370,11 @@ button, .btn {
   cursor: pointer;
   box-shadow: 0 6px 14px rgba(2, 6, 23, 0.6);
   font-weight: 600;
+}
+
+button.reset:not(:hover),
+.info:not(:hover) {
+  animation: none;
 }
 
 button.reset {
@@ -803,6 +819,12 @@ button.reset:active {
 @keyframes floatUp {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-20px); }
+}
+
+@media (max-width: 768px) {
+  .cell {
+    backdrop-filter: none;
+  }
 }
 
 @media(max-width:880px) {

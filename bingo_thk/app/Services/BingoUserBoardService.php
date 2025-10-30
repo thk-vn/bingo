@@ -15,15 +15,24 @@ class BingoUserBoardService
      * @param array $bingoBoard
      * @param array $markedCells
      * @param BingoUser $bingoUser
-     * @return bool
+     * @return array
      */
-    public function create(array $bingoBoard, array $markedCells, BingoUser $bingoUser): bool
+    public function create(array $bingoBoard, array $markedCells, BingoUser $bingoUser): array
     {
         $bingoUserBoard = new BingoUserBoard();
         $bingoUserBoard->bingo_user_id = $bingoUser->id;
         $bingoUserBoard->bingo_board = json_encode($bingoBoard);
         $bingoUserBoard->marked_cells = json_encode($markedCells);
-        return $bingoUserBoard->save();
+        if ($bingoUserBoard->save()) {
+            $recentBingUserBoard = $bingoUserBoard->fresh();
+            return [
+                'status' => true,
+                'id' => $recentBingUserBoard->id
+            ];
+        }
+        return [
+            'status' => false
+        ];
     }
 
     /**

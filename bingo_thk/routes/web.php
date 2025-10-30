@@ -29,7 +29,7 @@ Route::prefix('bingo')->group(function () {
 
 Route::middleware(['auth:bingo'])->group(function () {
     Route::prefix('bingo')->group(function () {
-        Route::get('/number-plate', [BingoController::class, 'index'])->name('bingo.index');
+        Route::get('/', [BingoController::class, 'index'])->name('bingo.index');
         Route::get('/dial', [BingoController::class, 'dial'])->name('bingo.dial');
         Route::post('/save-board-game', [BingoUserController::class, 'saveBoardGame'])->name('bingo.save.board_game');
         Route::get('/fetch-reset-key', [BingoController::class, 'fetchResetKey'])->name('game.fetch.reset_key');
