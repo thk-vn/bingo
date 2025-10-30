@@ -26,7 +26,7 @@ return [
     'placeholder' => [
         'name' => 'Full name',
         'phone_number' => 'Phone number...',
-        'email' => 'Email @thk-hd.vn...',
+        'email' => 'Enter example@thk-hd.vn...',
     ],
 
     'button' => [

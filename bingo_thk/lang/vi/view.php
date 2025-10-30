@@ -25,7 +25,7 @@ return [
         'name' => 'nhập họ và tên...',
         'department' => 'nhập phòng ban...',
         'phone_number' => 'nhập số điện thoại...',
-        'email' => 'nhập email @thk-hd.vn...',
+        'email' => 'nhập example@thk-hd.vn...',
     ],
     'button' => [
         'pending' => 'Đang xử lý...',

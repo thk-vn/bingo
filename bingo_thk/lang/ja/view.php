@@ -28,7 +28,7 @@ return [
         'name' => '氏名を入力...',
         'department' => '部署を入力...',
         'phone_number' => '電話番号を入力...',
-        'email' => 'メールアドレスを入力 @thk-hd.vn...',
+        'email' => 'example@thk-hd.vn を入力してください…',
     ],
 
     'button' => [
