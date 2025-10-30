@@ -16,6 +16,13 @@ class UpdateBingoUserRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'email' => strtolower(trim($this->email)),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

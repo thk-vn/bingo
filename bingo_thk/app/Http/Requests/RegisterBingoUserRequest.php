@@ -31,14 +31,21 @@ class RegisterBingoUserRequest extends FormRequest
         ];
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'email' => strtolower(trim($this->email)),
+        ]);
+    }
+
     public function messages(): array
     {
         return [
             'name.required' => __('validation.required', ['attribute' => __('view.bingo_user.name')]),
             'name.string' => __('validation.required', ['attribute' => __('view.bingo_user.name')]),
             'name.max' => __('validation.max.string', ['attribute' => __('view.bingo_user.name')]),
-            'email.required' => __('validation.reuqired', ['attribute' => __('view.bingo_user.email')]),
-            'phone_number.required' => __('validation.reuqired', ['attribute' => __('view.bingo_user.phone_number')]),
+            'email.required' => __('validation.required', ['attribute' => __('view.bingo_user.email')]),
+            'phone_number.required' => __('validation.required', ['attribute' => __('view.bingo_user.phone_number')]),
         ];
     }
 }
