@@ -20,6 +20,7 @@ class EmailRule implements ValidationRule
             return;
         }
 
+        $value = strtolower($value);
         $domain = substr(strrchr($value, "@"), 1);
 
         $allowedDomains = ["thk-hd.vn", "core-tech.jp"];

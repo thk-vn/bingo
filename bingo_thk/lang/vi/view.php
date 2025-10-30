@@ -22,10 +22,9 @@ return [
         'success' => 'Bạn đã thêm mới dữ liệu thành công',
     ],
     'placeholder' => [
-        'name' => 'nhập họ và tên...',
-        'department' => 'nhập phòng ban...',
-        'phone_number' => 'nhập số điện thoại...',
-        'email' => 'nhập example@thk-hd.vn...',
+        'name' => 'Họ và tên',
+        'phone_number' => 'Số điện thoại',
+        'email' => 'example@thk-hd.vn',
     ],
     'button' => [
         'pending' => 'Đang xử lý...',
