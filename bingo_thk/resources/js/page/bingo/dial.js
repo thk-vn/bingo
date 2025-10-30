@@ -334,17 +334,15 @@ function startSpin() {
     }
 
     isSpinning = true;
-    startNewSpin();
-}
-
-function startNewSpin() {
-    // Thiết lập tốc độ quay ngẫu nhiên - tăng cường độ xáo trộn
-    rotationSpeed.x = (Math.random() + 0.5) * 1.2;
-    rotationSpeed.y = (Math.random() + 0.5) * 1.0;
-
+    setSpeedStartSpin();
     setTimeout(() => {
         pickWinner();
-    }, 4000);
+    }, 2000);
+}
+
+// Thiết lập tốc độ quay ngẫu nhiên - tăng cường độ xáo trộn
+function setSpeedStartSpin() {
+    rotationSpeed.y = (Math.random() + 0.5) * 0.8;
 }
 
 // ===== HÀM CHỌN QUẢ CẦU TRÚNG THƯỞNG =====
@@ -491,13 +489,6 @@ function animate() {
     // Lên lịch frame tiếp theo
     requestAnimationFrame(animate);
 
-    const now = performance.now();
-    if (!animate.lastTime) animate.lastTime = now;
-    const deltaSeconds = (now - animate.lastTime) / 1000;
-    animate.lastTime = now;
-
-    if (deltaSeconds > 0.1) return;
-
     if (isSpinning) {
         // Quay khung lưới & nhóm quả cầu
         sphereRotation();
@@ -535,22 +526,22 @@ function sphereRotation() {
     // Sphere chỉ xoay trục Y
     sphereGroup.rotation.y += rotationSpeed.y;
 
-    // Balls xoay cả 2 trục để xáo trộn nhiều hơn
-    ballsGroup.rotation.x += rotationSpeed.x * 1.5; // Tăng tốc độ xoay X
-    ballsGroup.rotation.y += rotationSpeed.y;
-    ballsGroup.rotation.z += rotationSpeed.x * 0.8; // Thêm xoay trục Z
+    // Balls xoay cả 3 trục để tạo cảm giác động hơn
+    ballsGroup.rotation.x += rotationSpeed.x * 0.3;
+    ballsGroup.rotation.y += rotationSpeed.y * 0.5;
+    ballsGroup.rotation.z += rotationSpeed.x * 0.3;
 
-    // Giảm tốc độ quay dần (hiệu ứng chậm lại)
-    rotationSpeed.x *= 0.98;
-    rotationSpeed.y *= 0.98;
+    // Giảm tốc độ quay mượt hơn bằng cách tiến dần về 0
+    const easing = 0.03; // giá trị càng nhỏ thì giảm càng chậm
+    rotationSpeed.x = THREE.MathUtils.lerp(rotationSpeed.x, 0, easing);
+    rotationSpeed.y = THREE.MathUtils.lerp(rotationSpeed.y, 0, easing);
 }
 
 // Cập nhật chuyển động của từng quả cầu khi đang quay
 function ballMotionWhileSpinning() {
-    const maxRadius = 5.2;
-    const maxSpeed = 0.5;
-    const randomChance = 0.3;
-    const rotationChance = 0.2;
+    const maxRadius = 5.2;    // Bán kính tối đa - khung chứa của quả cầu
+    const maxSpeed = 0.5;     // Tốc độ tối đa cho phép của mỗi quả bóng
+    const randomChance = 0.6; // Xác suất 60% để áp dụng dao động ngẫu nhiên
 
     balls.forEach(ball => {
         if (ball.userData.isFalling) return;
@@ -568,18 +559,10 @@ function ballMotionWhileSpinning() {
 
         // Thêm chuyển động hỗn loạn ngẫu nhiên (giảm tần suất để tối ưu)
         if (Math.random() < randomChance) {
-            const randomFactor = (Math.random() - 0.5) * 0.05;
+            const randomFactor = (Math.random() - 0.5) * 0.08;
             ball.userData.velocity.x += randomFactor;
             ball.userData.velocity.y += randomFactor;
             ball.userData.velocity.z += randomFactor;
-        }
-
-        // Thêm xoay ngẫu nhiên cho từng quả cầu (giảm tần suất)
-        if (Math.random() < rotationChance) {
-            const rotationFactor = (Math.random() - 0.5) * 0.1;
-            ball.rotation.x += rotationFactor;
-            ball.rotation.y += rotationFactor;
-            ball.rotation.z += rotationFactor;
         }
 
         // Giới hạn vận tốc tối đa - tăng để xáo trộn nhiều hơn
@@ -626,11 +609,12 @@ function animateWinnerFalling() {
     }
 
     // Di chuyển với tốc độ cố định theo hướng đã tính
-    winnerBall.userData.fallVelocity = winnerBall.userData.targetDirection.clone().multiplyScalar(0.15);
+    const speedFalling = 0.25;
+    winnerBall.userData.fallVelocity = winnerBall.userData.targetDirection.clone().multiplyScalar(speedFalling);
     winnerBall.position.add(winnerBall.userData.fallVelocity);
 
     // Phóng to quả cầu dần (tối đa 3 lần)
-    const scale = Math.min(winnerBall.scale.x + 0.04, 3);
+    const scale = Math.min(winnerBall.scale.x + speedFalling, 3);
     winnerBall.scale.set(scale, scale, scale);
 
     // Kiểm tra đã đến giữa màn hình chưa
@@ -643,7 +627,6 @@ function animateWinnerFalling() {
             winnerBall.userData.centerScale = winnerBall.scale.x;
             winnerBall.userData.pulsePhase = 0;
         }
-
     }
 }
 
@@ -688,11 +671,10 @@ function animateWinnerMoveToGrid() {
         if (pendingSpin) {
             pendingSpin = false;
             isSpinning = true;
-            rotationSpeed.x = (Math.random() + 0.5) * 1.2;
-            rotationSpeed.y = (Math.random() + 0.5) * 1.2;
+            setSpeedStartSpin();
             setTimeout(() => {
                 pickWinner();
-            }, 4000);
+            }, 2000);
         }
     }
 }
@@ -789,6 +771,6 @@ function moveWinnerBallToCell(targetCell) {
     winnerBallTarget = new THREE.Vector3(x * 8, y * 6, 5);
 
     // Cài đặt thông số di chuyển cho bóng (tốc độ nhanh hơn)
-    winnerBall.userData.moveSpeed = 0.04;
+    winnerBall.userData.moveSpeed = 0.05;
     winnerBall.userData.moveProgress = 0;
 }

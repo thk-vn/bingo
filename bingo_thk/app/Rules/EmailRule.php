@@ -20,12 +20,13 @@ class EmailRule implements ValidationRule
             return;
         }
 
+        $value = strtolower($value);
         $domain = substr(strrchr($value, "@"), 1);
 
-        $domain_pattern = "thk-hd.vn";
-        if (strtolower($domain) !== $domain_pattern)
-        {
-            $fail( __("view.rule.validate.email_pattern"));
+        $allowedDomains = ["thk-hd.vn", "core-tech.jp"];
+
+        if (!in_array($domain, $allowedDomains, true)) {
+            $fail(__("view.rule.validate.email_pattern"));
         }
     }
 }
