@@ -13,10 +13,18 @@ export default defineConfig({
                 'resources/js/page/bingo/detail.js',
                 'resources/css/dial.css',
                 'resources/js/page/bingo/dial.js',
-                'resources/js/page/bingo/register.js',
-                'resources/js/app.js'
+                'resources/js/app.js',
+                'resources/js/page/bingo/bingo-board.js',
             ],
             refresh: true,
         }),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        hmr: {
+        host: '192.168.1.87:8080',
+        port: 5173,
+        },
+    },
 });
