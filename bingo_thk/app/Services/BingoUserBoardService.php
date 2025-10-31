@@ -79,7 +79,7 @@ class BingoUserBoardService
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('games')
-                    ->whereColumn('games.reset_key', '>', 'bingo_users.reset_key');
+                    ->whereRaw('CAST(games.reset_key AS UNSIGNED) > CAST(bingo_users.reset_key AS UNSIGNED)');
             })
             ->where('status', BingoUserBoard::STATUS_NOT_END)
             ->select('bingo_user_boards.*')
@@ -108,7 +108,7 @@ class BingoUserBoardService
     public function checkGameAllowedReset(BingoUser $bingoUser): bool
     {
         $game = Game::first();
-        if($game && $game->reset_key > $bingoUser->reset_key) {
+        if ($game && $game->reset_key > $bingoUser->reset_key) {
             return true;
         }
         return false;

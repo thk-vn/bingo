@@ -198,11 +198,11 @@ class BingoUserController extends Controller
             $bingoUser = Auth('bingo')->user();
             $checkGameAllowedReset = $this->bingoUserBoardService->checkGameAllowedReset($bingoUser);
             if(!$checkGameAllowedReset) {
-                return $this->error(null, null, __('view.message.now_allow_reset'), 400);
+                return $this->success(['status' => false], __('view.message.now_allow_reset'));
             }
             $this->bingoUserBoardService->resetBoardGame($bingoUser, $request->all());
             DB::commit();
-            return $this->success(['bingo_user' => $bingoUser], __('view.message.successfully_reset'));
+            return $this->success(['bingo_user' => $bingoUser, 'status' => true], __('view.message.successfully_reset_board_game'));
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e);

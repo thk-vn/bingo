@@ -118,19 +118,19 @@
 
             // Parse JSON từ response
             const res = await response.json();
-            if (response.ok) {
+            if (response.ok && res?.data?.status) {
                 if (res?.data?.bingo_user) {
+                    showToast(res?.message);
                     // Update localStorage bingo_user
                     localStorage.removeItem('bingo_user');
                     localStorage.setItem('bingo_user', JSON.stringify(res.data.bingo_user));
                     clearMarkedCells();
                 }
             } else {
-                showToast(res.message);
+                showToast(res?.message);
             }
         } catch (err) {
             console.error("Error reset board game:", err);
-            showToast(err.responseJSON.message);
         }
     }
 

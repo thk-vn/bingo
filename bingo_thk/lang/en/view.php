@@ -48,7 +48,7 @@ return [
 
     'message' => [
         'successfully_found' => 'Successfully found',
-        'successfully_reset' => 'Successfully reset',
+        'successfully_reset_board_game' => 'Successfully reset board game',
         'now_allow_reset' => 'You are not allowed to reset the game now!!!',
         'reset_all' => 'Do you want to reset a new game board?',
         'server_error' => 'Server error!!!',

@@ -42,7 +42,7 @@ return [
     ],
     'message' => [
         'successfully_found' => 'Tìm kiếm thành công',
-        'successfully_reset' => 'Đặt lại thành công',
+        'successfully_reset_board_game' => 'Đặt lại bàn chơi thành công',
         'now_allow_reset' => 'Bạn không được phép đặt lại trò chơi lúc này!!!',
         'reset_all' => 'Bạn có muốn đặt lại bàn chơi mới?',
         'server_error' => 'Lỗi máy chủ!!!',
