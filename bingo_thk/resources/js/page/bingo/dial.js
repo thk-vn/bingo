@@ -342,7 +342,7 @@ function startSpin() {
 
 // Thiết lập tốc độ quay ngẫu nhiên - tăng cường độ xáo trộn
 function setSpeedStartSpin() {
-    rotationSpeed.y = (Math.random() + 0.5) * 0.8;
+    rotationSpeed.y = (Math.random() + 0.5) * 1.2;
 }
 
 // ===== HÀM CHỌN QUẢ CẦU TRÚNG THƯỞNG =====
@@ -370,7 +370,7 @@ function pickWinner() {
 
     // Rơi về trung tâm nhanh hơn
     const targetPos = new THREE.Vector3(0, 0, 5);
-    winner.userData.fallVelocity = targetPos.clone().sub(worldPos).normalize().multiplyScalar(0.25);
+    winner.userData.fallVelocity = targetPos.clone().sub(worldPos).normalize().multiplyScalar(1.0);
 
     drawnNumbers.push(winner.userData.number);
     saveStateToLocalStorage();
