@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->enum('status', ['waiting', 'running', 'ended'])->default('waiting');
-            $table->string('reset_key')->unique();
+            $table->tinyInteger('reset_key')->unique();
             $table->bigInteger('winner_user_id')->nullable();
             $table->timestamps();
         });
