@@ -70,7 +70,7 @@ $(document).ready(function () {
             if (res.status) {
 
                 showToast(`${registerGoBack} ${userData.name}`);
-                setTimeout(() => window.location.href = '/bingo/number-plate', 1000);
+                setTimeout(() => window.location.href = '/bingo', 1000);
             } else {
                 localStorage.removeItem('bingo_user');
             }
@@ -133,7 +133,14 @@ $(document).ready(function () {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            setTimeout(() => window.location.href = '/bingo/number-plate', 1200);
+
+            const res = await response.json();
+            if (res.status) {
+                let bingoBoardId = res?.data?.bingo_user_board_id;
+                localStorage.removeItem('bingo_board_id');
+                localStorage.setItem('bingo_board_id', bingoBoardId);
+            }
+            setTimeout(() => window.location.href = '/bingo', 1200);
         } catch (err) {
             console.error(err);
             // `registerErrorServer` is defined in the blade view; fallback to a generic message

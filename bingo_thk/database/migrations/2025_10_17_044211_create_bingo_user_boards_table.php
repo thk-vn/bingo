@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('bingo_user_id');
             $table->json('bingo_board')->nullable();
             $table->json('marked_cells')->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->unsigned()->default(0);
             $table->timestamps();
         });
     }

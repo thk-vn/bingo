@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone_number', 11);
-            $table->tinyInteger('reset_key');
+            $table->tinyInteger('reset_key')->unsigned()->default(0);
             $table->timestamps();
         });
     }

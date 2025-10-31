@@ -15,15 +15,24 @@ class BingoUserBoardService
      * @param array $bingoBoard
      * @param array $markedCells
      * @param BingoUser $bingoUser
-     * @return bool
+     * @return array
      */
-    public function create(array $bingoBoard, array $markedCells, BingoUser $bingoUser): bool
+    public function create(array $bingoBoard, array $markedCells, BingoUser $bingoUser): array
     {
         $bingoUserBoard = new BingoUserBoard();
         $bingoUserBoard->bingo_user_id = $bingoUser->id;
         $bingoUserBoard->bingo_board = json_encode($bingoBoard);
         $bingoUserBoard->marked_cells = json_encode($markedCells);
-        return $bingoUserBoard->save();
+        if ($bingoUserBoard->save()) {
+            $recentBingUserBoard = $bingoUserBoard->fresh();
+            return [
+                'status' => true,
+                'id' => $recentBingUserBoard->id
+            ];
+        }
+        return [
+            'status' => false
+        ];
     }
 
     /**
@@ -70,7 +79,7 @@ class BingoUserBoardService
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('games')
-                    ->whereColumn('games.reset_key', '>', 'bingo_users.reset_key');
+                    ->whereRaw('CAST(games.reset_key AS UNSIGNED) > CAST(bingo_users.reset_key AS UNSIGNED)');
             })
             ->where('status', BingoUserBoard::STATUS_NOT_END)
             ->select('bingo_user_boards.*')
@@ -99,7 +108,7 @@ class BingoUserBoardService
     public function checkGameAllowedReset(BingoUser $bingoUser): bool
     {
         $game = Game::first();
-        if($game && $game->reset_key > $bingoUser->reset_key) {
+        if ($game && $game->reset_key > $bingoUser->reset_key) {
             return true;
         }
         return false;

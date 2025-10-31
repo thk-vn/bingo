@@ -49,7 +49,7 @@ return [
 
     'message' => [
         'successfully_found' => '正常に見つかりました',
-        'successfully_reset' => '正常にリセットされました',
+        'successfully_reset_board_game' => 'ボードゲームのリセットに成功しました',
         'now_allow_reset' => '現在、ゲームをリセットすることは許可されていません!!!',
         'reset_all' => '新しいゲームボードをリセットしますか？',
         'server_error' => 'サーバーエラー!!!',
