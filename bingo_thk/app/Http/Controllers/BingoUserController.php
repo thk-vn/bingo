@@ -82,16 +82,13 @@ class BingoUserController extends Controller
      */
     public function checkUser(Request $request): JsonResponse
     {
-        $data = $request->only(['email', 'phone_number']);
-
+        $data = $request->only(['email']);
         $user = $this->bingoUser
             ->where('email', $data['email'])
-            ->where('phone_number', $data['phone_number'])
             ->first();
 
         if ($user) {
             Auth::guard('bingo')->login($user);
-
             return $this->success($user, __('view.notify.bingo_user.login_success'));
         }
 

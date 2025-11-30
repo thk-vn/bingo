@@ -23,11 +23,6 @@
                 type="text"
                 placeholder="{{ __('view.placeholder.email') }}"
             />
-            <input class="input" id="phone_number"
-                name="phone_number"
-                type="text"
-                placeholder="{{ __('view.placeholder.phone_number') }}"
-            />
             <button id="loginBtn" class="btn" type="submit">
                 {{ __("view.bingo_user.btn_play_now") }}
             </button>

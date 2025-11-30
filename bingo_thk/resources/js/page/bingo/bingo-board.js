@@ -9,7 +9,7 @@
     }, () => Array(5).fill(false));
     let bingo_user = localStorage.getItem('bingo_user');
 
-    if (!localStorage.getItem('bingo_user') || !bingo_user) 
+    if (!localStorage.getItem('bingo_user') || !bingo_user)
     {
         window.location.href = '/bingo/register/index';
         bingo_user = JSON.parse(bingo_user);
@@ -47,7 +47,7 @@
             }
 
             const res = await response.json();
-            if (localStorage.getItem('bingo_board_id') && res?.data?.id != localStorage.getItem('bingo_board_id')) 
+            if (localStorage.getItem('bingo_board_id') && res?.data?.id != localStorage.getItem('bingo_board_id'))
             {
                 clearMarkedCells();
                 localStorage.removeItem('bingo_board_id');
@@ -399,7 +399,7 @@
         overlay.style.display = 'flex';
         setTimeout(() => {
             overlay.style.display = 'none';
-        }, 5000);
+        }, 1500);
     }
 
     function showWin() {
