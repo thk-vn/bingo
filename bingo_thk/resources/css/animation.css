@@ -11,7 +11,7 @@ h1 {
 }
 
 body {
-  background: #112 url(//images.weserv.nl/?url=i.imgur.com/6QJjYMe.jpg)  center no-repeat;
+  background: #112 url(/resources/images/background_login.jpeg)  center no-repeat;
   background-size:cover;
   margin:0;
   min-height: 100vh;
