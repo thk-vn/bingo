@@ -108,6 +108,9 @@ class BingoUserBoardService
     public function checkGameAllowedReset(BingoUser $bingoUser): bool
     {
         $game = Game::first();
-        return ($game && (int)$game->reset_key > (int)$bingoUser->reset_key);
+        if ($game && $game->reset_key > $bingoUser->reset_key) {
+            return true;
+        }
+        return false;
     }
 }

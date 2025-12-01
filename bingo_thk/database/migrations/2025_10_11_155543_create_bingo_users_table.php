@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
+            $table->string('phone_number', 11);
             $table->tinyInteger('reset_key')->unsigned()->default(0);
             $table->timestamps();
         });
@@ -19,6 +20,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('bingo_users');
+        Schema::table('bingo_users', function (Blueprint $table) {
+            $table->dropColumn(['name', 'email', 'phone_number', 'bingo_board', 'marked_cells', 'reset_key']);
+        });
     }
 };

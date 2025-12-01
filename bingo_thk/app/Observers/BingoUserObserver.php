@@ -8,6 +8,6 @@ class BingoUserObserver
 {
     public function creating(BingoUser $bingoUser)
     {
-        $bingoUser->reset_key = 0;
+        $bingoUser->reset_key = '0';
     }
 }

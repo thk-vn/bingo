@@ -2,7 +2,7 @@
 
 @section('css')
     @vite(['resources/css/index.css'])
-    <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 @endsection
 
 @section('main')
@@ -32,7 +32,7 @@
 
 @section('script')
     @vite('resources/js/page/bingo/bingo-board.js')
-    <script src="{{ asset('js/libs/confetti.browser.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         // --- Create star for background ---
         for (let i = 0; i < 40; i++) {

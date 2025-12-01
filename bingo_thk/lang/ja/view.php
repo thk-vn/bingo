@@ -4,6 +4,7 @@ return [
     'bingo_user' => [
         'name' => '氏名',
         'email' => 'メールアドレス',
+        'phone_number' => '電話番号',
         'info_account' => 'Info Account',
         'btn_play_now' => '今すぐプレイ',
         'btn_register' => '登録',
@@ -25,6 +26,7 @@ return [
 
     'placeholder' => [
         'name' => '氏名を入力',
+        'phone_number' => '電話番号を入力',
         'email' => 'example@thk-hd.vn',
     ],
 

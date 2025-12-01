@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Game extends Model
 {
-    protected $fillable = ['reset_key'];
+    protected $fillable = ['status', 'reset_key', 'winner_user_id'];
 }

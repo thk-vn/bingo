@@ -9,7 +9,10 @@ class BingoUser extends Authenticatable
 {
     use Notifiable;
 
-    protected $fillable = ['name', 'email', 'reset_key'];
+    protected $fillable = ['name', 'email', 'phone_number', 'bingo_board', 'marked_cells', 'reset_key'];
 
-    protected $casts = [];
+    protected $casts = [
+        'bingo_board' => 'array',
+        'marked_cells' => 'array',
+    ];
 }

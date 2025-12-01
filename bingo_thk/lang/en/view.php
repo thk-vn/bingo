@@ -2,20 +2,21 @@
 
 return [
     'bingo_user' => [
-        'name' => 'Enter full name',
+        'name' => 'Full Name',
         'email' => 'Email',
+        'phone_number' => 'Phone Number',
         'info_account' => 'Info Account',
         'btn_play_now' => 'Play now',
         'start' => '💫 Ready — Let’s play 💫',
-        'check_info' => '⚠️ Please complete all the required information',
+        'check_info' => '⚠️ Please fill in all required information!',
         'update' => 'Update Information',
-        'btn_confirm' => 'Update',
+        'btn_confirm' => 'Confirm',
     ],
 
     'notify' => [
         'bingo_user' => [
             'null_account' => 'Incorrect or unregistered information',
-            'register_success' => 'Your account has been registered successfully.',
+            'register_success' => 'Account registered successfully',
             'login_success' => 'Login successful',
         ],
         'error' => 'An error occurred. Please try again!',
@@ -23,7 +24,8 @@ return [
     ],
 
     'placeholder' => [
-        'name' => 'Enter your name',
+        'name' => 'Full name',
+        'phone_number' => 'Phone number',
         'email' => 'example@thk-hd.vn',
     ],
 
@@ -47,7 +49,7 @@ return [
     'message' => [
         'successfully_found' => 'Successfully found',
         'successfully_reset_board_game' => 'Successfully reset board game',
-        'now_allow_reset' => 'You can’t reset the game right now!!!',
+        'now_allow_reset' => 'You are not allowed to reset the game now!!!',
         'reset_all' => 'Do you want to reset a new game board?',
         'server_error' => 'Server error!!!',
     ],
@@ -57,7 +59,7 @@ return [
             'error' => 'An error occurred during validation.',
             'format' => ':attribute format is invalid.',
             'email'  => 'The email format is invalid.',
-            'email_pattern'=> 'The email must use the domain @thk-hd.vn',
+            'email_pattern'=> 'The email must use the domain @thk-hd.vn.',
         ],
     ],
 ];

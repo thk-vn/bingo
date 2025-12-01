@@ -25,6 +25,12 @@
                 value="{{ old('email', $bingoUser->email) }}"
                 placeholder="{{ __('view.placeholder.email') }}"
             />
+            <input class="input" id="phone_number"
+                name="phone_number"
+                type="text"
+                value="{{ old('email', $bingoUser->phone_number) }}"
+                placeholder="{{ __('view.placeholder.phone_number') }}"
+            />
             <button id="btnUpdateInfoBingoUser" class="btn" type="submit">
                 {{ __("view.bingo_user.btn_confirm") }}
             </button>
