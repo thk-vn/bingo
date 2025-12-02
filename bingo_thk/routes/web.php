@@ -3,7 +3,6 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BingoController;
 use App\Http\Controllers\BingoUserController;
-use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -16,8 +15,6 @@ Route::get('/', function () {
 
     return redirect()->route('bingo.register_index');
 });
-
-Route::get('/admin/login', [EmployeeController::class, 'login'])->name('admin.login');
 
 Route::prefix('bingo')->group(function () {
     Route::get('/register/index', [BingoUserController::class, 'index'])->name('bingo.register_index');
