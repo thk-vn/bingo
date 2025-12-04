@@ -36,6 +36,7 @@ $(document).ready(function () {
             });
 
             if (res.status) {
+                localStorage.removeItem('marked_cells');
                 localStorage.setItem('bingo_user', JSON.stringify(res.data));
                 showToast(registerSuccess);
                 generateCard();
@@ -73,6 +74,7 @@ $(document).ready(function () {
                 setTimeout(() => window.location.href = '/bingo', 1000);
             } else {
                 localStorage.removeItem('bingo_user');
+                localStorage.removeItem('marked_cells');
             }
         } catch (error) {
             console.error(error);
