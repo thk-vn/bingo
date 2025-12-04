@@ -4,7 +4,6 @@ return [
     'bingo_user' => [
         'name' => 'Họ và tên',
         'email' => 'Email',
-        'phone_number' => 'Số điện thoại',
         'info_account' => 'Info Account',
         'btn_play_now' => 'Chơi ngay',
         'start' => '💫 Sẵn sàng — chơi nào 💫',
@@ -23,7 +22,6 @@ return [
     ],
     'placeholder' => [
         'name' => 'Họ và tên',
-        'phone_number' => 'Số điện thoại',
         'email' => 'example@thk-hd.vn',
     ],
     'button' => [

@@ -19,9 +19,8 @@ $(document).ready(function () {
 
         const name  = $('#name').val().trim();
         const email = $('#email').val().trim();
-        const phone_number = $('#phone_number').val().trim();
 
-        if (!name || !email || !phone_number) {
+        if (!name || !email) {
             showToast(checkInformation);
             return;
         }
@@ -31,7 +30,7 @@ $(document).ready(function () {
                 url: '/bingo/register/user',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ name, email, phone_number }),
+                data: JSON.stringify({ name, email }),
                 headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
             });
 
@@ -57,14 +56,14 @@ $(document).ready(function () {
 
     async function checkUser() {
         const userData = JSON.parse(localStorage.getItem('bingo_user'));
-        if ( !userData?.name || !userData?.email || !userData?.phone_number) return;
+        if ( !userData?.name || !userData?.email) return;
 
         try {
             const res = await $.ajax({
                 url: '/bingo/check-user',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ name: userData.name, email: userData.email, phone_number: userData.phone_number }),
+                data: JSON.stringify({ name: userData.name, email: userData.email }),
                 headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
             });
 
