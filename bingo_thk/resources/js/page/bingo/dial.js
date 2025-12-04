@@ -26,6 +26,7 @@ let winnerBallMoving = false; // Trạng thái quả cầu đang di chuyển đ�
 let winnerBallTarget = null; // Vị trí đích của quả cầu trúng thưởng
 let numberOfBalls = 50 // Tổng số quả cầu hiển thị
 let pendingSpin = false; // Đánh dấu người dùng đã click để quay tiếp sau khi di chuyển winner
+const timePickWinner = 1500;
 
 const textureLoader = new THREE.TextureLoader();
 const backgroundTexture = textureLoader.load(backgroundUrl);
@@ -337,7 +338,7 @@ function startSpin() {
     setSpeedStartSpin();
     setTimeout(() => {
         pickWinner();
-    }, 2000);
+    }, timePickWinner);
 }
 
 // Thiết lập tốc độ quay ngẫu nhiên - tăng cường độ xáo trộn
@@ -674,7 +675,7 @@ function animateWinnerMoveToGrid() {
             setSpeedStartSpin();
             setTimeout(() => {
                 pickWinner();
-            }, 2000);
+            }, timePickWinner);
         }
     }
 }
