@@ -31,10 +31,13 @@ body::-webkit-scrollbar-thumb {
     border-radius: 2px;
 }
 
-#container, .group-numbers, button {
-    will-change: transform;
+#container {
     transform: translateZ(0);
     backface-visibility: hidden;
+}
+
+.group-button .btn-reset {
+    will-change: transform;
 }
 
 #container {
@@ -104,12 +107,12 @@ body::-webkit-scrollbar-thumb {
     right: 0;
     width: 38%;
     height: 100vh;
-    background: radial-gradient(circle at center, darkred, #0f0f1a);
+    background: radial-gradient(circle at center, #791419, #1A2230);
+    /*background: radial-gradient(circle at center, #DCC8A5, #1A2230);*/
     padding: 20px;
     z-index: 10;
     border: 2px solid var(--neon-color);
     box-sizing: border-box;
-    animation: glow 6s ease-in-out infinite;
 }
 
 .group-numbers .numbers-grid {
@@ -157,7 +160,7 @@ body::-webkit-scrollbar-thumb {
     min-height: 64px;
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, #fff3c4 0%, #f3d991 30%, #e4c47f 60%, #c9a75e 100%);
-    box-shadow: inset -6px -10px 14px rgba(0,0,0,0.2), inset 8px 10px 18px rgba(255,255,255,0.35), 0 6px 14px rgba(0,0,0,0.35);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
     border: 1px solid rgba(0,0,0,0.15);
     position: relative;
     flex: 0 0 5%;
@@ -177,23 +180,7 @@ body::-webkit-scrollbar-thumb {
 
 .mini-ball span {
     font-weight: 900;
-    font-size: 22px;
+    font-size: 25px;
     color: #da3b42;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.35), 0 0 4px rgba(0,0,0,0.25);
-}
-
-@keyframes glow {
-  0%, 100% {
-    box-shadow:
-      0 0 8px var(--neon-color),
-      0 0 12px rgba(0, 247, 255, 0.6),
-      0 0 18px rgba(0, 247, 255, 0.4),
-      0 0 25px rgba(0, 247, 255, 0.25);
-  }
-  50% {
-    box-shadow:
-      0 0 5px var(--neon-color),
-      0 0 10px rgba(0, 247, 255, 0.3),
-      0 0 15px rgba(0, 247, 255, 0.15);
-  }
+    text-shadow: none;
 }
