@@ -1,0 +1,709 @@
+:root {
+  --bg: #0f1724;
+  --card: #071126;
+  --accent: #ffb020;
+  --accent-2: #22c1c3;
+  --muted: #94a3b8;
+  --win: #10b981;
+  --font-color: #222222;
+  --neon-color: #00f7ff;
+  /* Xanh ngọc sáng hơn */
+  --neon-accent: #32ffe0;
+  /* Xanh cyan pha ngọc */
+  --text-color: #1B2E83;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, Segoe UI, Roboto, system-ui, Arial;
+  overflow-x: hidden;
+  /* OPTIMIZE: Chỉ chặn tràn ngang, cho phép scroll dọc nếu màn hình quá thấp */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 24px;
+  background-image: url('../../images/bg-troi-xanh.png');
+  /* OPTIMIZE: Đường dẫn tương đối cho Vite */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: #e6eef8;
+  position: relative;
+}
+
+.game-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* OPTIMIZE: Đưa lớp sóng biển về đúng vị trí layer nền, không cản trở click hay chiếm không gian của khối game */
+.main-board {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 50%;
+  background-image: url('../../images/song-bien-2.png');
+  /* OPTIMIZE: Đường dẫn cho Vite */
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.app {
+  position: relative;
+  z-index: 10;
+  /* Đẩy khối game lên trên lớp sóng biển */
+  width: 100%;
+  max-width: 500px;
+  /* Khống chế bề rộng tối đa của game */
+}
+
+/*logo*/
+.logo-fixed {
+  /* position: fixed;
+  top: 20px;
+  left: 20px; */
+  user-select: none;
+  z-index: 1;
+  cursor: default;
+}
+
+.logo-fixed .logo {
+  width: auto;
+  max-height: 10vh;
+  /* OPTIMIZE: Khống chế chiều cao logo tránh chiếm hết màn hình */
+  height: auto;
+}
+
+/* Bingo title */
+.title {
+  font-size: 2.5rem;
+  display: flex;
+  justify-content: center;
+  font-family: "Trajan Pro", "Cinzel", serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-color);
+}
+
+.title span {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  color: #00A651;
+  padding-left: 5px;
+}
+
+h1 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  letter-spacing: 0.6px;
+  color: var(--accent);
+}
+
+p.lead {
+  margin: 0 0 18px 0;
+  color: var(--muted);
+}
+
+.card-wrap {
+  position: relative;
+  display: inline-block;
+  padding: 12px 24px 12px 24px;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 2px;
+  background-size: 400%;
+}
+
+/* Khi trúng Bingo – hiệu ứng nhịp sáng */
+.card-wrap.bingo-flash {
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.8),
+    0 0 80px rgba(0, 255, 200, 0.5),
+    0 0 120px rgba(255, 0, 255, 0.4);
+  animation: flash 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes flash {
+  from {
+    filter: brightness(1);
+    transform: translateZ(0);
+  }
+
+  to {
+    filter: brightness(1.4);
+    transform: translateZ(0);
+  }
+}
+
+/* OPTIMIZE: Chuyển sang CSS Grid tự động co giãn thông minh theo tỷ lệ để không bị vỡ hàng */
+.bingo {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(40px, 70px));
+  grid-auto-rows: minmax(40px, 70px);
+  grid-gap: 6px;
+  /* Tăng khoảng cách một xíu nhìn cho sang */
+  justify-content: center;
+  width: 100%;
+}
+
+.bingo-header {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.bingo-header .col {
+  flex: 1;
+  max-width: 70px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 700;
+  color: #071126;
+}
+
+.user-info-fixed {
+  color: var(--font-color);
+  font-size: 16px;
+  padding: 1rem 0 0 1.7rem;
+}
+
+.user-info-fixed a {
+  color: var(--font-color);
+  text-decoration: unset;
+}
+
+.col.B {
+  background: #ffd166;
+}
+
+.col.I {
+  background: #06d6a0;
+  color: #012;
+}
+
+.col.N {
+  background: #8ecae6;
+  color: #012;
+}
+
+.col.G {
+  background: #ffd6a5;
+  color: #012;
+}
+
+.col.O {
+  background: #ffafcc;
+  color: #012;
+}
+
+.card-bingo {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.cell, button.reset, .logo-fixed, .user-info {
+  will-change: transform, opacity, box-shadow;
+}
+
+.cell, .bingo-text, .player-icon, .logo-fixed {
+  transform: translateZ(0);
+}
+
+.cell {
+  position: relative;
+  width: 100%;
+  /* OPTIMIZE: Để Grid tự quyết định chiều rộng */
+  height: 100%;
+  /* OPTIMIZE: Để Grid tự quyết định chiều cao */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg,
+      rgba(0, 255, 255, 0.08) 0%,
+      rgba(0, 200, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid #0054a6;
+  font-size: 1.8rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+}
+
+.cell:nth-child(odd) {
+  background: linear-gradient(145deg, rgba(0, 255, 200, 0.08), rgba(0, 100, 255, 0.04));
+}
+
+.cell:hover {
+  background: linear-gradient(145deg,
+      rgba(0, 255, 255, 0.25) 0%,
+      rgba(0, 200, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.05) 100%);
+  box-shadow:
+    0 0 10px var(--neon-color),
+    0 0 25px var(--neon-accent),
+    inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.cell.active {
+  background: var(--neon-accent);
+  color: #fff;
+  box-shadow: 0 0 25px var(--neon-accent), 0 0 50px var(--neon-color);
+}
+
+.cell.marked {
+  background:
+    radial-gradient(circle at bottom left,
+      #00053a 0%,
+      transparent 45%),
+    linear-gradient(180deg,
+      #135a8a 0%,
+      #062b63 45%,
+      #000a5a 100%);
+  color: #ffffff;
+}
+
+.cell.free {
+  background: linear-gradient(180deg, #6ee7b7, #34d399);
+  color: #012;
+}
+
+/* controls */
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button, .btn {
+  border: 0;
+  background: linear-gradient(180deg, #16324a, #0f3a68);
+  color: #e6eef8;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(2, 6, 23, 0.6);
+  font-weight: 600;
+}
+
+/* === NÚT RESET NEON FIXED === */
+.button-reset{
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  position: relative;
+  right: 1.5rem;
+}
+
+button.reset {
+  padding: 12px 28px 12px 42px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-color);
+  background: transparent;
+  border: 1px solid #0054a6;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 999;
+  gap: 8px;
+  animation: pulseGlow 2s infinite alternate;
+}
+
+button.reset::before {
+  content: "↻";
+  font-size: 18px;
+  color: var(--text-color);
+  /* text-shadow: 0 0 6px var(--neon-accent), 0 0 12px var(--neon-color); */
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+button.reset:hover {
+  /* color: #ffffff; */
+  transform: scale(1.08);
+  box-shadow:
+    0 0 12px var(--neon-color),
+    0 0 30px var(--neon-accent),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+button.reset:hover::before {
+  transform: rotate(360deg);
+}
+
+button.reset:active {
+  transform: scale(0.95);
+  box-shadow:
+    0 0 8px var(--neon-accent),
+    0 0 20px var(--neon-color);
+}
+
+.info {
+  position: fixed;
+  bottom: 40px;
+  right: 24px;
+  padding: 12px 28px 12px 42px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--neon-color);
+  background: transparent;
+  border: 2px solid var(--neon-color);
+  border-radius: 50px;
+  cursor: pointer;
+  text-shadow: 0 0 6px var(--neon-color), 0 0 20px var(--neon-accent);
+  box-shadow:
+    0 0 6px var(--neon-color),
+    0 0 18px var(--neon-accent),
+    inset 0 0 6px rgba(255, 255, 255, 0.1);
+  transition: all 0.25s ease;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: pulseGlow 2s infinite alternate;
+  text-decoration: none;
+}
+
+.info:hover {
+  color: var(--neon-accent);
+  transform: scale(1.08);
+  box-shadow:
+    0 0 12px var(--neon-color),
+    0 0 30px var(--neon-accent),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.info:active {
+  transform: scale(0.95);
+  box-shadow:
+    0 0 8px var(--neon-accent),
+    0 0 20px var(--neon-color);
+}
+
+@keyframes pulseGlow {
+  0% {
+    text-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-accent);
+    box-shadow:
+      0 0 6px var(--neon-color),
+      0 0 18px var(--neon-accent),
+      inset 0 0 6px rgba(255, 255, 255, 0.1);
+  }
+
+  100% {
+    text-shadow: 0 0 10px var(--neon-accent), 0 0 30px var(--neon-accent);
+    box-shadow:
+      0 0 12px var(--neon-color),
+      0 0 36px var(--neon-accent),
+      inset 0 0 10px rgba(255, 255, 255, 0.2);
+  }
+}
+
+button.warn {
+  background: linear-gradient(180deg, #ff7a59, #ff5a22);
+  color: #081018;
+}
+
+.small {
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+/* right panel */
+.panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  padding: 14px;
+  border-radius: 10px;
+}
+
+.drawn {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.logo {
+  height: 50px;
+}
+
+.num {
+  width: 44px;
+  height: 36px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.num.recent {
+  background: linear-gradient(90deg, #ffd166, #ffb020);
+  color: #071126;
+  box-shadow: 0 6px 14px rgba(255, 176, 32, 0.15);
+}
+
+.stats {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.win-banner {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.16), rgba(16, 185, 129, 0.08));
+  color: var(--win);
+  font-weight: 700;
+  display: none;
+}
+
+footer.small {
+  color: var(--font-color);
+  font-size: 12px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.cell.bingo-wave {
+  animation: neonSweep 1.2s ease-in-out forwards;
+  color: var(--neon-accent);
+  text-shadow: 0 0 8px var(--neon-color), 0 0 16px var(--neon-accent);
+}
+
+.card-wrap.bingo-flash {
+  animation: flashBang 1.5s ease;
+}
+
+.show-bingo {
+  display: block;
+  font-size: 2.6rem;
+  letter-spacing: 6px;
+  color: var(--neon-accent);
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 800;
+  animation: bingoGlow 2.2s ease-in-out infinite alternate, bingoWave 4s linear infinite;
+  background: radial-gradient(circle at center, rgba(0, 255, 200, 0.08), transparent 60%);
+  text-shadow:
+    0 0 10px var(--neon-color),
+    0 0 25px var(--neon-accent),
+    0 0 50px var(--neon-accent);
+}
+
+@keyframes bingoGlow {
+  0% {
+    text-shadow: 0 0 6px var(--neon-color), 0 0 20px var(--neon-accent), 0 0 40px var(--neon-color);
+    transform: scale(1);
+  }
+
+  100% {
+    text-shadow: 0 0 12px var(--neon-accent), 0 0 40px var(--neon-color), 0 0 80px var(--neon-accent);
+    transform: scale(1.1);
+  }
+}
+
+@keyframes bingoWave {
+  0% {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
+    background-position: -100% 0;
+  }
+
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.user-info {
+  font-weight: 600;
+  font-family: 'Times New Roman', Times, serif;
+  color: var(--font-color);
+  margin-top: 12px;
+  text-align: center;
+}
+
+.user-info a {
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--font-color);
+}
+
+.toast {
+  position: absolute;
+  top: 14%;
+  background: linear-gradient(90deg, #ff3, #f0f);
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #071126;
+  font-weight: bold;
+  box-shadow: 0 0 25px #ff3;
+  animation: pulse 1s infinite alternate;
+  width: fit-content;
+}
+
+@keyframes pulse {
+  0% {
+    filter: brightness(1);
+  }
+
+  100% {
+    filter: brightness(2);
+  }
+}
+
+#bingoWinOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+  background: rgba(15, 23, 36, 0.85);
+}
+
+.bingo-text {
+  font-size: 5rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow:
+    0 0 10px #ff00de,
+    0 0 20px #00f5ff,
+    0 0 40px #ff00de;
+  animation: neonPulse 1s infinite alternate, floatUp 3s ease-in-out infinite;
+  text-align: center;
+}
+
+@keyframes neonPulse {
+  from {
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00de;
+  }
+
+  to {
+    text-shadow: 0 0 30px #ff00de, 0 0 60px #00ffff;
+  }
+}
+
+@keyframes floatUp {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* ==========================================================================
+   === OPTIMIZE RESPONSIVE BREAKPOINTS (Giữ nguyên toàn bộ tỷ lệ hiển thị) ===
+   ========================================================================== */
+
+@media (max-width: 880px) {
+  body {
+    padding: 12px;
+  }
+
+  /* Cấu trúc Grid tự thích ứng theo viewport của Mobile/Tablet */
+  .bingo {
+    grid-template-columns: repeat(5, minmax(45px, 1fr));
+    grid-auto-rows: minmax(45px, 1fr);
+    grid-gap: 4px;
+    width: 90vw;
+    /* Bàn cờ chiếm trọn không gian ngang mobile */
+  }
+
+  .bingo-header .col {
+    height: 30px;
+    font-size: 0.9rem;
+  }
+
+  .bingo-text {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .game-container {
+    position: fixed;
+    top: 5%;
+  }
+
+  .main-board {
+    top: 55%;
+  }
+
+  /* Logo chuyển về căn giữa trên đầu khi không gian ngang quá hẹp */
+  .logo-fixed {
+    width: 100%;
+    text-align: center;
+  }
+
+  .logo-fixed .logo {
+    width: 80%;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  /* Thu nhỏ nút reset cố định để không đè lên content bàn cờ */
+  button.reset, .info {
+    bottom: 15%;
+    right: 15px;
+    padding: 10px 16px 10px 30px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cell {
+    width: 17vw;
+    height: 17vw;
+    backdrop-filter: none;
+    /* Giữ nguyên cấu trúc tắt blur của sếp trên mobile để mượt máy */
+  }
+}
