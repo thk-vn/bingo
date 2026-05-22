@@ -156,7 +156,7 @@
                 numbers = responseData;
             } else {
                 // return random data
-                numbers = rndSample(25, 1, 50);
+                numbers = rndSample(25, 1, 70);
             }
 
             card = [];
@@ -263,30 +263,30 @@
         checkWin();
     }
 
-    function updateUIAfterDraw(num, fromPrefill) {
-        const numEl = document.createElement('div');
-        numEl.className = 'num recent';
-        numEl.textContent = num;
-        // set timeout to remove recent highlight after a while
-        setTimeout(() => numEl.classList.remove('recent'), 2200);
-        lastNumEl.textContent = num;
-        // auto-mark numbers on card if exist
-        autoMarkNumber(num);
-        checkWin();
-    }
+    // function updateUIAfterDraw(num, fromPrefill) {
+    //     const numEl = document.createElement('div');
+    //     numEl.className = 'num recent';
+    //     numEl.textContent = num;
+    //     // set timeout to remove recent highlight after a while
+    //     setTimeout(() => numEl.classList.remove('recent'), 2200);
+    //     lastNumEl.textContent = num;
+    //     // auto-mark numbers on card if exist
+    //     autoMarkNumber(num);
+    //     checkWin();
+    // }
 
-    function autoMarkNumber(num) {
-        for (let r = 0; r < 5; r++) {
-            for (let c = 0; c < 5; c++) {
-                if (card[r][c] === num) {
-                    marks.add(`${r}-${c}`);
-                    // update DOM cell
-                    const cell = bingoEl.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
-                    if (cell) cell.classList.add('marked');
-                }
-            }
-        }
-    }
+    // function autoMarkNumber(num) {
+    //     for (let r = 0; r < 5; r++) {
+    //         for (let c = 0; c < 5; c++) {
+    //             if (card[r][c] === num) {
+    //                 marks.add(`${r}-${c}`);
+    //                 // update DOM cell
+    //                 const cell = bingoEl.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+    //                 if (cell) cell.classList.add('marked');
+    //             }
+    //         }
+    //     }
+    // }
 
     function checkWin() {
         // return if any full row/col/diag marked
@@ -399,7 +399,7 @@
         overlay.style.display = 'flex';
         setTimeout(() => {
             overlay.style.display = 'none';
-        }, 1500);
+        }, 1000);
     }
 
     function showWin() {

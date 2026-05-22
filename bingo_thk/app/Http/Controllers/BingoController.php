@@ -17,7 +17,7 @@ class BingoController extends Controller
     {
         $userBingo = (Auth('bingo')->user());
         $userBingoName = $userBingo ? $userBingo->name : '';
-        return view('index', compact('userBingoName'));
+        return view('v2.index', compact('userBingoName'));
     }
 
     /**
