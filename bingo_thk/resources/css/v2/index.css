@@ -245,7 +245,7 @@ p.lead {
       rgba(0, 200, 255, 0.04) 50%,
       rgba(255, 255, 255, 0.02) 100%);
   border: 1px solid #0054a6;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 500;
   letter-spacing: 0.5px;
   color: var(--text-color);
@@ -652,7 +652,7 @@ footer.small {
     grid-template-columns: repeat(5, minmax(45px, 1fr));
     grid-auto-rows: minmax(45px, 1fr);
     grid-gap: 4px;
-    width: 90vw;
+    width: auto;
     /* Bàn cờ chiếm trọn không gian ngang mobile */
   }
 
@@ -701,9 +701,41 @@ footer.small {
 
 @media (max-width: 768px) {
   .cell {
-    width: 17vw;
-    height: 17vw;
+    width: 16vw;
+    height: 16vw;
     backdrop-filter: none;
     /* Giữ nguyên cấu trúc tắt blur của sếp trên mobile để mượt máy */
+  }
+}
+
+@media (max-width: 375px) {
+  .cell {
+    width: 14vw;
+    height: 14vw;
+    font-size: 1.3rem;
+  }
+
+  .bingo {
+    width: auto;
+  }
+
+  .button-reset{
+    position: relative;
+    right: 2.8rem;
+  }
+
+  button.reset{
+    padding: 6px 16px 6px 22px;
+    font-size: 12px;
+  }
+
+  .user-info-fixed {
+    position: relative;
+    left: 1.2rem;
+    font-size: 14px;
+  }
+
+  .title {
+    font-size: 2.2rem;
   }
 }
