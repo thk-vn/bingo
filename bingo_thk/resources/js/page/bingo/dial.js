@@ -1,5 +1,4 @@
-import logoUrl from '../../../images/thk_logo.png';
-import backgroundUrl from '../../../images/test2.png';
+import backgroundUrl from '../../../images/background_bingo_2.png';
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
@@ -26,7 +25,7 @@ let winnerBallMoving = false; // Trạng thái quả cầu đang di chuyển đ�
 let winnerBallTarget = null; // Vị trí đích của quả cầu trúng thưởng
 let numberOfBalls = 70 // Tổng số quả cầu hiển thị
 let pendingSpin = false; // Đánh dấu người dùng đã click để quay tiếp sau khi di chuyển winner
-const timePickWinner = 1000;
+const timePickWinner = 1500;
 const winnerMoveStartPos = new THREE.Vector3(0, 0, 5);
 const winnerTargetPos = new THREE.Vector3();
 
@@ -463,27 +462,20 @@ function disposeAllBalls() {
     balls.length = 0;
 }
 function disposeObject(obj) {
-    // traverse = duyệt toàn bộ object con bên trong obj
-    // ví dụ:
     // winnerBall
     //   ├─ sphere mesh
     //   └─ text plane mesh
     obj.traverse(child => {
 
-        // Chỉ xử lý Mesh
-        // Line, Group, Light... bỏ qua
+        // Chỉ xử lý Mesh. Line, Group, Light... bỏ qua
         if (!child.isMesh) return;
 
         // =========================================================
         // KIỂM TRA GEOMETRY CÓ PHẢI DÙNG CHUNG KHÔNG
         // =========================================================
 
-        // geometryPool.sphere:
-        // toàn bộ quả bóng đang dùng CHUNG geometry này
-        //
-        // geometryPool.plane:
-        // toàn bộ text plane đang dùng CHUNG geometry này
-        //
+        // geometryPool.sphere: toàn bộ quả bóng đang dùng CHUNG geometry này
+        // geometryPool.plane: toàn bộ text plane đang dùng CHUNG geometry này
         // Nếu dispose nhầm:
         // -> GPU buffer bị xóa
         // -> các ball còn lại bị ảnh hưởng
@@ -495,7 +487,6 @@ function disposeObject(obj) {
         // Chỉ dispose geometry nếu:
         // - geometry tồn tại
         // - KHÔNG phải geometry dùng chung
-        //
         // => geometry unique mới được phép dispose
         if (child.geometry && !isSharedGeometry) {
             child.geometry.dispose();
@@ -506,7 +497,6 @@ function disposeObject(obj) {
         // =========================================================
 
         // Có mesh dùng nhiều material
-        // normalize về array để loop dễ hơn
         const materials = Array.isArray(child.material)
             ? child.material
             : [child.material];
@@ -521,7 +511,7 @@ function disposeObject(obj) {
             // =====================================================
 
             // sharedSphereMaterial đang được tất cả quả bóng dùng chung
-            //
+
             // Nếu dispose:
             // -> các quả bóng khác mất material
             // -> renderer phải rebuild shader/material
@@ -538,9 +528,9 @@ function disposeObject(obj) {
             // canvasTextureCache chứa texture số:
             // 1 -> texture số 1
             // 2 -> texture số 2
-            //
+
             // Những texture này đang được cache để tái sử dụng.
-            //
+
             // Nếu dispose:
             // -> texture GPU bị xóa
             // -> các ball khác dùng texture đó bị ảnh hưởng
@@ -554,7 +544,6 @@ function disposeObject(obj) {
             // =====================================================
 
             // backgroundTexture là texture global dùng chung cho scene
-            //
             // Không được dispose giữa chừng
             const isSharedBackground =
                 map === backgroundTexture;
@@ -568,7 +557,7 @@ function disposeObject(obj) {
             // - là THREE.Texture
             // - KHÔNG phải texture cache
             // - KHÔNG phải background shared
-            //
+
             // => chỉ texture unique mới dispose
             if (
                 map &&
@@ -725,29 +714,37 @@ function idleMotion() {
 
 // Quả cầu trúng thưởng rơi về giữa màn hình
 function animateWinnerFalling() {
+    // Di chuyển quả bóng theo velocity hiện tại
+    // Tổng movement mỗi frame = 0.5
+    winnerBall.position.add(winnerBall.userData.fallVelocity);
+
+    // Target nằm giữa màn hình và phía trước camera 8 units
     winnerTargetPos.set(0, 0, camera.position.z - 8);
 
-    // Di chuyển về giữa màn hình gần camera
+    const speedFalling = 0.25;
+
     if (!winnerBall.userData.targetDirection) {
+        // Vector hướng từ vị trí hiện tại → target
+        // normalize() để bay đúng hướng, với tốc độ cố định
         winnerBall.userData.targetDirection = new THREE.Vector3()
             .subVectors(winnerTargetPos, winnerBall.position)
             .normalize();
-    }
 
-    // Di chuyển với tốc độ cố định theo hướng đã tính
-    const speedFalling = 0.25;
-    winnerBall.userData.fallVelocity
-        .copy(winnerBall.userData.targetDirection)
-        .multiplyScalar(speedFalling);
+        // Tạo vận tốc cố định theo direction đã tính
+        // 0.5 = tốc độ di chuyển mỗi frame
+        winnerBall.userData.fallVelocity = new THREE.Vector3()
+            .copy(winnerBall.userData.targetDirection)
+            .multiplyScalar(speedFalling);
+    }
 
     winnerBall.position.add(winnerBall.userData.fallVelocity);
 
     // Phóng to quả cầu dần (tối đa 3 lần)
     const scale = Math.min(winnerBall.scale.x + speedFalling, 3);
-    winnerBall.scale.set(scale, scale, scale);
+    winnerBall.scale.setScalar(scale);
 
     // Kiểm tra đã đến giữa màn hình chưa
-    if (winnerBall.position.distanceTo(winnerTargetPos) < 0.5) {
+    if (winnerBall.position.distanceToSquared(winnerTargetPos) < 0.25) {
         winnerBall.position.copy(winnerTargetPos);
         winnerBall.userData.fallVelocity.set(0, 0, 0);
         winnerBall.userData.targetDirection = null;
