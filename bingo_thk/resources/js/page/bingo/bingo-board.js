@@ -460,7 +460,7 @@
     }
 
     document.getElementById('reset').addEventListener('click', async () => {
-        if (!confirm('Reset toàn bộ?')) return;
+        if (!confirm('Ready for a new board?')) return;
         await resetBoardGame();
         await generateCard(true);
     });

@@ -8,9 +8,9 @@ return [
         'btn_play_now' => 'Start Playing',
         'start' => '💫 Ready — Let’s play 💫',
         'check_info' => '⚠️ Please complete all the required information',
-        'update' => 'Update Information',
+        'update' => 'Player Information',
         'btn_confirm' => 'Update',
-        'enter_the_game' => 'Enter the game',
+        'enter_the_game' => 'Join the Game',
     ],
 
     'notify' => [
@@ -34,21 +34,21 @@ return [
 
     'register' => [
         'fail' => '❌ Registration failed!',
-        'success' => '🎉 Logging in...',
+        'success' => '🎉 Joining the game...',
         'error_server' => '⚠️ Server connection error!',
         'go_back' => '👋 Welcome back',
     ],
 
     'update' => [
-        'null_info' => 'User not found',
-        'success' => 'Updated successfully',
-        'fail' => 'Update failed',
+        'null_info' => 'Player not found',
+        'success' => 'Player info updated!',
+        'fail' => 'Failed to update profile',
     ],
 
     'message' => [
         'successfully_found' => 'Successfully found',
-        'successfully_reset_board_game' => 'Successfully reset board game',
-        'now_allow_reset' => 'You can’t reset the game right now!!!',
+        'successfully_reset_board_game' => 'New board is ready!',
+        'now_allow_reset' => 'Board reset is not available right now!!!',
         'reset_all' => 'Do you want to reset a new game board?',
         'server_error' => 'Server error!!!',
     ],

@@ -327,7 +327,6 @@ button.reset {
   font-size: 15px;
   font-weight: 800;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--text-color);
   background: transparent;
   border: 1px solid #0054a6;
@@ -731,7 +730,7 @@ footer.small {
 
   .button-reset{
     position: relative;
-    right: 2.8rem;
+    right: 2.3rem;
   }
 
   button.reset{
@@ -744,7 +743,7 @@ footer.small {
   }
 
   .card-wrap {
-    padding-bottom: 8px !important; 
+    padding-bottom: 8px !important;
   }
 
   .title {
