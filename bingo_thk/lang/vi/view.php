@@ -10,6 +10,7 @@ return [
         'check_info' => '⚠️ Vui lòng nhập đầy đủ thông tin!',
         'update' => 'Update Info',
         'btn_confirm' => 'Cập nhập',
+        'enter_the_game' => 'Bắt đầu chơi',
     ],
     'notify' => [
         'bingo_user' => [
@@ -21,8 +22,8 @@ return [
         'success' => 'Bạn đã thêm mới dữ liệu thành công',
     ],
     'placeholder' => [
-        'name' => 'Họ và tên',
-        'email' => 'example@thk-hd.vn',
+        'name' => 'Họ và tên người chơi',
+        'email' => 'your@thk-hd.vn',
     ],
     'button' => [
         'pending' => 'Đang xử lý...',

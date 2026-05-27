@@ -11,6 +11,7 @@ return [
         'check_info' => '⚠️ すべての必須項目を入力してください！',
         'update' => '情報を更新',
         'btn_confirm' => '確認',
+        'enter_the_game' => 'ゲームに入る',
     ],
 
     'notify' => [
@@ -25,7 +26,7 @@ return [
 
     'placeholder' => [
         'name' => '氏名を入力',
-        'email' => 'example@thk-hd.vn',
+        'email' => 'your@thk-hd.vn',
     ],
 
     'button' => [

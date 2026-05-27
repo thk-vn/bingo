@@ -5,11 +5,12 @@ return [
         'name' => 'Enter full name',
         'email' => 'Email',
         'info_account' => 'Info Account',
-        'btn_play_now' => 'Play now',
+        'btn_play_now' => 'Start Playing',
         'start' => '💫 Ready — Let’s play 💫',
         'check_info' => '⚠️ Please complete all the required information',
         'update' => 'Update Information',
         'btn_confirm' => 'Update',
+        'enter_the_game' => 'Enter the game',
     ],
 
     'notify' => [
@@ -23,8 +24,8 @@ return [
     ],
 
     'placeholder' => [
-        'name' => 'Enter your name',
-        'email' => 'example@thk-hd.vn',
+        'name' => 'Player name',
+        'email' => 'your@thk-hd.vn',
     ],
 
     'button' => [

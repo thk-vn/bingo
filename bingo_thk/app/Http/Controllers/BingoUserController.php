@@ -36,7 +36,7 @@ class BingoUserController extends Controller
      */
     public function index(): View
     {
-        return view('bingo-user.register');
+        return view('v2.register');
     }
 
     /**
