@@ -17,15 +17,14 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: Inter, Segoe UI, Roboto, system-ui, Arial;
+  overflow-y: auto;
   overflow-x: hidden;
-  /* OPTIMIZE: Chỉ chặn tràn ngang, cho phép scroll dọc nếu màn hình quá thấp */
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   padding: 24px;
   background-image: url('../../images/bg-troi-xanh.png');
-  /* OPTIMIZE: Đường dẫn tương đối cho Vite */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -37,9 +36,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  flex-grow: 1;
+  position: relative;
+  box-sizing: border-box;
 }
 
-/* OPTIMIZE: Đưa lớp sóng biển về đúng vị trí layer nền, không cản trở click hay chiếm không gian của khối game */
 .main-board {
   position: absolute;
   bottom: 0;
@@ -47,7 +49,6 @@ body {
   width: 100%;
   height: 50%;
   background-image: url('../../images/song-bien-2.png');
-  /* OPTIMIZE: Đường dẫn cho Vite */
   background-repeat: no-repeat;
   background-position: right bottom;
   background-size: contain;
@@ -59,17 +60,14 @@ body {
 .app {
   position: relative;
   z-index: 10;
-  /* Đẩy khối game lên trên lớp sóng biển */
   width: 100%;
   max-width: 500px;
-  /* Khống chế bề rộng tối đa của game */
 }
 
 /*logo*/
 .logo-fixed {
-  /* position: fixed;
-  top: 20px;
-  left: 20px; */
+  width: 100%;
+  text-align: center;
   user-select: none;
   z-index: 1;
   cursor: default;
@@ -77,9 +75,10 @@ body {
 
 .logo-fixed .logo {
   width: auto;
-  max-height: 10vh;
+  max-height: 14vh;
   /* OPTIMIZE: Khống chế chiều cao logo tránh chiếm hết màn hình */
   height: auto;
+  object-fit: contain;
 }
 
 /* Bingo title */
@@ -110,33 +109,6 @@ h1 {
 p.lead {
   margin: 0 0 18px 0;
   color: var(--muted);
-}
-
-.card-wrap {
-  position: relative;
-  display: inline-block;
-  padding: 12px 24px 12px 24px;
-  overflow: hidden;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.card-wrap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 24px;
-  padding: 2px;
-  background-size: 400%;
-}
-
-/* Khi trúng Bingo – hiệu ứng nhịp sáng */
-.card-wrap.bingo-flash {
-  box-shadow:
-    0 0 30px rgba(255, 255, 255, 0.8),
-    0 0 80px rgba(0, 255, 200, 0.5),
-    0 0 120px rgba(255, 0, 255, 0.4);
-  animation: flash 1.5s ease-in-out infinite alternate;
 }
 
 @keyframes flash {
@@ -223,6 +195,34 @@ p.lead {
   width: 100%;
 }
 
+/* Board game */
+.card-wrap {
+  position: relative;
+  display: inline-block;
+  padding: 12px 24px;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 2px;
+  background-size: 400%;
+}
+
+/* Khi trúng Bingo – hiệu ứng nhịp sáng */
+.card-wrap.bingo-flash {
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.8),
+    0 0 80px rgba(0, 255, 200, 0.5),
+    0 0 120px rgba(255, 0, 255, 0.4);
+  animation: flash 1.5s ease-in-out infinite alternate;
+}
+
 .cell, button.reset, .logo-fixed, .user-info {
   will-change: transform, opacity, box-shadow;
 }
@@ -234,7 +234,7 @@ p.lead {
 .cell {
   position: relative;
   width: 100%;
-  /* OPTIMIZE: Để Grid tự quyết định chiều rộng */
+  aspect-ratio: 1 / 1;
   height: 100%;
   /* OPTIMIZE: Để Grid tự quyết định chiều cao */
   display: flex;
@@ -350,7 +350,7 @@ button.reset::before {
 
 button.reset:hover {
   /* color: #ffffff; */
-  transform: scale(1.08);
+  /* transform: scale(1.08); */
   box-shadow:
     0 0 12px var(--neon-color),
     0 0 30px var(--neon-accent),
@@ -571,7 +571,7 @@ footer.small {
 
 .toast {
   position: absolute;
-  top: 14%;
+  top: 25%;
   background: linear-gradient(90deg, #ff3, #f0f);
   padding: 12px 20px;
   border-radius: 8px;
@@ -580,6 +580,7 @@ footer.small {
   box-shadow: 0 0 25px #ff3;
   animation: pulse 1s infinite alternate;
   width: fit-content;
+  z-index: 2;
 }
 
 @keyframes pulse {
@@ -667,6 +668,10 @@ footer.small {
 }
 
 @media (max-width: 600px) {
+  .toast {
+    top: 17%;
+  }
+
   .game-container {
     position: fixed;
     top: 5%;
@@ -684,6 +689,7 @@ footer.small {
 
   .logo-fixed .logo {
     width: 80%;
+    max-height: 12vh;
   }
 
   .title {
@@ -704,7 +710,45 @@ footer.small {
     width: 16vw;
     height: 16vw;
     backdrop-filter: none;
-    /* Giữ nguyên cấu trúc tắt blur của sếp trên mobile để mượt máy */
+  }
+}
+
+@media (max-width: 475px) {
+  .toast {
+    top: 15%;
+  }
+
+  .cell {
+    width: 15vw;
+    height: 15vw;
+    font-size: 1.3rem;
+  }
+
+  .user-info-fixed {
+    position: relative;
+    left: 1rem;
+  }
+
+  .button-reset{
+    position: relative;
+    right: 2.8rem;
+  }
+
+  button.reset{
+    padding: 8px 16px 8px 22px;
+    font-size: 14px;
+  }
+
+   button.reset::before{
+    font-size: 13px;
+  }
+
+  .card-wrap {
+    padding-bottom: 8px !important; 
+  }
+
+  .title {
+    font-size: 2.2rem;
   }
 }
 
@@ -712,7 +756,7 @@ footer.small {
   .cell {
     width: 14vw;
     height: 14vw;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .bingo {
@@ -736,6 +780,6 @@ footer.small {
   }
 
   .title {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
 }

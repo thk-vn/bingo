@@ -11,7 +11,7 @@
         <div class="main-board"></div>
 
         <div class="logo-fixed">
-            <img class="logo" src="{{ Vite::asset('resources/images/logo-bingo-2026-removebg-preview.png') }}"
+            <img class="logo" src="{{ Vite::asset('resources/images/2026 — Code The Wave.png') }}"
                 alt="Bingo Logo">
             <div class="title">
                 BINGO <span>Game</span>
