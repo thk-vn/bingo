@@ -1,58 +1,46 @@
 @extends('master')
 
 @section('css')
-    @vite([
-        'resources/css/v2/login.css', 
-        'resources/css/animation.css'
-    ])
+    @vite(['resources/css/v2/login.css', 'resources/css/animation.css'])
 @endsection
 
 @section('main')
-<div class="main-board"></div>
-    <div class="card">
-        <h1 class="neon-title">
-            <span class="logo-dot"></span>
-            {{ __("view.bingo_user.enter_the_game") }}
-        </h1>
-
-        <form id="loginForm" action="" method="POST">
-            @csrf
-            <input class="input" id="name"
-                name="name"
-                type="text"
-                placeholder="{{ __('view.placeholder.name') }}"
-            />
-            <input class="input" id="email"
-                name="email"
-                type="text"
-                placeholder="{{ __('view.placeholder.email') }}"
-            />
-            <button id="loginBtn" class="btn" type="submit">
-                {{ __("view.bingo_user.btn_play_now") }}
-            </button>
-
-            <div class="footer">
-                {{ __("view.bingo_user.start") }}
+    <div class="main-board"></div>
+    <div class="main-container">
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <div id="toast" class="toast show">{{ $error }}</div>
+            @endforeach
+        @elseif (session('error'))
+            <div id="toast" class="toast show">
+                {{ session('error') }}
             </div>
-
-            @if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <div id="toast" class="toast show">{{ $error }}</div>
-                @endforeach
-            @elseif (session('error'))
-                <div id="toast" class="toast show">
-                    {{ session('error') }}
-                </div>
-            @else
-                <div id="toast" class="toast">
-                    {{ __("view.bingo_user.start") }}
-                </div>
-            @endif
-
+        @else
             <div id="toast" class="toast">
-                {{ __("view.bingo_user.start") }}
+                {{ __('view.bingo_user.start') }}
             </div>
-        </form>
+        @endif
+        <div class="card">
+            <h1 class="neon-title">
+                <span class="logo-dot"></span>
+                {{ __('view.bingo_user.enter_the_game') }}
+            </h1>
+
+            <form id="loginForm" action="" method="POST">
+                @csrf
+                <input class="input" id="name" name="name" type="text"
+                    placeholder="{{ __('view.placeholder.name') }}" />
+                <input class="input" id="email" name="email" type="text"
+                    placeholder="{{ __('view.placeholder.email') }}" />
+                <button id="loginBtn" class="btn" type="submit">
+                    {{ __('view.bingo_user.btn_play_now') }}
+                </button>
+
+                <div class="footer">
+                    {{ __('view.bingo_user.start') }}
+                </div>
+            </form>
+        </div>
     </div>
 
     @push('section-scripts')
@@ -66,5 +54,4 @@
         </script>
         @vite('resources/js/page/bingo/register.js')
     @endpush
-
 @endsection

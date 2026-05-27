@@ -9,6 +9,7 @@
   --text-color: #1B2E83;
   --border: #0054a6;
   --input-color: #222222;
+  --toast-bg: #a8e8fd;
 }
 
 * {
@@ -21,6 +22,7 @@ html, body {
 
 body {
   margin: 0;
+  /* min-height: 100vh; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,10 +32,13 @@ body {
   background-position: center;
   font-family: Poppins, Inter, sans-serif;
   color: #e6eef8;
+  overflow: hidden;
+  position: relative;
 }
 
 .main-board {
   position: absolute;
+  top: 35%;
   bottom: 0;
   right: 0;
   width: 100%;
@@ -46,8 +51,15 @@ body {
   opacity: 0.5;
 }
 
+.main-container {
+  width: 25rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.6rem;
+}
+
 .card {
-  width: 380px;
+  width: 100%;
   padding: 30px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
   box-shadow: 0 0 20px rgba(37, 32, 36, 0.324), 0 0 30px rgba(20, 246, 255, 0.2);
@@ -165,9 +177,7 @@ form {
 }
 
 .toast {
-  position: absolute;
-  bottom: -120px;
-  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+  background: linear-gradient(90deg, var(--toast-bg), var(--neon-cyan));
   padding: 10px 20px;
   border-radius: 5px;
   color: #071022;
@@ -175,19 +185,12 @@ form {
   box-shadow: 0 0 25px rgba(20, 246, 255, 0.2), 0 0 25px rgba(255, 78, 198, 0.2);
   transition: bottom .5s ease, opacity .4s;
   opacity: 0;
-  display: block;
-  width: calc(100% - 60px);
+  display: none;
+  width: 100%;
   height: auto;
 }
 
 .toast.show {
-  bottom: 20px;
-  opacity: 1
-}
-
-@media(max-width: 600px)
-{
-  .main-board {
-    top: 28%;
-  }
+  display: block;
+  opacity: 1;
 }

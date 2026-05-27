@@ -8,7 +8,7 @@ return [
         'btn_play_now' => 'Chơi ngay',
         'start' => '💫 Sẵn sàng — chơi nào 💫',
         'check_info' => '⚠️ Vui lòng nhập đầy đủ thông tin!',
-        'update' => 'Update Info',
+        'update' => 'Cập nhật thông tin',
         'btn_confirm' => 'Cập nhập',
         'enter_the_game' => 'Bắt đầu chơi',
     ],
