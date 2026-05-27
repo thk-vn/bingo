@@ -103,7 +103,7 @@ class BingoUserController extends Controller
      */
     public function detail(BingoUser $bingoUser): View
     {
-        return view('bingo-user.detail', compact('bingoUser'));
+        return view('v2.detail', compact('bingoUser'));
     }
 
     /**

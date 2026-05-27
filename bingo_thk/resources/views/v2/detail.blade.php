@@ -2,7 +2,7 @@
 
 @section('css')
     @vite([
-        'resources/css/v2/login.css', 
+        'resources/css/v2/login.css',
         'resources/css/animation.css'
     ])
 @endsection
@@ -12,23 +12,25 @@
     <div class="card">
         <h1 class="neon-title">
             <span class="logo-dot"></span>
-            {{ __("view.bingo_user.enter_the_game") }}
+            {{ __("view.bingo_user.update") }}
         </h1>
 
-        <form id="loginForm" action="" method="POST">
+        <form id="detailBingoUserForm" action="" method="POST">
             @csrf
             <input class="input" id="name"
                 name="name"
                 type="text"
+                value="{{ old('name', $bingoUser->name) }}"
                 placeholder="{{ __('view.placeholder.name') }}"
             />
             <input class="input" id="email"
                 name="email"
                 type="text"
+                value="{{ old('email', $bingoUser->email) }}"
                 placeholder="{{ __('view.placeholder.email') }}"
             />
-            <button id="loginBtn" class="btn" type="submit">
-                {{ __("view.bingo_user.btn_play_now") }}
+            <button id="btnUpdateInfoBingoUser" class="btn" type="submit">
+                {{ __("view.bingo_user.btn_confirm") }}
             </button>
 
             <div class="footer">
@@ -58,13 +60,12 @@
     @push('section-scripts')
         <script>
             const checkInformation = "{{ __('view.bingo_user.check_info') }}";
-            const buttonPending = "{{ __('view.button.pending') }}";
-            const registerFail = "{{ __('view.register.fail') }}";
-            const registerSuccess = "{{ __('view.register.success') }}";
-            const registerErrorServer = "{{ __('view.register.error_server') }}";
-            const registerGoBack = "{{ __('view.register.go_back') }}";
+            const errroNullInfo = "{{ __('view.update.null_info') }}";
+            const updateSuccess = "{{ __('view.update.success') }}";
+            const updateFail = "{{ __('view.update.fail') }}";
+            const updateErrorServer = "{{ __('view.register.error_server') }}";
         </script>
-        @vite('resources/js/page/bingo/register.js')
+        @vite('resources/js/page/bingo/detail.js')
     @endpush
 
 @endsection
