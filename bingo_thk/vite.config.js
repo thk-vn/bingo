@@ -18,7 +18,8 @@ export default defineConfig({
                 'resources/css/v2/index.css',
                 'resources/images/logo-bingo-2026-removebg-preview.png',
                 'resources/images/popup-bingo.gif',
-                'resources/images/2026 — Code The Wave.png'
+                'resources/images/2026 — Code The Wave.png',
+                'resources/css/v2/login.css'
             ],
             refresh: true,
         }),
