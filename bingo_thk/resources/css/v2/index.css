@@ -506,8 +506,30 @@ footer.small {
 
 .cell.bingo-wave {
   animation: neonSweep 1.2s ease-in-out forwards;
-  color: var(--neon-accent);
+  color: var(--accent);
   text-shadow: 0 0 8px var(--neon-color), 0 0 16px var(--neon-accent);
+}
+
+@keyframes neonSweep {
+  0% {
+    box-shadow: 0 0 8px rgba(255, 176, 32, 0.3), inset 0 0 8px rgba(255, 255, 255, 0.1);
+    /* Quét qua bằng một vệt nắng vàng kim cực bắt mắt */
+    background: linear-gradient(90deg,
+        rgba(255, 176, 32, 0) 0%,
+        rgba(255, 215, 0, 0.5) 50%,
+        rgba(255, 176, 32, 0) 100%);
+    background-size: 200% 100%;
+    background-position: -100% 0;
+  }
+
+  100% {
+    background-position: 100% 0;
+    /* Kết thúc quét bằng luồng sáng vàng hổ phách sang trọng */
+    box-shadow:
+      0 0 15px #ffb020,
+      0 0 35px #ffd700,
+      inset 0 0 12px rgba(255, 255, 255, 0.4);
+  }
 }
 
 .card-wrap.bingo-flash {
