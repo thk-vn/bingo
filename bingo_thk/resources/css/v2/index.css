@@ -158,7 +158,9 @@ p.lead {
 .user-info-fixed {
   color: var(--font-color);
   font-size: 16px;
-  padding: 1rem 0 0 1.7rem;
+  margin-bottom: 10px;
+  margin-left: 37px;
+  margin-right: 37px;
 }
 
 .user-info-fixed a {
@@ -204,15 +206,6 @@ p.lead {
   width: 100%;
   box-sizing: border-box;
   margin-left: 2px;
-}
-
-.card-wrap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 24px;
-  padding: 2px;
-  background-size: 400%;
 }
 
 /* Khi trúng Bingo – hiệu ứng nhịp sáng */
@@ -321,6 +314,7 @@ button, .btn {
   flex-direction: row;
   justify-content: flex-end;
   right: 1.5rem;
+  width: 100%;
 }
 
 button.reset {
@@ -332,11 +326,13 @@ button.reset {
   cursor: pointer;
   z-index: 999;
   gap: 8px;
-  margin-right: 5px;
   margin-top: 10px;
   display: flex;
   justify-content: center;
   box-shadow: unset !important;
+  width: 100%;
+  margin-right: 37px;
+  margin-left: 37px;
 }
 
 button.reset::before {
@@ -683,6 +679,10 @@ footer.small {
   .bingo-text {
     font-size: 2.5rem;
   }
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
+  }
 }
 
 @media (max-width: 600px) {
@@ -720,6 +720,15 @@ footer.small {
     right: 15px;
     font-size: 16px;
   }
+  button.reset {
+    margin-right: 6px;
+    margin-top: 10px;
+    margin-left: unset;
+  }
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
+  }
 }
 
 @media (max-width: 768px) {
@@ -727,6 +736,16 @@ footer.small {
     width: 16vw;
     height: 16vw;
     backdrop-filter: none;
+  }
+  button.reset {
+    margin-right: 6px;
+    margin-top: 10px;
+    margin-left: unset;
+  }
+
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
   }
 }
 
@@ -741,15 +760,12 @@ footer.small {
     font-size: 1.3rem;
   }
 
-  .user-info-fixed {
-    position: relative;
-    left: 1rem;
-  }
-
-
   button.reset{
     font-size: 16px;
     width: 100%;
+    margin-right: 6px;
+    margin-top: 10px;
+    margin-left: unset;
   }
 
    button.reset::before{
@@ -763,6 +779,11 @@ footer.small {
   .title {
     font-size: 2.2rem;
   }
+
+    .user-info-fixed {
+        margin-left: unset;
+        margin-right: unset;
+    }
 }
 
 @media (max-width: 375px) {
@@ -776,23 +797,20 @@ footer.small {
     width: auto;
   }
 
-  .button-reset{
-
+  .button-reset {
     width: 100%;
-  }
-
-  button.reset{
-    padding: 6px 16px 6px 22px;
-    font-size: 12px;
-  }
-
-  .user-info-fixed {
-    position: relative;
-    left: 1.2rem;
-    font-size: 14px;
+    font-size: 16px;
+    margin-right: 6px;
+    margin-top: unset;
   }
 
   .title {
     font-size: 2rem;
   }
+
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
+  }
 }
+
