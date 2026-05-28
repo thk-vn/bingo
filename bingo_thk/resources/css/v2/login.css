@@ -132,14 +132,19 @@ form {
 .btn {
   padding: 12px 18px;
   border-radius: 5px;
-  border: 1px solid #0054a6;
+  border: 1px solid #16324a;
   cursor: pointer;
   font-weight: 700;
-  background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan), var(--neon-yellow), var(--neon-green));
-  color: var(--text-color);
+    background:
+        radial-gradient(circle at bottom left,
+        #00053a 0%,
+        transparent 45%),
+        linear-gradient(180deg,
+        #229cee 0%,
+        #062b63 45%,
+        #000a5a 100%);
+  color: white;
   letter-spacing: 0.6px;
-  box-shadow: 0 0 20px rgba(37, 32, 36, 0.324), 0 0 30px rgba(20, 246, 255, 0.2);
-  background: transparent;
 }
 
 .btn:hover {
@@ -193,4 +198,31 @@ form {
 .toast.show {
   display: block;
   opacity: 1;
+}
+@media (max-width: 600px) {
+    .logo-fixed {
+        width: 100%;
+        text-align: center;
+    }
+    .logo-fixed .logo {
+        width: 80%;
+        max-height: 14vh;
+    }
+}
+.logo-fixed {
+    width: 100%;
+    text-align: center;
+    user-select: none;
+    z-index: 1;
+    cursor: default;
+    position: absolute;
+    top: 15%;
+    left: 0;
+}
+.logo-fixed .logo {
+    width: auto;
+    max-height: 14vh;
+    height: auto;
+    object-fit: contain;
+    margin-left: 12px;
 }

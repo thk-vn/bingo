@@ -6,6 +6,10 @@
 
 @section('main')
     <div class="main-board"></div>
+    <div class="logo-fixed">
+        <img class="logo" src="{{ Vite::asset('resources/images/2026 — Code The Wave.png') }}"
+             alt="Bingo Logo">
+    </div>
     <div class="main-container">
         @if ($errors->any())
             @foreach ($errors->all() as $error)
@@ -35,10 +39,6 @@
                 <button id="btnUpdateInfoBingoUser" class="btn" type="submit">
                     {{ __('view.bingo_user.btn_confirm') }}
                 </button>
-
-                <div class="footer">
-                    {{ __('view.bingo_user.start') }}
-                </div>
             </form>
         </div>
     </div>

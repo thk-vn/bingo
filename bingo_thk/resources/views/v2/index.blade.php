@@ -37,13 +37,12 @@
                     <div id="bingo" class="bingo" role="grid" aria-label="Bingo card">
                     </div>
                 </div>
+                <div class="button-reset">
+                    <button id="reset" class="small reset">New Board</button>
+                </div>
             </div>
 
             <div class="controls-area">
-            </div>
-
-            <div class="button-reset">
-                <button id="reset" class="small reset">New Board</button>
             </div>
         </main>
     </div>
