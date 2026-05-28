@@ -19,7 +19,7 @@
         </div>
         <main class="app" role="application" aria-label="Bingo game">
             <div class="user-info-fixed">
-                <span class="label">Họ tên:</span>
+                <span class="label">Player:</span>
                 <a href="{{ route('bingo.detail', auth('bingo')->user()) }}" id="info">
                     {{ $userBingoName }} <span class="edit-icon">🖋️</span>
                 </a>
@@ -43,12 +43,12 @@
             </div>
 
             <div class="button-reset">
-                <button id="reset" class="small reset">Reset</button>
+                <button id="reset" class="small reset">New Board</button>
             </div>
         </main>
     </div>
     <footer class="system-footer small">
-        © 2025 - THK Holdings Vietnam
+        © 2025 - 2026 THK Holdings Vietnam
     </footer>
 @endsection
 

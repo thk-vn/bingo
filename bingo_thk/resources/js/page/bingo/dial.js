@@ -28,6 +28,7 @@ let pendingSpin = false; // Đánh dấu người dùng đã click để quay ti
 const timePickWinner = 1500;
 const winnerMoveStartPos = new THREE.Vector3(0, 0, 5);
 const winnerTargetPos = new THREE.Vector3();
+const sphereRadius = 6.5;
 
 const textureLoader = new THREE.TextureLoader();
 const backgroundTexture = textureLoader.load(backgroundUrl);
@@ -133,7 +134,7 @@ function init() {
 
 // ===== TẠO KHUNG LƯỚI SPHERE =====
 function createDotSphere() {
-    const radius = 6.5;
+    const radius = sphereRadius;
     const circlePoints = 64;
     const circleMaterial = new THREE.LineBasicMaterial({
         color: 0xffffff,
@@ -873,6 +874,25 @@ function updateRendererSize() {
 
     // Sau khi thay đổi aspect ratio, cần gọi phương thức này để áp dụng thay đổi vào ma trận chiếu (projection matrix)
     camera.updateProjectionMatrix();
+    // sphere tự co giãn theo màn LED
+    fitCameraToSphere(sphereRadius);
+}
+
+function fitCameraToSphere(radius) {
+    //Chừa khoảng trống quanh sphere. Tăng lên thì sphere nhỏ hơn, giảm xuống thì sphere to hơn.
+    const padding = 1.1;
+
+    //Lấy góc nhìn dọc của camera.
+    const vFov = THREE.MathUtils.degToRad(camera.fov);
+    //Tính góc nhìn ngang theo tỉ lệ màn hình.
+    const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
+    //Lấy góc nhỏ hơn để đảm bảo sphere không bị cắt theo chiều hẹp nhất.
+    const limitedFov = Math.min(vFov, hFov);
+    //Tính camera phải đứng xa bao nhiêu để nhìn trọn sphere.
+    const distance = (radius * padding) / Math.sin(limitedFov / 2);
+    //Đặt camera ra xa/gần tương ứng và nhìn về tâm.
+    camera.position.z = distance;
+    camera.lookAt(0, 0, 0);
 }
 
 let resizeRaf = null;
