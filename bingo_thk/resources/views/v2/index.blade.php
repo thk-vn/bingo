@@ -18,12 +18,6 @@
             </div>
         </div>
         <main class="app" role="application" aria-label="Bingo game">
-            <div class="user-info-fixed">
-                <span class="label">Player:</span>
-                <a href="{{ route('bingo.detail', auth('bingo')->user()) }}" id="info">
-                    {{ $userBingoName }} <span class="edit-icon">🖋️</span>
-                </a>
-            </div>
             <div id="bingoWinOverlay">
                 {{-- <div class="bingo-text show-bingo">🎉 BINGO!!! 🎉</div> --}}
                 <div class="bingo-text show-bingo">
@@ -33,17 +27,22 @@
             </div>
 
             <div class="card-wrap" aria-live="polite">
+                <div class="user-info-fixed">
+                    <span class="label">Player:</span>
+                    <a href="{{ route('bingo.detail', auth('bingo')->user()) }}" id="info">
+                        {{ $userBingoName }} <span class="edit-icon">🖋️</span>
+                    </a>
+                </div>
                 <div class="card-bingo">
                     <div id="bingo" class="bingo" role="grid" aria-label="Bingo card">
                     </div>
                 </div>
+                <div class="button-reset">
+                    <button id="reset" class="small reset">New Board</button>
+                </div>
             </div>
 
             <div class="controls-area">
-            </div>
-
-            <div class="button-reset">
-                <button id="reset" class="small reset">New Board</button>
             </div>
         </main>
     </div>

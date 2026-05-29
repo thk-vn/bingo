@@ -158,7 +158,9 @@ p.lead {
 .user-info-fixed {
   color: var(--font-color);
   font-size: 16px;
-  padding: 1rem 0 0 1.7rem;
+  margin-bottom: 10px;
+  margin-left: 37px;
+  margin-right: 37px;
 }
 
 .user-info-fixed a {
@@ -191,7 +193,6 @@ p.lead {
 }
 
 .card-bingo {
-  display: flex;
   justify-content: center;
   width: 100%;
 }
@@ -204,15 +205,7 @@ p.lead {
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
-}
-
-.card-wrap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 24px;
-  padding: 2px;
-  background-size: 400%;
+  margin-left: 2px;
 }
 
 /* Khi trúng Bingo – hiệu ứng nhịp sáng */
@@ -253,6 +246,8 @@ p.lead {
   cursor: pointer;
   transition: all 0.25s ease;
   backdrop-filter: blur(6px);
+  border-radius: 5px;
+  margin-bottom: 5px;
 }
 
 .cell:nth-child(odd) {
@@ -282,7 +277,7 @@ p.lead {
       #00053a 0%,
       transparent 45%),
     linear-gradient(180deg,
-      #135a8a 0%,
+      #229cee 0%,
       #062b63 45%,
       #000a5a 100%);
   color: #ffffff;
@@ -318,39 +313,37 @@ button, .btn {
   display:flex;
   flex-direction: row;
   justify-content: flex-end;
-  position: relative;
   right: 1.5rem;
+  width: 100%;
 }
 
 button.reset {
   padding: 12px 28px 12px 42px;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: var(--text-color);
-  background: transparent;
-  border: 1px solid #0054a6;
-  border-radius: 50px;
+  font-size: 16px;
+  color: white;
+  background: radial-gradient(circle at bottom left, #00053a 0%, transparent 45%), linear-gradient(180deg, #229cee 0%, #062b63 45%, #000a5a 100%);
+  border-radius: 5px;
   cursor: pointer;
-  transition: all 0.25s ease;
   z-index: 999;
   gap: 8px;
-  animation: pulseGlow 2s infinite alternate;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  box-shadow: unset !important;
+  width: 100%;
+  margin-right: 37px;
+  margin-left: 37px;
 }
 
 button.reset::before {
   content: "↻";
   font-size: 18px;
-  color: var(--text-color);
-  /* text-shadow: 0 0 6px var(--neon-accent), 0 0 12px var(--neon-color); */
+  color: white;
   display: inline-block;
   transform-origin: center;
-  transition: transform 0.3s ease;
 }
 
 button.reset:hover {
-  /* color: #ffffff; */
-  /* transform: scale(1.08); */
   box-shadow:
     0 0 12px var(--neon-color),
     0 0 30px var(--neon-accent),
@@ -686,6 +679,10 @@ footer.small {
   .bingo-text {
     font-size: 2.5rem;
   }
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
+  }
 }
 
 @media (max-width: 600px) {
@@ -721,8 +718,16 @@ footer.small {
   button.reset, .info {
     bottom: 15%;
     right: 15px;
-    padding: 10px 16px 10px 30px;
-    font-size: 13px;
+    font-size: 16px;
+  }
+  button.reset {
+    margin-right: 6px;
+    margin-top: 10px;
+    margin-left: unset;
+  }
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
   }
 }
 
@@ -731,6 +736,16 @@ footer.small {
     width: 16vw;
     height: 16vw;
     backdrop-filter: none;
+  }
+  button.reset {
+    margin-right: 6px;
+    margin-top: 10px;
+    margin-left: unset;
+  }
+
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
   }
 }
 
@@ -745,19 +760,12 @@ footer.small {
     font-size: 1.3rem;
   }
 
-  .user-info-fixed {
-    position: relative;
-    left: 1rem;
-  }
-
-  .button-reset{
-    position: relative;
-    right: 2.3rem;
-  }
-
   button.reset{
-    padding: 8px 16px 8px 22px;
-    font-size: 14px;
+    font-size: 16px;
+    width: 100%;
+    margin-right: 6px;
+    margin-top: 10px;
+    margin-left: unset;
   }
 
    button.reset::before{
@@ -771,6 +779,11 @@ footer.small {
   .title {
     font-size: 2.2rem;
   }
+
+    .user-info-fixed {
+        margin-left: unset;
+        margin-right: unset;
+    }
 }
 
 @media (max-width: 375px) {
@@ -784,23 +797,20 @@ footer.small {
     width: auto;
   }
 
-  .button-reset{
-    position: relative;
-    right: 2.8rem;
-  }
-
-  button.reset{
-    padding: 6px 16px 6px 22px;
-    font-size: 12px;
-  }
-
-  .user-info-fixed {
-    position: relative;
-    left: 1.2rem;
-    font-size: 14px;
+  .button-reset {
+    width: 100%;
+    font-size: 16px;
+    margin-right: 6px;
+    margin-top: unset;
   }
 
   .title {
     font-size: 2rem;
   }
+
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
+  }
 }
+
