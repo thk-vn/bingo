@@ -16,15 +16,15 @@
         </div>
         <div class="main-container">
             @if ($errors->any())
-                <div class="toast show">
-                    @foreach ($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                </div>
+                @foreach ($errors->all() as $error)
+                    <div id="toast" class="toast show">{{ $error }}</div>
+                @endforeach
             @elseif (session('error'))
-                <div class="toast show">
+                <div id="toast" class="toast show">
                     {{ session('error') }}
                 </div>
+            @else
+                <div id="toast" class="toast"></div>
             @endif
             <div class="card">
                 <h1 class="neon-title">
