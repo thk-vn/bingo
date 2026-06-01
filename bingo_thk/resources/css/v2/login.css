@@ -21,20 +21,31 @@ html, body {
 }
 
 body {
-  margin: 0;
-  /* min-height: 100vh; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: url('../../images/bg-troi-xanh.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  font-family: Poppins, Inter, sans-serif;
-  color: #e6eef8;
-  overflow: hidden;
-  position: relative;
-  overflow-x: hidden;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../../images/bg-troi-xanh.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: "Luckiest Guy", cursive !important;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.page-wrapper {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
 }
 
 .main-board {
@@ -53,22 +64,24 @@ body {
 }
 
 .main-container {
-  width: 25rem;
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.6rem;
+    width: min(90vw, 420px);
+
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+
+    position: relative;
+    z-index: 2;
 }
 
 .card {
-  width: 100%;
-  padding: 30px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-  box-shadow: 0 0 20px rgba(37, 32, 36, 0.324), 0 0 30px rgba(20, 246, 255, 0.2);
-  border: 1px solid #0054a6;
-  border-radius: 5px;;
-  background-clip: padding-box;
-  position: relative;
-  overflow: hidden;
+    width: 100%;
+    padding: 1.8rem;
+    background: linear-gradient(180deg, #ffffff0a, #ffffff05);
+    box-shadow: 0 0 20px #25202453, 0 0 30px #14f6ff33;
+    border: 1px solid #0054a6;
+    border-radius: 5px;
+    background-clip: padding-box;
 }
 
 .card::before {
@@ -98,14 +111,6 @@ body {
   align-items: center;
   gap: 10px;
   justify-content: center;
-}
-
-.logo-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--text-color));
-  /* box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-pink); */
 }
 
 form {
@@ -200,32 +205,87 @@ form {
   display: block;
   opacity: 1;
 }
-@media (max-width: 600px) {
-    .logo-fixed {
-        width: 100%;
-        text-align: center;
-    }
-    .logo-fixed .logo {
-        width: 80%;
-        max-height: 14vh;
-    }
-}
+
 .logo-fixed {
     width: 100%;
-    text-align: center;
-    user-select: none;
-    z-index: 1;
-    cursor: default;
-    position: absolute;
-    top: 15%;
-    left: 0;
-    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding-top: 2rem;
+    margin-bottom: 2rem;
+
+    z-index: 2;
 }
 
 .logo-fixed .logo {
-    max-width: 100%;
-    max-height: 14vh;
+    display: block;
+
+    width: min(90vw, 550px);
+
+    max-width: 550px;
+    min-width: 180px;
+
     height: auto;
     object-fit: contain;
-    margin-left: 0;
+}
+
+/* Bingo title */
+.title {
+    margin-top: .5rem;
+
+    font-family: "Trajan Pro", "Cinzel", serif;
+    font-weight: 700;
+
+    color: #1B2E83;
+
+    font-size: clamp(2rem, 5vw, 4rem);
+
+    line-height: 1;
+    text-align: center;
+}
+
+.title span {
+    color: #00a651;
+    font-style: italic;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .logo-fixed {
+        padding-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .logo-fixed .logo {
+        width: 75vw;
+        max-width: 320px;
+    }
+
+    .title {
+        font-size: clamp(2rem, 8vw, 3rem);
+    }
+
+    .card {
+        padding: 1.2rem;
+    }
+
+    .neon-title {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-height: 800px) {
+    .logo-fixed .logo {
+        max-width: 320px;
+    }
+
+    .title {
+        font-size: 2.2rem;
+    }
+
+    .logo-fixed {
+        margin-bottom: 1rem;
+    }
 }
