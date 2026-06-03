@@ -34,7 +34,7 @@ body {
   position: relative;
 }
 
-.game-container{
+.game-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,6 +85,7 @@ body {
 /* Bingo title */
 .title {
   font-size: 2.5rem;
+  font-size: clamp(2.2rem, 5vw, 2.5rem);
   display: flex;
   justify-content: center;
   font-family: "Trajan Pro", "Cinzel", serif;
@@ -127,12 +128,13 @@ p.lead {
 /* OPTIMIZE: Chuyển sang CSS Grid tự động co giãn thông minh theo tỷ lệ để không bị vỡ hàng */
 .bingo {
   display: grid;
-  grid-template-columns: repeat(5, minmax(40px, 70px));
-  grid-auto-rows: minmax(40px, 70px);
-  grid-gap: 6px;
-  /* Tăng khoảng cách một xíu nhìn cho sang */
-  justify-content: center;
-  width: 100%;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+
+  width: min(92vw, 400px);
+  aspect-ratio: 1 / 1;
+
+  margin: 0 auto;
 }
 
 .bingo-header {
@@ -199,13 +201,10 @@ p.lead {
 
 /* Board game */
 .card-wrap {
-  position: relative;
-  display: inline-block;
-  padding: 12px 24px;
-  overflow: hidden;
   width: 100%;
+  padding: 12px;
+  margin: 0 auto;
   box-sizing: border-box;
-  margin-left: 2px;
 }
 
 /* Khi trúng Bingo – hiệu ứng nhịp sáng */
@@ -229,46 +228,51 @@ p.lead {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  height: 100%;
-  /* OPTIMIZE: Để Grid tự quyết định chiều cao */
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-color);
   background: linear-gradient(145deg,
       rgba(0, 255, 255, 0.08) 0%,
       rgba(0, 200, 255, 0.04) 50%,
       rgba(255, 255, 255, 0.02) 100%);
   border: 1px solid #0054a6;
-  font-size: 1.5rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  color: var(--text-color);
-  cursor: pointer;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(6px);
   border-radius: 5px;
-  margin-bottom: 5px;
+  cursor: pointer;
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    background .2s ease,
+    color .2s ease;
+  box-sizing: border-box;
 }
 
 .cell:nth-child(odd) {
-  background: linear-gradient(145deg, rgba(0, 255, 200, 0.08), rgba(0, 100, 255, 0.04));
+  background: linear-gradient(145deg,
+      rgba(0, 255, 200, 0.08),
+      rgba(0, 100, 255, 0.04));
 }
 
 .cell:hover {
+  transform: scale(1.03);
   background: linear-gradient(145deg,
       rgba(0, 255, 255, 0.25) 0%,
       rgba(0, 200, 255, 0.15) 50%,
       rgba(255, 255, 255, 0.05) 100%);
   box-shadow:
     0 0 10px var(--neon-color),
-    0 0 25px var(--neon-accent),
-    inset 0 0 10px rgba(255, 255, 255, 0.1);
+    0 0 25px var(--neon-accent);
 }
 
 .cell.active {
   background: var(--neon-accent);
   color: #fff;
-  box-shadow: 0 0 25px var(--neon-accent), 0 0 50px var(--neon-color);
+  box-shadow:
+    0 0 20px var(--neon-accent),
+    0 0 40px var(--neon-color);
 }
 
 .cell.marked {
@@ -280,7 +284,7 @@ p.lead {
       #229cee 0%,
       #062b63 45%,
       #000a5a 100%);
-  color: #ffffff;
+  color: #fff;
 }
 
 .cell.free {
@@ -308,18 +312,14 @@ button, .btn {
   font-weight: 600;
 }
 
-/* === NÚT RESET NEON FIXED === */
-.button-reset{
-  display:flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  right: 1.5rem;
-  width: 100%;
+.button-reset {
+  max-width: min(92vw, 400px);
 }
 
 button.reset {
   padding: 12px 28px 12px 42px;
   font-size: 16px;
+  font-size: clamp(14px, 3vw, 16px);
   color: white;
   background: radial-gradient(circle at bottom left, #00053a 0%, transparent 45%), linear-gradient(180deg, #229cee 0%, #062b63 45%, #000a5a 100%);
   border-radius: 5px;
@@ -331,7 +331,6 @@ button.reset {
   justify-content: center;
   box-shadow: unset !important;
   width: 100%;
-  margin-right: 37px;
   margin-left: 37px;
 }
 
@@ -478,7 +477,7 @@ button.warn {
 .win-banner {
   margin-top: 10px;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 5px;
   background: linear-gradient(90deg, rgba(34, 197, 94, 0.16), rgba(16, 185, 129, 0.08));
   color: var(--win);
   font-weight: 700;
@@ -589,7 +588,7 @@ footer.small {
   top: 12%;
   background: linear-gradient(90deg, var(--toast-bg), var(--neon-cyan));
   padding: 12px 20px;
-  border-radius: 8px;
+  border-radius: 5px;
   color: #071126;
   font-weight: bold;
   animation: pulse 1s infinite alternate;
@@ -662,13 +661,10 @@ footer.small {
     padding: 12px;
   }
 
-  /* Cấu trúc Grid tự thích ứng theo viewport của Mobile/Tablet */
   .bingo {
     grid-template-columns: repeat(5, minmax(45px, 1fr));
     grid-auto-rows: minmax(45px, 1fr);
-    grid-gap: 4px;
     width: auto;
-    /* Bàn cờ chiếm trọn không gian ngang mobile */
   }
 
   .bingo-header .col {
@@ -679,13 +675,27 @@ footer.small {
   .bingo-text {
     font-size: 2.5rem;
   }
+
   .user-info-fixed {
     margin-left: unset;
     margin-right: unset;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .button-reset {
+    max-width: 100%;
+  }
+
+  button.reset {
+    margin-top: 10px;
+  }
+
+  .user-info-fixed, button.reset {
+    margin-left: unset;
+    margin-right: unset;
+  }
+
   .toast {
     top: 17%;
   }
@@ -699,7 +709,6 @@ footer.small {
     top: 55%;
   }
 
-  /* Logo chuyển về căn giữa trên đầu khi không gian ngang quá hẹp */
   .logo-fixed {
     width: 100%;
     text-align: center;
@@ -710,35 +719,14 @@ footer.small {
     max-height: 12vh;
   }
 
-  .title {
-    font-size: 2.5rem;
-  }
 
-  /* Thu nhỏ nút reset cố định để không đè lên content bàn cờ */
   button.reset, .info {
     bottom: 15%;
     right: 15px;
     font-size: 16px;
   }
-  button.reset {
-    margin-right: 6px;
-    margin-top: 10px;
-    margin-left: unset;
-  }
-  .user-info-fixed {
-    margin-left: unset;
-    margin-right: unset;
-  }
-}
 
-@media (max-width: 768px) {
-  .cell {
-    width: 16vw;
-    height: 16vw;
-    backdrop-filter: none;
-  }
   button.reset {
-    margin-right: 6px;
     margin-top: 10px;
     margin-left: unset;
   }
@@ -755,57 +743,22 @@ footer.small {
   }
 
   .cell {
-    width: 15vw;
-    height: 15vw;
     font-size: 1.3rem;
   }
 
-  button.reset{
+  button.reset {
     font-size: 16px;
     width: 100%;
-    margin-right: 6px;
     margin-top: 10px;
-    margin-left: unset;
   }
 
-   button.reset::before{
+  button.reset::before {
     font-size: 13px;
   }
 
   .card-wrap {
+    max-width: 90%;
     padding-bottom: 8px !important;
-  }
-
-  .title {
-    font-size: 2.2rem;
-  }
-
-    .user-info-fixed {
-        margin-left: unset;
-        margin-right: unset;
-    }
-}
-
-@media (max-width: 375px) {
-  .cell {
-    width: 14vw;
-    height: 14vw;
-    font-size: 1.2rem;
-  }
-
-  .bingo {
-    width: auto;
-  }
-
-  .button-reset {
-    width: 100%;
-    font-size: 16px;
-    margin-right: 6px;
-    margin-top: unset;
-  }
-
-  .title {
-    font-size: 2rem;
   }
 
   .user-info-fixed {
@@ -814,3 +767,63 @@ footer.small {
   }
 }
 
+@media (max-width: 375px) {
+  .cell {
+    font-size: 1.2rem;
+  }
+
+  .button-reset {
+    width: 100%;
+    margin-top: unset;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
+  }
+
+  .card-wrap {
+    width: 100%;
+    padding: 10px;
+  }
+
+  button.reset {
+    margin-top: 5px;
+  }
+
+  .logo-fixed .logo {
+    max-height: 11vh;
+  }
+}
+
+@media (max-height: 667px) {
+  .cell {
+    font-size: 1.2rem;
+  }
+
+  .button-reset {
+    width: 100%;
+    margin-top: unset;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .user-info-fixed {
+    margin-left: unset;
+    margin-right: unset;
+  }
+
+  button.reset {
+    margin-top: 5px;
+  }
+
+  .logo-fixed .logo {
+    max-height: 11vh;
+  }
+}

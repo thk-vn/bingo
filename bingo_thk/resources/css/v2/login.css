@@ -111,6 +111,7 @@ body {
   align-items: center;
   gap: 10px;
   justify-content: center;
+  font-family: "Luckiest Guy", cursive !important;
 }
 
 form {
