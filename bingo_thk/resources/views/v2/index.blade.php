@@ -7,10 +7,7 @@
 
 @section('main')
     <div class="game-container">
-
-        <div class="main-board"></div>
-
-        <div class="logo-fixed">
+        <div class="logo-card">
             <img class="logo" src="{{ Vite::asset('resources/images/2026 — Code The Wave.png') }}"
                 alt="Bingo Logo">
             <div class="title">
@@ -45,6 +42,7 @@
             <div class="controls-area">
             </div>
         </main>
+        <div class="main-board"></div>
     </div>
     <footer class="system-footer small">
         © 2025 - 2026 THK Holdings Vietnam

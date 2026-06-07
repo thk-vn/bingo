@@ -5,9 +5,8 @@
 @endsection
 
 @section('main')
-    <div class="main-board"></div>
     <div class="page-wrapper">
-        <div class="logo-fixed">
+        <div class="logo-card">
             <img class="logo" src="{{ Vite::asset('resources/images/2026 — Code The Wave.png') }}"
                  alt="Bingo Logo">
             <div class="title">
@@ -15,7 +14,7 @@
             </div>
         </div>
 
-        <div class="main-container">
+        <div class="main-card">
             @if ($errors->any())
                 @foreach ($errors->all() as $error)
                     <div id="toast" class="toast show">{{ $error }}</div>
@@ -46,6 +45,7 @@
             </div>
         </div>
     </div>
+    <div class="main-board"></div>
 
     @push('section-scripts')
         <script>

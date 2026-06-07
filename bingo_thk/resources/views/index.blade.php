@@ -7,7 +7,7 @@
 
 @section('main')
     <div class="app" role="application" aria-label="Bingo game">
-        <div class="logo-fixed">BINGO ✨</div>
+        <div class="logo-card">BINGO ✨</div>
         <div class="user-info">
             <a href="{{ route('bingo.detail', auth('bingo')->user()) }}" id="info">{{ $userBingoName }} 🖋️</a>
         </div>
