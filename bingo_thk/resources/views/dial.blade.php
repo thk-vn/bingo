@@ -9,6 +9,11 @@
 </head>
 <body>
     <div id="container"></div>
+    <div class="math-challenge" id="mathChallenge" aria-hidden="true">
+        <button class="math-challenge__box" id="mathChallengeButton" type="button">
+            <span class="math-challenge__expression" id="mathExpression"></span>
+        </button>
+    </div>
     <div class="group-numbers">
         <div class="numbers-grid" id="numbersGrid"></div>
     </div>

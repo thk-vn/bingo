@@ -54,6 +54,64 @@ body::-webkit-scrollbar-track {
     height: 100%;
 }
 
+.math-challenge {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.35);
+    z-index: 30;
+}
+
+.math-challenge.is-visible {
+    display: flex;
+}
+
+.math-challenge__box {
+    min-width: 60vw;
+    min-height: 40vh;
+    border: 2px solid var(--neon-color);
+    border-radius: 5px;
+    background: linear-gradient(180deg, rgba(73, 18, 21, 0.96), rgba(26, 34, 48, 0.96));
+    box-shadow: 0 0 18px rgba(0,247,255,0.7), inset 0 0 18px rgba(255,255,255,0.12);
+    cursor: pointer;
+    color: #ffffff;
+    font: inherit;
+    transform-origin: center center;
+    transition: transform 0.36s ease, opacity 0.36s ease, box-shadow 0.3s;
+}
+
+.math-challenge__box:hover {
+    box-shadow: 0 0 12px var(--neon-color), 0 0 30px var(--neon-accent), inset 0 0 10px rgba(255,255,255,0.5);
+}
+
+
+.math-challenge__box:active {
+    transform: scale(0.98);
+}
+
+.math-challenge__box:disabled {
+    cursor: default;
+}
+
+.math-challenge.is-closing {
+    pointer-events: none;
+}
+
+.math-challenge.is-closing .math-challenge__box {
+    opacity: 0;
+    transform: scale(0.08);
+}
+
+.math-challenge__expression {
+    display: block;
+    font-size: clamp(44px, 6vw, 82px);
+    font-weight: 900;
+    line-height: 1.15;
+    text-align: center;
+}
+
 .group-button {
     position: absolute;
     bottom: 20px;
@@ -186,4 +244,21 @@ body::-webkit-scrollbar-track {
     font-size: 25px;
     color: #da3b42;
     text-shadow: none;
+}
+
+.group-numbers .numbers-grid .number-row .mini-ball.mini-ball-special {
+
+    background: radial-gradient(
+        circle at 30% 30%,
+        #ecfeff 0%,
+        #a5f3fc 20%,
+        #22d3ee 45%,
+        #0891b2 75%,
+        #155e75 100%
+    );
+}
+
+.mini-ball.mini-ball-special span {
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(8,145,178,.8);
 }
